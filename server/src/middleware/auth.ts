@@ -1,6 +1,18 @@
 import { Response, NextFunction } from 'express';
+import { createClient } from '@supabase/supabase-js';
 import { supabase } from '../config/supabase.js';
 import { AuthenticatedRequest } from '../types/index.js';
+
+const authClient = createClient(
+  process.env.SUPABASE_URL || '',
+  process.env.SUPABASE_SERVICE_ROLE_KEY || '',
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    }
+  }
+);
 
 const isMockMode = process.env.SUPABASE_URL?.includes('mockproject.supabase.co');
 
@@ -53,8 +65,8 @@ export async function authenticate(
       }
     }
 
-    // Real Supabase Auth to verify JWT
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    // Real Supabase Auth to verify JWT using dedicated authClient to prevent session pollution
+    const { data: { user }, error: authError } = await authClient.auth.getUser(token);
     if (authError || !user) {
       return res.status(401).json({
         error: 'UNAUTHORIZED',
