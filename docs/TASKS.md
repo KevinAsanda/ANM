@@ -134,10 +134,10 @@
 
 | # | Task | Label | Status |
 |---|------|-------|--------|
-| ST-01 | `GET /api/v1/staff` — list all staff (admin only) | `[BACKEND]` | ⬜ |
-| ST-02 | `POST /api/v1/staff` — admin creates mechanic account via Supabase Auth Admin API; sets role | `[BACKEND]` | ⬜ |
-| ST-03 | Build Staff List page — table: name, email, role, date added | `[FRONTEND]` | ⬜ |
-| ST-04 | Build Add Mechanic form in Modal — name, email, temp password | `[FRONTEND]` | ⬜ |
+| ST-01 | `GET /api/v1/staff` — list all staff (admin only) | `[BACKEND]` | ✅ |
+| ST-02 | `POST /api/v1/staff` — admin creates mechanic account via Supabase Auth Admin API; sets role | `[BACKEND]` | ✅ |
+| ST-03 | Build Staff List page — table: name, email, role, date added | `[FRONTEND]` | ✅ |
+| ST-04 | Build Add Mechanic form in Modal — name, email, temp password | `[FRONTEND]` | ✅ |
 
 ---
 

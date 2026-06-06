@@ -30,6 +30,25 @@ export const staffService = {
     }
 
     return res.json();
+  },
+
+  async createMechanic(data: {
+    name: string;
+    email: string;
+    password: string;
+  }): Promise<Staff> {
+    const res = await fetch(`${API_BASE_URL}/staff`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(data)
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.message || 'Failed to create mechanic user account');
+    }
+
+    return res.json();
   }
 };
 export default staffService;
