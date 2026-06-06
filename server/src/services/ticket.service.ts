@@ -133,6 +133,7 @@ export async function listTickets(status?: string): Promise<Ticket[]> {
 }
 
 export async function listMechanicTickets(mechanicId: string): Promise<Ticket[]> {
+  console.log('=== listMechanicTickets CALLED FOR MECHANIC ===', mechanicId);
   if (isMockMode) {
     return mockTickets.filter(t => t.staff_id === mechanicId);
   }
@@ -141,14 +142,45 @@ export async function listMechanicTickets(mechanicId: string): Promise<Ticket[]>
     .from('service_tickets')
     .select(`
       *,
-      vehicle:vehicles(id, registration_number, make, model, year)
+      vehicle:vehicles(id, registration_number, make, model, year, customer:customers(id, name, phone, email)),
+      mechanic:staff!service_tickets_staff_id_fkey(id, name, email)
     `)
     .eq('staff_id', mechanicId)
     .order('created_at', { ascending: false });
 
   if (error) throw error;
 
-  return data as Ticket[];
+  // Format response to match spec
+  return data.map((t: any) => ({
+    id: t.id,
+    vehicle_id: t.vehicle_id,
+    staff_id: t.staff_id,
+    created_by: t.created_by,
+    status: t.status,
+    description: t.description,
+    notes: t.notes,
+    labour_cost: Number(t.labour_cost),
+    created_at: t.created_at,
+    updated_at: t.updated_at,
+    vehicle: t.vehicle ? {
+      id: t.vehicle.id,
+      registration_number: t.vehicle.registration_number,
+      make: t.vehicle.make,
+      model: t.vehicle.model,
+      year: t.vehicle.year
+    } : undefined,
+    customer: t.vehicle?.customer ? {
+      id: t.vehicle.customer.id,
+      name: t.vehicle.customer.name,
+      phone: t.vehicle.customer.phone,
+      email: t.vehicle.customer.email
+    } : undefined,
+    mechanic: t.mechanic ? {
+      id: t.mechanic.id,
+      name: t.mechanic.name,
+      email: t.mechanic.email
+    } : undefined
+  }));
 }
 
 export async function createTicket(

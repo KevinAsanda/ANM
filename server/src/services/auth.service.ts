@@ -1,7 +1,19 @@
+import { createClient } from '@supabase/supabase-js';
 import { supabase } from '../config/supabase.js';
 import { UserProfile } from '../types/index.js';
 
 const isMockMode = process.env.SUPABASE_URL?.includes('mockproject.supabase.co');
+
+const authClient = createClient(
+  process.env.SUPABASE_URL || '',
+  process.env.SUPABASE_SERVICE_ROLE_KEY || '',
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    }
+  }
+);
 
 export async function loginUser(email: string, password: string): Promise<{ token: string; user: UserProfile }> {
   if (isMockMode) {
@@ -36,8 +48,8 @@ export async function loginUser(email: string, password: string): Promise<{ toke
     }
   }
 
-  // Real Supabase Auth
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  // Real Supabase Auth via dedicated authClient
+  const { data, error } = await authClient.auth.signInWithPassword({ email, password });
   if (error || !data.session || !data.user) {
     const customError = new Error('Invalid email or password.') as any;
     customError.status = 401;
