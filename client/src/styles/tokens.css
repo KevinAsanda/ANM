@@ -1,0 +1,35 @@
+:root {
+  /* Brand */
+  --color-primary:        #1D4ED8;   /* buttons, links, focus rings */
+  --color-primary-hover:  #1E40AF;   /* hover state */
+  --color-primary-light:  #DBEAFE;   /* selected row highlight, subtle bg */
+
+  /* Surfaces */
+  --color-surface:        #FFFFFF;   /* cards, modals, panels */
+  --color-background:     #F1F5F9;   /* page background */
+  --color-border:         #E2E8F0;   /* table borders, card borders */
+  --color-border-focus:   #3B82F6;   /* input focus ring */
+
+  /* Text */
+  --color-text:           #0F172A;   /* headings, body — high contrast */
+  --color-text-muted:     #475569;   /* labels, hints, placeholder */
+  --color-text-inverse:   #FFFFFF;   /* text on dark backgrounds */
+
+  /* Semantic */
+  --color-error:          #DC2626;   /* errors, destructive actions */
+  --color-error-bg:       #FEE2E2;   /* error alert backgrounds */
+  --color-success:        #16A34A;   /* success states */
+  --color-success-bg:     #DCFCE7;
+  --color-warning:        #D97706;   /* warnings, low stock */
+  --color-warning-bg:     #FEF3C7;
+
+  /* Status badges (ticket statuses) */
+  --status-pending-bg:    #FEF3C7;
+  --status-pending-text:  #92400E;
+  --status-inprogress-bg: #DBEAFE;
+  --status-inprogress-text: #1E40AF;
+  --status-completed-bg:  #DCFCE7;
+  --status-completed-text: #14532D;
+  --status-cancelled-bg:  #F1F5F9;
+  --status-cancelled-text: #475569;
+}
