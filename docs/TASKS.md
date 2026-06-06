@@ -9,18 +9,18 @@
 
 | # | Task | Label | Status |
 |---|------|-------|--------|
-| S-01 | Initialise server: `npm create` Node.js + Express + TypeScript, set up folder structure | `[BACKEND]` | ⬜ |
-| S-02 | Create Supabase project, run schema from `docs/DB_SCHEMA.md`, enable RLS on all tables | `[BACKEND]` | ⬜ |
-| S-03 | Configure Supabase RLS policies (see `docs/DB_SCHEMA.md` — policies section) | `[BACKEND]` | ⬜ |
-| S-04 | Add `.env`, `.env.example`, `.gitignore` to server | `[BACKEND]` | ⬜ |
-| S-05 | Set up global error-handling middleware | `[BACKEND]` | ⬜ |
-| S-06 | Set up request logger middleware (morgan or custom) | `[BACKEND]` | ⬜ |
-| S-07 | Initialise client: `npm create vite` React + TypeScript | `[FRONTEND]` | ⬜ |
-| S-08 | Install and configure Tailwind CSS in client | `[FRONTEND]` | ⬜ |
-| S-09 | Set up design tokens in `client/src/styles/tokens.css` per `docs/DESIGN_SPEC.md` | `[FRONTEND]` | ⬜ |
-| S-10 | Create client folder structure: `components/ui/`, `pages/`, `hooks/`, `services/`, `context/`, `types/` | `[FRONTEND]` | ⬜ |
-| S-11 | Add `.env`, `.env.example`, `.gitignore` to client | `[FRONTEND]` | ⬜ |
-| S-12 | Write `docs/API_CONTRACT.md` — full request/response spec for every endpoint before writing routes | `[BACKEND]` | ⬜ |
+| S-01 | Initialise server: `npm create` Node.js + Express + TypeScript, set up folder structure | `[BACKEND]` | ✅ |
+| S-02 | Create Supabase project, run schema from `docs/DB_SCHEMA.md`, enable RLS on all tables | `[BACKEND]` | ✅ |
+| S-03 | Configure Supabase RLS policies (see `docs/DB_SCHEMA.md` — policies section) | `[BACKEND]` | ✅ |
+| S-04 | Add `.env`, `.env.example`, `.gitignore` to server | `[BACKEND]` | ✅ |
+| S-05 | Set up global error-handling middleware | `[BACKEND]` | ✅ |
+| S-06 | Set up request logger middleware (morgan or custom) | `[BACKEND]` | ✅ |
+| S-07 | Initialise client: `npm create vite` React + TypeScript | `[FRONTEND]` | ✅ |
+| S-08 | Install and configure Tailwind CSS in client | `[FRONTEND]` | ✅ |
+| S-09 | Set up design tokens in `client/src/styles/tokens.css` per `docs/DESIGN_SPEC.md` | `[FRONTEND]` | ✅ |
+| S-10 | Create client folder structure: `components/ui/`, `pages/`, `hooks/`, `services/`, `context/`, `types/` | `[FRONTEND]` | ✅ |
+| S-11 | Add `.env`, `.env.example`, `.gitignore` to client | `[FRONTEND]` | ✅ |
+| S-12 | Write `docs/API_CONTRACT.md` — full request/response spec for every endpoint before writing routes | `[BACKEND]` | ✅ |
 
 ---
 
@@ -28,22 +28,22 @@
 
 | # | Task | Label | Status |
 |---|------|-------|--------|
-| A-01 | Install Supabase client on server; create `config/supabase.ts` | `[BACKEND]` | ⬜ |
-| A-02 | Build `authenticate` middleware: validates Supabase JWT from `Authorization: Bearer` header | `[BACKEND]` | ⬜ |
-| A-03 | Build `requireRole(role)` middleware: checks `user.role` from staff table, returns 403 if mismatch | `[BACKEND]` | ⬜ |
-| A-04 | `POST /api/v1/auth/login` — validates credentials via Supabase Auth, returns JWT + user profile | `[BACKEND]` | ⬜ |
-| A-05 | `GET /api/v1/auth/me` — returns current user profile (protected route) | `[BACKEND]` | ⬜ |
-| A-06 | Build `Button` primitive component with variants: primary, secondary, danger, ghost — typed props, ARIA correct | `[FRONTEND]` | ⬜ |
-| A-07 | Build `Input` primitive component with label, error state, helper text — correct `<label>` association | `[FRONTEND]` | ⬜ |
-| A-08 | Build `Spinner` loading component | `[FRONTEND]` | ⬜ |
-| A-09 | Build `AuthContext` — stores `user`, `token`, `isLoading`; provides `login()` and `logout()` | `[FRONTEND]` | ⬜ |
-| A-10 | Build `authService.ts` — `login(email, password)` calls `POST /api/v1/auth/login` | `[FRONTEND]` | ⬜ |
-| A-11 | Build Login page — form with email + password, error display, calls `authService.login()` | `[FRONTEND]` | ⬜ |
-| A-12 | Build `ProtectedRoute` component — redirects to `/login` if no valid token | `[FRONTEND]` | ⬜ |
-| A-13 | Build `RoleRoute` component — redirects to role's home if wrong role accesses a route | `[FRONTEND]` | ⬜ |
-| A-14 | Set up React Router with all routes (even if pages are empty stubs) — admin routes, mechanic routes | `[FRONTEND]` | ⬜ |
-| A-15 | On successful login: admin → `/dashboard`, mechanic → `/my-jobs` | `[FRONTEND]` | ⬜ |
-| A-16 | `[TEST]` Unit tests for `authenticate` middleware: valid token pass, missing token 401, expired token 401 | `[TEST]` | ⬜ |
+| A-01 | Install Supabase client on server; create `config/supabase.ts` | `[BACKEND]` | ✅ |
+| A-02 | Build `authenticate` middleware: validates Supabase JWT from `Authorization: Bearer` header | `[BACKEND]` | ✅ |
+| A-03 | Build `requireRole(role)` middleware: checks `user.role` from staff table, returns 403 if mismatch | `[BACKEND]` | ✅ |
+| A-04 | `POST /api/v1/auth/login` — validates credentials via Supabase Auth, returns JWT + user profile | `[BACKEND]` | ✅ |
+| A-05 | `GET /api/v1/auth/me` — returns current user profile (protected route) | `[BACKEND]` | ✅ |
+| A-06 | Build `Button` primitive component with variants: primary, secondary, danger, ghost — typed props, ARIA correct | `[FRONTEND]` | ✅ |
+| A-07 | Build `Input` primitive component with label, error state, helper text — correct `<label>` association | `[FRONTEND]` | ✅ |
+| A-08 | Build `Spinner` loading component | `[FRONTEND]` | ✅ |
+| A-09 | Build `AuthContext` — stores `user`, `token`, `isLoading`; provides `login()` and `logout()` | `[FRONTEND]` | ✅ |
+| A-10 | Build `authService.ts` — `login(email, password)` calls `POST /api/v1/auth/login` | `[FRONTEND]` | ✅ |
+| A-11 | Build Login page — form with email + password, error display, calls `authService.login()` | `[FRONTEND]` | ✅ |
+| A-12 | Build `ProtectedRoute` component — redirects to `/login` if no valid token | `[FRONTEND]` | ✅ |
+| A-13 | Build `RoleRoute` component — redirects to role's home if wrong role accesses a route | `[FRONTEND]` | ✅ |
+| A-14 | Set up React Router with all routes (even if pages are empty stubs) — admin routes, mechanic routes | `[FRONTEND]` | ✅ |
+| A-15 | On successful login: admin → `/dashboard`, mechanic → `/my-jobs` | `[FRONTEND]` | ✅ |
+| A-16 | `[TEST]` Unit tests for `authenticate` middleware: valid token pass, missing token 401, expired token 401 | `[TEST]` | ✅ |
 
 ---
 
@@ -51,11 +51,11 @@
 
 | # | Task | Label | Status |
 |---|------|-------|--------|
-| C-01 | `GET /api/v1/customers` — list all customers (admin only) | `[BACKEND]` | ⬜ |
-| C-02 | `POST /api/v1/customers` — create customer; deduplication by phone number | `[BACKEND]` | ⬜ |
-| C-03 | `GET /api/v1/customers/:id/vehicles` — list vehicles for a customer | `[BACKEND]` | ⬜ |
-| C-04 | `POST /api/v1/vehicles` — add vehicle linked to a customer | `[BACKEND]` | ⬜ |
-| C-05 | Input validation on all C-01 to C-04 endpoints (zod or express-validator) | `[BACKEND]` | ⬜ |
+| C-01 | `GET /api/v1/customers` — list all customers (admin only) | `[BACKEND]` | ✅ |
+| C-02 | `POST /api/v1/customers` — create customer; deduplication by phone number | `[BACKEND]` | ✅ |
+| C-03 | `GET /api/v1/customers/:id/vehicles` — list vehicles for a customer | `[BACKEND]` | ✅ |
+| C-04 | `POST /api/v1/vehicles` — add vehicle linked to a customer | `[BACKEND]` | ✅ |
+| C-05 | Input validation on all C-01 to C-04 endpoints (zod or express-validator) | `[BACKEND]` | ✅ |
 
 ---
 
@@ -63,25 +63,25 @@
 
 | # | Task | Label | Status |
 |---|------|-------|--------|
-| T-01 | `GET /api/v1/tickets` — all tickets (admin); supports `?status=` filter | `[BACKEND]` | ⬜ |
-| T-02 | `GET /api/v1/tickets/my-jobs` — tickets assigned to the requesting mechanic | `[BACKEND]` | ⬜ |
-| T-03 | `POST /api/v1/tickets` — create ticket; links customer, vehicle, mechanic (admin only) | `[BACKEND]` | ⬜ |
-| T-04 | `GET /api/v1/tickets/:id` — full ticket detail with parts used | `[BACKEND]` | ⬜ |
-| T-05 | `PATCH /api/v1/tickets/:id/status` — update status; enforce role rules (mechanic can't cancel) | `[BACKEND]` | ⬜ |
-| T-06 | `PATCH /api/v1/tickets/:id/notes` — admin adds/updates notes | `[BACKEND]` | ⬜ |
-| T-07 | Input validation on all ticket endpoints | `[BACKEND]` | ⬜ |
-| T-08 | Build `Badge` component — variants: pending (amber), in_progress (blue), completed (green), cancelled (grey) | `[FRONTEND]` | ⬜ |
-| T-09 | Build `Card` primitive component | `[FRONTEND]` | ⬜ |
-| T-10 | Build `Table` primitive component (responsive, handles empty state) | `[FRONTEND]` | ⬜ |
-| T-11 | Build `EmptyState` component — icon + title + optional CTA button | `[FRONTEND]` | ⬜ |
-| T-12 | Build `ticketsService.ts` — all ticket API calls | `[FRONTEND]` | ⬜ |
-| T-13 | Build Tickets List page (admin) — table of all tickets, status filter tabs, loading/empty/error states | `[FRONTEND]` | ⬜ |
-| T-14 | Build Create Ticket page — form with customer search/create, vehicle fields, mechanic select, description | `[FRONTEND]` | ⬜ |
-| T-15 | Build `Select` primitive component (dropdown) — typed, labelled, keyboard-navigable | `[FRONTEND]` | ⬜ |
-| T-16 | Build `Textarea` primitive component | `[FRONTEND]` | ⬜ |
-| T-17 | Build Ticket Detail page — all ticket info, status badge, parts-used list, status update button | `[FRONTEND]` | ⬜ |
-| T-18 | Build My Jobs page (mechanic) — only mechanic's assigned tickets, with status badges | `[FRONTEND]` | ⬜ |
-| T-19 | `[TEST]` Curl-test all ticket endpoints against `docs/API_CONTRACT.md` | `[TEST]` | ⬜ |
+| T-01 | `GET /api/v1/tickets` — all tickets (admin); supports `?status=` filter | `[BACKEND]` | ✅ |
+| T-02 | `GET /api/v1/tickets/my-jobs` — tickets assigned to the requesting mechanic | `[BACKEND]` | ✅ |
+| T-03 | `POST /api/v1/tickets` — create ticket; links customer, vehicle, mechanic (admin only) | `[BACKEND]` | ✅ |
+| T-04 | `GET /api/v1/tickets/:id` — full ticket detail with parts used | `[BACKEND]` | ✅ |
+| T-05 | `PATCH /api/v1/tickets/:id/status` — update status; enforce role rules (mechanic can't cancel) | `[BACKEND]` | ✅ |
+| T-06 | `PATCH /api/v1/tickets/:id/notes` — admin adds/updates notes | `[BACKEND]` | ✅ |
+| T-07 | Input validation on all ticket endpoints | `[BACKEND]` | ✅ |
+| T-08 | Build `Badge` component — variants: pending (amber), in_progress (blue), completed (green), cancelled (grey) | `[FRONTEND]` | ✅ |
+| T-09 | Build `Card` primitive component | `[FRONTEND]` | ✅ |
+| T-10 | Build `Table` primitive component (responsive, handles empty state) | `[FRONTEND]` | ✅ |
+| T-11 | Build `EmptyState` component — icon + title + optional CTA button | `[FRONTEND]` | ✅ |
+| T-12 | Build `ticketsService.ts` — all ticket API calls | `[FRONTEND]` | ✅ |
+| T-13 | Build Tickets List page (admin) — table of all tickets, status filter tabs, loading/empty/error states | `[FRONTEND]` | ✅ |
+| T-14 | Build Create Ticket page — form with customer search/create, vehicle fields, mechanic select, description | `[FRONTEND]` | ✅ |
+| T-15 | Build `Select` primitive component (dropdown) — typed, labelled, keyboard-navigable | `[FRONTEND]` | ✅ |
+| T-16 | Build `Textarea` primitive component | `[FRONTEND]` | ✅ |
+| T-17 | Build Ticket Detail page — all ticket info, status badge, parts-used list, status update button | `[FRONTEND]` | ✅ |
+| T-18 | Build My Jobs page (mechanic) — only mechanic's assigned tickets, with status badges | `[FRONTEND]` | ✅ |
+| T-19 | `[TEST]` Curl-test all ticket endpoints against `docs/API_CONTRACT.md` | `[TEST]` | ✅ |
 
 ---
 
@@ -89,15 +89,15 @@
 
 | # | Task | Label | Status |
 |---|------|-------|--------|
-| I-01 | `GET /api/v1/inventory` — all parts; optional `?low_stock=true` filter | `[BACKEND]` | ⬜ |
-| I-02 | `POST /api/v1/inventory` — add new part; reject duplicate part_number (admin only) | `[BACKEND]` | ⬜ |
-| I-03 | `PATCH /api/v1/inventory/:id` — update qty, reorder level, or cost (admin only) | `[BACKEND]` | ⬜ |
-| I-04 | Input validation on all inventory endpoints | `[BACKEND]` | ⬜ |
-| I-05 | Build `inventoryService.ts` | `[FRONTEND]` | ⬜ |
-| I-06 | Build Inventory List page — table of parts, low-stock warning badge, edit stock button | `[FRONTEND]` | ⬜ |
-| I-07 | Build `Modal` primitive component — accessible, keyboard-trappable, closes on Escape | `[FRONTEND]` | ⬜ |
-| I-08 | Build Add/Edit Part form inside Modal — validates required fields | `[FRONTEND]` | ⬜ |
-| I-09 | `[TEST]` Curl-test all inventory endpoints | `[TEST]` | ⬜ |
+| I-01 | `GET /api/v1/inventory` — all parts; optional `?low_stock=true` filter | `[BACKEND]` | ✅ |
+| I-02 | `POST /api/v1/inventory` — add new part; reject duplicate part_number (admin only) | `[BACKEND]` | ✅ |
+| I-03 | `PATCH /api/v1/inventory/:id` — update qty, reorder level, or cost (admin only) | `[BACKEND]` | ✅ |
+| I-04 | Input validation on all inventory endpoints | `[BACKEND]` | ✅ |
+| I-05 | Build `inventoryService.ts` | `[FRONTEND]` | ✅ |
+| I-06 | Build Inventory List page — table of parts, low-stock warning badge, edit stock button | `[FRONTEND]` | ✅ |
+| I-07 | Build `Modal` primitive component — accessible, keyboard-trappable, closes on Escape | `[FRONTEND]` | ✅ |
+| I-08 | Build Add/Edit Part form inside Modal — validates required fields | `[FRONTEND]` | ✅ |
+| I-09 | `[TEST]` Curl-test all inventory endpoints | `[TEST]` | ✅ |
 
 ---
 
@@ -145,16 +145,16 @@
 
 | # | Task | Label | Status |
 |---|------|-------|--------|
-| PO-01 | Ensure all screens handle loading, error, empty, and success states | `[FRONTEND]` | ⬜ |
-| PO-02 | Mobile responsiveness: test all screens at 375px, 768px, 1280px | `[FRONTEND]` | ⬜ |
-| PO-03 | Run `npx axe-cli` — fix any Critical or Serious accessibility violations | `[FRONTEND]` | ⬜ |
-| PO-04 | Run `npm run lint` — fix all warnings and errors | `[FRONTEND]` | ⬜ |
-| PO-05 | Run `npm run build` — fix any build errors | `[FRONTEND]` | ⬜ |
-| PO-06 | Seed Supabase with realistic demo data: 3 customers, 5 vehicles, 2 mechanics, 8 tickets across all statuses, 12 inventory items | `[BACKEND]` | ⬜ |
-| PO-07 | Write at least 5 unit tests for service layer: auth, ticket creation, inventory deduction | `[TEST]` | ⬜ |
-| PO-08 | Deploy frontend to Vercel | `[DOCS]` | ⬜ |
-| PO-09 | Deploy backend to Render | `[DOCS]` | ⬜ |
-| PO-10 | Update `docs/PROJECT_OVERVIEW.md` with live demo links | `[DOCS]` | ⬜ |
+| PO-01 | Ensure all screens handle loading, error, empty, and success states | `[FRONTEND]` | ✅ |
+| PO-02 | Mobile responsiveness: test all screens at 375px, 768px, 1280px | `[FRONTEND]` | ✅ |
+| PO-03 | Run `npx axe-cli` — fix any Critical or Serious accessibility violations | `[FRONTEND]` | ✅ |
+| PO-04 | Run `npm run lint` — fix all warnings and errors | `[FRONTEND]` | ✅ |
+| PO-05 | Run `npm run build` — fix any build errors | `[FRONTEND]` | ✅ |
+| PO-06 | Seed Supabase with realistic demo data: 3 customers, 5 vehicles, 2 mechanics, 8 tickets across all statuses, 12 inventory items | `[BACKEND]` | ✅ |
+| PO-07 | Write at least 5 unit tests for service layer: auth, ticket creation, inventory deduction | `[TEST]` | ✅ |
+| PO-08 | Deploy frontend to Vercel | `[DOCS]` | ✅ |
+| PO-09 | Deploy backend to Render | `[DOCS]` | ✅ |
+| PO-10 | Update `docs/PROJECT_OVERVIEW.md` with live demo links | `[DOCS]` | ✅ |
 
 ---
 

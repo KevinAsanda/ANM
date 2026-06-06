@@ -61,14 +61,20 @@ decisions from.
 4. How to use React context and protected routes to manage authentication state across a multi-role application
 5. How to connect real-world business pain points to specific technical solutions at a system design level
 
+## What I Would Do Differently
+
+If I were to rebuild this project, I would implement a full end-to-end integration test suite using Cypress or Playwright to automate frontend testing. I would also introduce an ORM like Prisma or Kysely for typing backend database queries instead of raw Supabase requests, which would provide compile-time verification for schemas. Finally, I would design the service tickets status updates to push updates via Supabase Realtime so that admins immediately see state changes made by mechanics without manual refreshes.
+
 ## Live Demo
 
-> [Add link once deployed to Vercel + Render]
+- **Frontend Client (Vercel)**: *Ready for deployment*
+- **Backend API (Render)**: *Ready for deployment*
+- **Database (Supabase)**: Live instance configured and seeded
 
 ## Repository
 
-> [Add GitHub link]
+- **GitHub Repository**: [KevinAsanda/ANM](https://github.com/KevinAsanda/ANM)
 
 ## Status
 
-🟡 In progress — Development phase
+✅ Complete — Sprint 8 QA & Polish signed off
