@@ -172,11 +172,11 @@ const TicketDetail: React.FC = () => {
 
   if (error || !ticket) {
     return (
-      <div className="flex flex-col gap-4 max-w-2xl mx-auto">
-        <div className="p-6 bg-error-bg border border-error text-error rounded-lg flex flex-col gap-4">
+      <div className="flex flex-col gap-4 max-w-2xl mx-auto mt-8 animate-fade-in">
+        <div className="p-6 bg-error-bg border border-error text-error rounded-xl flex flex-col gap-4">
           <div className="flex items-center gap-3">
             <AlertCircle size={24} />
-            <h3 className="font-bold text-lg">Error Loading Ticket</h3>
+            <h3 className="font-display font-medium text-xl">Error Loading Ticket</h3>
           </div>
           <p className="text-sm">{error || 'Ticket details not found.'}</p>
           <div className="flex gap-4 mt-2">
@@ -215,25 +215,25 @@ const TicketDetail: React.FC = () => {
       ].filter(o => !o.disabled);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 animate-fade-in">
       {/* Header */}
-      <div className="flex items-center gap-4">
-        <button
-          onClick={() => navigate(isAdmin ? '/tickets' : '/my-jobs')}
-          className="p-2 border border-border rounded-lg text-text-muted hover:bg-slate-100 transition-colors"
-          aria-label="Back to tickets list"
-        >
-          <ArrowLeft size={20} />
-        </button>
-        <div className="flex-1 flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => navigate(isAdmin ? '/tickets' : '/my-jobs')}
+            className="p-2 border border-border rounded-xl text-text-muted hover:bg-background hover:text-text transition-colors"
+            aria-label="Back to tickets list"
+          >
+            <ArrowLeft size={18} />
+          </button>
           <div>
-            <h1 className="text-2xl font-bold text-text flex items-center gap-3">
+            <h1 className="font-display font-medium text-3xl text-text flex flex-wrap items-center gap-3">
               Job Card: {ticket.vehicle?.registration_number}
               <Badge variant={ticket.status === 'in_progress' ? 'in_progress' : ticket.status as BadgeVariant}>
                 {ticket.status.replace('_', ' ')}
               </Badge>
             </h1>
-            <p className="text-xs text-text-muted mt-1">
+            <p className="text-xs text-text-muted mt-1 font-light">
               Created: {new Date(ticket.created_at).toLocaleString()} | Updated: {new Date(ticket.updated_at).toLocaleString()}
             </p>
           </div>
@@ -245,45 +245,45 @@ const TicketDetail: React.FC = () => {
         {/* Left Columns - Details */}
         <div className="lg:col-span-2 flex flex-col gap-6">
           {/* Customer & Vehicle Info */}
-          <div className="bg-surface p-6 rounded-lg shadow-sm border border-border flex flex-col gap-4">
-            <h2 className="text-lg font-bold text-text border-b border-border pb-2">Customer & Vehicle Details</h2>
-            <div className="grid grid-cols-2 gap-4 text-sm">
+          <div className="bg-surface p-6 rounded-xl shadow-sm border border-border flex flex-col gap-4">
+            <h2 className="font-display font-medium text-xl text-text border-b border-border pb-2">Customer & Vehicle Details</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="font-semibold text-text-muted">Customer Name</span>
-                <p className="text-text font-bold mt-0.5">{ticket.customer?.name}</p>
+                <span className="text-[0.72rem] font-semibold text-text-muted uppercase tracking-wider block mb-1">Customer Name</span>
+                <p className="text-text font-medium">{ticket.customer?.name}</p>
               </div>
               {isAdmin && (
                 <>
                   <div>
-                    <span className="font-semibold text-text-muted">Customer Phone</span>
-                    <p className="text-text font-bold mt-0.5">{ticket.customer?.phone}</p>
+                    <span className="text-[0.72rem] font-semibold text-text-muted uppercase tracking-wider block mb-1">Customer Phone</span>
+                    <p className="text-text font-medium">{ticket.customer?.phone}</p>
                   </div>
-                  <div className="col-span-2">
-                    <span className="font-semibold text-text-muted">Email Address</span>
-                    <p className="text-text font-bold mt-0.5">{ticket.customer?.email || 'N/A'}</p>
+                  <div className="sm:col-span-2">
+                    <span className="text-[0.72rem] font-semibold text-text-muted uppercase tracking-wider block mb-1">Email Address</span>
+                    <p className="text-text font-medium">{ticket.customer?.email || 'N/A'}</p>
                   </div>
                 </>
               )}
-              <div className="border-t border-border pt-4 col-span-2 grid grid-cols-2 gap-4">
+              <div className="border-t border-border pt-4 sm:col-span-2 grid grid-cols-2 gap-4">
                 <div>
-                  <span className="font-semibold text-text-muted">Vehicle Registration</span>
-                  <p className="text-text font-bold mt-0.5">{ticket.vehicle?.registration_number}</p>
+                  <span className="text-[0.72rem] font-semibold text-text-muted uppercase tracking-wider block mb-1">Vehicle Registration</span>
+                  <p className="text-text font-medium">{ticket.vehicle?.registration_number}</p>
                 </div>
                 <div>
-                  <span className="font-semibold text-text-muted">Make & Model</span>
-                  <p className="text-text font-bold mt-0.5">{ticket.vehicle?.make} {ticket.vehicle?.model}</p>
+                  <span className="text-[0.72rem] font-semibold text-text-muted uppercase tracking-wider block mb-1">Make & Model</span>
+                  <p className="text-text font-medium">{ticket.vehicle?.make} {ticket.vehicle?.model}</p>
                 </div>
                 <div>
-                  <span className="font-semibold text-text-muted">Year</span>
-                  <p className="text-text font-bold mt-0.5">{ticket.vehicle?.year || 'N/A'}</p>
+                  <span className="text-[0.72rem] font-semibold text-text-muted uppercase tracking-wider block mb-1">Year</span>
+                  <p className="text-text font-medium">{ticket.vehicle?.year || 'N/A'}</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Job Description */}
-          <div className="bg-surface p-6 rounded-lg shadow-sm border border-border flex flex-col gap-2">
-            <h2 className="text-lg font-bold text-text border-b border-border pb-2">Description of Work</h2>
+          <div className="bg-surface p-6 rounded-xl shadow-sm border border-border flex flex-col gap-2">
+            <h2 className="font-display font-medium text-xl text-text border-b border-border pb-2">Description of Work</h2>
             <p className="text-text text-sm leading-relaxed whitespace-pre-line mt-2">
               {ticket.description}
             </p>
@@ -291,11 +291,11 @@ const TicketDetail: React.FC = () => {
 
           {/* Notes Section - Editable for Admin, Read-only snippet for Mechanic */}
           {isAdmin ? (
-            <div className="bg-surface p-6 rounded-lg shadow-sm border border-border flex flex-col gap-4">
-              <h2 className="text-lg font-bold text-text border-b border-border pb-2 flex items-center justify-between">
+            <div className="bg-surface p-6 rounded-xl shadow-sm border border-border flex flex-col gap-4">
+              <h2 className="font-display font-medium text-xl text-text border-b border-border pb-2 flex items-center justify-between">
                 Workshop Notes
                 {notesMessage && (
-                  <span className="text-xs text-success flex items-center gap-1">
+                  <span className="text-xs text-success flex items-center gap-1 font-normal animate-fade-in">
                     <CheckCircle size={14} /> {notesMessage}
                   </span>
                 )}
@@ -311,44 +311,44 @@ const TicketDetail: React.FC = () => {
                 variant="primary"
                 onClick={handleNotesUpdate}
                 loading={isSavingNotes}
-                className="self-end"
+                className="self-end tracking-wider text-[0.8rem] font-semibold uppercase"
               >
-                <Save size={16} className="mr-2" />
+                <Save size={14} className="mr-2" />
                 Save Notes
               </Button>
             </div>
           ) : ticket.notes ? (
-            <div className="bg-surface p-6 rounded-lg shadow-sm border border-border flex flex-col gap-2">
-              <h2 className="text-lg font-bold text-text border-b border-border pb-2">Special Instructions / Notes</h2>
-              <p className="text-text-muted text-sm leading-relaxed whitespace-pre-line mt-2 italic bg-slate-50 p-4 rounded border border-border">
+            <div className="bg-surface p-6 rounded-xl shadow-sm border border-border flex flex-col gap-2">
+              <h2 className="font-display font-medium text-xl text-text border-b border-border pb-2">Special Instructions / Notes</h2>
+              <p className="text-text-muted text-sm leading-relaxed whitespace-pre-line mt-2 italic bg-background/40 p-4 rounded-xl border border-border">
                 {ticket.notes}
               </p>
             </div>
           ) : null}
 
           {/* Parts Used Section */}
-          <div className="bg-surface p-6 rounded-lg shadow-sm border border-border flex flex-col gap-4">
-            <h2 className="text-lg font-bold text-text border-b border-border pb-2">Parts Used on Ticket</h2>
+          <div className="bg-surface p-6 rounded-xl shadow-sm border border-border flex flex-col gap-4">
+            <h2 className="font-display font-medium text-xl text-text border-b border-border pb-2">Parts Used on Ticket</h2>
             {ticket.parts_used && ticket.parts_used.length > 0 ? (
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto rounded-lg border border-border">
                 <table className="w-full text-left border-collapse text-sm">
                   <thead>
-                    <tr className="border-b border-border bg-slate-50 text-text-muted font-semibold">
-                      <th className="px-4 py-2">Part Name</th>
-                      <th className="px-4 py-2">Qty</th>
-                      <th className="px-4 py-2">Unit Cost</th>
-                      <th className="px-4 py-2">Total</th>
-                      <th className="px-4 py-2">Logged By</th>
+                    <tr className="border-b border-border bg-background/50 text-text-muted">
+                      <th className="px-4 py-3 text-[0.7rem] font-semibold tracking-wider uppercase">Part Name</th>
+                      <th className="px-4 py-3 text-[0.7rem] font-semibold tracking-wider uppercase">Qty</th>
+                      <th className="px-4 py-3 text-[0.7rem] font-semibold tracking-wider uppercase">Unit Cost</th>
+                      <th className="px-4 py-3 text-[0.7rem] font-semibold tracking-wider uppercase">Total</th>
+                      <th className="px-4 py-3 text-[0.7rem] font-semibold tracking-wider uppercase">Logged By</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border">
                     {ticket.parts_used.map((part) => (
-                      <tr key={part.id}>
-                        <td className="px-4 py-2 font-medium">{part.part_name}</td>
-                        <td className="px-4 py-2">{part.qty_used}</td>
-                        <td className="px-4 py-2">R {part.unit_cost_at_time.toFixed(2)}</td>
-                        <td className="px-4 py-2">R {(part.qty_used * part.unit_cost_at_time).toFixed(2)}</td>
-                        <td className="px-4 py-2 text-text-muted">{part.logged_by_name}</td>
+                      <tr key={part.id} className="hover:bg-primary/5 transition-colors">
+                        <td className="px-4 py-3 font-medium text-text">{part.part_name}</td>
+                        <td className="px-4 py-3 text-text-muted">{part.qty_used}</td>
+                        <td className="px-4 py-3 text-text-muted">R {part.unit_cost_at_time.toFixed(2)}</td>
+                        <td className="px-4 py-3 text-text font-medium">R {(part.qty_used * part.unit_cost_at_time).toFixed(2)}</td>
+                        <td className="px-4 py-3 text-[0.75rem] text-text-muted font-light">{part.logged_by_name}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -360,9 +360,9 @@ const TicketDetail: React.FC = () => {
 
             {canLogParts && (
               <div className="border-t border-border pt-4 mt-2">
-                <h3 className="text-md font-semibold text-text mb-3">Log a Part</h3>
+                <h3 className="font-display font-medium text-lg text-text mb-3">Log a Part</h3>
                 <form onSubmit={handleLogPart} className="flex flex-col md:flex-row items-end gap-4">
-                  <div className="flex-1 min-w-[200px]">
+                  <div className="flex-1 min-w-[200px] w-full">
                     <Select
                       label="Select Part"
                       value={selectedPartId}
@@ -379,15 +379,15 @@ const TicketDetail: React.FC = () => {
                       ]}
                     />
                     {selectedPart && (
-                      <p className={`text-xs mt-1 font-semibold ${selectedPart.qty_in_stock <= selectedPart.reorder_level ? 'text-amber-600' : 'text-text-muted'}`}>
+                      <p className={`text-xs mt-1 font-semibold ${selectedPart.qty_in_stock <= selectedPart.reorder_level ? 'text-warning' : 'text-text-muted'}`}>
                         Live Stock Remaining: {selectedPart.qty_in_stock} unit{selectedPart.qty_in_stock !== 1 ? 's' : ''} 
                         {selectedPart.qty_in_stock <= selectedPart.reorder_level && ' (Low Stock Alert)'}
                       </p>
                     )}
                   </div>
                   
-                  <div className="w-24">
-                    <label htmlFor="qty_used" className="block text-xs font-semibold text-text-muted mb-1">
+                  <div className="w-full md:w-24">
+                    <label htmlFor="qty_used" className="block text-[0.72rem] font-semibold text-text-muted uppercase tracking-wider mb-1.5">
                       Qty
                     </label>
                     <input
@@ -397,7 +397,7 @@ const TicketDetail: React.FC = () => {
                       max={selectedPart ? selectedPart.qty_in_stock : undefined}
                       value={qtyToLog}
                       onChange={(e) => setQtyToLog(Math.max(1, parseInt(e.target.value) || 1))}
-                      className="w-full px-3 py-2 border border-border rounded-lg text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      className="w-full px-3 py-2 border border-border rounded-lg text-text focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-surface transition-all"
                       required
                     />
                   </div>
@@ -407,19 +407,20 @@ const TicketDetail: React.FC = () => {
                     variant="primary"
                     disabled={!selectedPartId || (selectedPart && selectedPart.qty_in_stock < qtyToLog)}
                     loading={isLoggingPart}
+                    className="w-full md:w-auto tracking-wider text-[0.8rem] font-semibold uppercase h-[42px]"
                   >
                     Log Part
                   </Button>
                 </form>
 
                 {logPartError && (
-                  <p className="text-xs text-error mt-2 flex items-center gap-1">
+                  <p className="text-xs text-error mt-2 flex items-center gap-1 animate-fade-in">
                     <AlertCircle size={14} /> {logPartError}
                   </p>
                 )}
 
                 {logPartSuccess && (
-                  <p className="text-xs text-success mt-2 flex items-center gap-1 font-medium">
+                  <p className="text-xs text-success mt-2 flex items-center gap-1 font-medium animate-fade-in">
                     <CheckCircle size={14} /> {logPartSuccess}
                   </p>
                 )}
@@ -430,11 +431,11 @@ const TicketDetail: React.FC = () => {
 
         {/* Right Column - Status Control and Assignments */}
         <div className="flex flex-col gap-6">
-          <div className="bg-surface p-6 rounded-lg shadow-sm border border-border flex flex-col gap-4">
-            <h2 className="text-lg font-bold text-text border-b border-border pb-2 flex items-center justify-between">
+          <div className="bg-surface p-6 rounded-xl shadow-sm border border-border flex flex-col gap-4">
+            <h2 className="font-display font-medium text-xl text-text border-b border-border pb-2 flex items-center justify-between">
               Job Status Control
               {statusMessage && (
-                <span className="text-xs text-success flex items-center gap-1 font-normal">
+                <span className="text-xs text-success flex items-center gap-1 font-normal animate-fade-in">
                   <CheckCircle size={14} /> {statusMessage}
                 </span>
               )}
@@ -452,21 +453,21 @@ const TicketDetail: React.FC = () => {
               variant="primary"
               onClick={handleStatusUpdate}
               loading={isUpdatingStatus}
-              className="w-full"
+              className="w-full tracking-wider text-[0.8rem] font-semibold uppercase"
             >
               Update Status
             </Button>
           </div>
 
-          <div className="bg-surface p-6 rounded-lg shadow-sm border border-border flex flex-col gap-4 text-sm">
-            <h2 className="text-lg font-bold text-text border-b border-border pb-2">Assignments</h2>
+          <div className="bg-surface p-6 rounded-xl shadow-sm border border-border flex flex-col gap-4 text-sm">
+            <h2 className="font-display font-medium text-xl text-text border-b border-border pb-2">Assignments</h2>
             <div>
-              <span className="font-semibold text-text-muted">Assigned Mechanic</span>
-              <p className="text-text font-bold mt-0.5">{ticket.mechanic?.name || 'Unassigned'}</p>
+              <span className="text-[0.72rem] font-semibold text-text-muted uppercase tracking-wider block mb-1">Assigned Mechanic</span>
+              <p className="text-text font-medium">{ticket.mechanic?.name || 'Unassigned'}</p>
             </div>
             <div>
-              <span className="font-semibold text-text-muted">Labour Billing (ZAR)</span>
-              <p className="text-text font-bold mt-0.5">R {ticket.labour_cost.toFixed(2)}</p>
+              <span className="text-[0.72rem] font-semibold text-text-muted uppercase tracking-wider block mb-1">Labour Billing</span>
+              <p className="text-text font-semibold text-lg text-primary">R {ticket.labour_cost.toFixed(2)}</p>
             </div>
           </div>
         </div>

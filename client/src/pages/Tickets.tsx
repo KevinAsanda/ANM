@@ -82,25 +82,25 @@ const Tickets: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex justify-between items-center">
+    <div className="flex flex-col gap-6 animate-fade-in">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-text">Service Tickets</h1>
-          <p className="text-text-muted text-sm mt-1">Manage active workshop job cards and status states</p>
+          <h1 className="font-display font-medium text-4xl text-text">Service Tickets</h1>
+          <p className="text-text-muted text-sm mt-1 font-light">Manage active workshop job cards and status states</p>
         </div>
-        <Button variant="primary" onClick={() => navigate('/tickets/new')} className="gap-2">
-          <PlusCircle size={20} />
+        <Button variant="primary" onClick={() => navigate('/tickets/new')} className="gap-2 self-start sm:self-auto">
+          <PlusCircle size={18} />
           New Ticket
         </Button>
       </div>
 
       {/* Tabs Filter */}
-      <div className="flex border-b border-border gap-2">
+      <div className="flex border-b border-border gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2 text-sm font-semibold border-b-2 -mb-[2px] transition-colors ${
+            className={`px-4 py-2.5 text-[0.72rem] font-semibold uppercase tracking-wider border-b-2 -mb-[2px] transition-all whitespace-nowrap ${
               activeTab === tab.id
                 ? 'border-primary text-primary'
                 : 'border-transparent text-text-muted hover:text-text hover:border-border'
@@ -113,14 +113,14 @@ const Tickets: React.FC = () => {
 
       {/* Content */}
       {isLoading ? (
-        <div className="flex items-center justify-center p-12">
+        <div className="flex items-center justify-center p-12 animate-fade-in">
           <Spinner size="lg" />
         </div>
       ) : error ? (
-        <div className="p-6 bg-error-bg border border-error text-error rounded-lg flex items-center gap-4">
+        <div className="p-6 bg-error-bg border border-error text-error rounded-xl flex items-center gap-4 animate-fade-in">
           <AlertCircle size={24} />
           <div className="flex-1">
-            <h3 className="font-bold text-lg">Error Loading Tickets</h3>
+            <h3 className="font-display font-medium text-xl">Error Loading Tickets</h3>
             <p className="text-sm mt-0.5">{error}</p>
           </div>
           <Button variant="danger" size="sm" onClick={() => fetchTickets(activeTab)}>

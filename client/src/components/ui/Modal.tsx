@@ -61,19 +61,19 @@ export const Modal: React.FC<ModalProps> = ({
       <div
         ref={modalRef}
         tabIndex={-1}
-        className="relative bg-surface rounded-lg shadow-xl border border-border w-full max-w-[480px] p-6 max-h-[90vh] overflow-y-auto focus:outline-none flex flex-col gap-4 animate-in fade-in zoom-in-95 duration-200"
+        className="relative bg-surface rounded-xl shadow-2xl border border-slate-100 w-full max-w-[480px] p-6 max-h-[90vh] overflow-y-auto focus:outline-none flex flex-col gap-4 animate-fade-in"
       >
         {/* Header */}
-        <div className="flex justify-between items-center border-b border-border pb-3">
-          <h2 id="modal-title" className="text-xl font-bold text-text">
+        <div className="flex justify-between items-center border-b border-border pb-4">
+          <h2 id="modal-title" className="text-lg font-bold text-text">
             {title}
           </h2>
           <button
             onClick={onClose}
-            className="p-1 rounded text-text-muted hover:text-text hover:bg-background transition-colors"
+            className="p-1.5 rounded-lg text-text-muted hover:text-text hover:bg-slate-100 transition-colors border border-transparent hover:border-slate-200"
             aria-label="Close modal"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 

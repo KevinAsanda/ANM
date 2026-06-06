@@ -74,27 +74,27 @@ const StaffPage: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex justify-between items-center">
+    <div className="flex flex-col gap-6 animate-fade-in">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-text">Staff Directory</h1>
-          <p className="text-text-muted text-sm mt-1">Manage workshop administration staff and mechanics accounts</p>
+          <h1 className="font-display font-medium text-4xl text-text">Staff Directory</h1>
+          <p className="text-text-muted text-sm mt-1 font-light">Manage workshop administration staff and mechanics accounts</p>
         </div>
-        <Button variant="primary" onClick={handleOpenAddModal} className="gap-2">
-          <PlusCircle size={20} />
+        <Button variant="primary" onClick={handleOpenAddModal} className="gap-2 self-start sm:self-auto">
+          <PlusCircle size={18} />
           Add Mechanic
         </Button>
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center p-12">
+        <div className="flex items-center justify-center p-12 animate-fade-in">
           <Spinner size="lg" />
         </div>
       ) : error ? (
-        <div className="p-6 bg-error-bg border border-error text-error rounded-lg flex items-center gap-4">
+        <div className="p-6 bg-error-bg border border-error text-error rounded-xl flex items-center gap-4 animate-fade-in">
           <AlertCircle size={24} />
           <div className="flex-1">
-            <h3 className="font-bold text-lg">Error Loading Staff</h3>
+            <h3 className="font-display font-medium text-xl">Error Loading Staff</h3>
             <p className="text-sm mt-0.5">{error}</p>
           </div>
           <Button variant="danger" size="sm" onClick={fetchStaff}>
@@ -102,11 +102,11 @@ const StaffPage: React.FC = () => {
           </Button>
         </div>
       ) : staffList.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-12 text-center bg-surface border border-border rounded-lg gap-4">
-          <div className="p-4 bg-slate-100 rounded-full text-slate-400">
+        <div className="flex flex-col items-center justify-center p-12 text-center bg-surface border border-border rounded-xl gap-4 animate-fade-in">
+          <div className="p-4 bg-background/50 rounded-full text-text-muted">
             <Users size={40} />
           </div>
-          <h3 className="text-lg font-bold text-text">No staff records found</h3>
+          <h3 className="font-display font-medium text-xl text-text">No staff records found</h3>
           <p className="text-text-muted text-sm max-w-sm">Create accounts for mechanics so they can be assigned service tickets.</p>
           <Button variant="primary" onClick={handleOpenAddModal}>
             Register Staff Member

@@ -36,21 +36,21 @@ const MyJobs: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 animate-fade-in">
       <div>
-        <h1 className="text-3xl font-bold text-text">My Jobs</h1>
-        <p className="text-text-muted text-sm mt-1">Review and update status on your assigned workshop service tickets</p>
+        <h1 className="font-display font-medium text-4xl text-text">My Jobs</h1>
+        <p className="text-text-muted text-sm mt-1 font-light">Review and update status on your assigned workshop service tickets</p>
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center p-12">
+        <div className="flex items-center justify-center p-12 animate-fade-in">
           <Spinner size="lg" />
         </div>
       ) : error ? (
-        <div className="p-6 bg-error-bg border border-error text-error rounded-lg flex items-center gap-4">
+        <div className="p-6 bg-error-bg border border-error text-error rounded-xl flex items-center gap-4 animate-fade-in">
           <AlertCircle size={24} />
           <div className="flex-1">
-            <h3 className="font-bold text-lg">Error Loading Jobs</h3>
+            <h3 className="font-display font-medium text-xl">Error Loading Jobs</h3>
             <p className="text-sm mt-0.5">{error}</p>
           </div>
           <Button variant="danger" size="sm" onClick={fetchJobs}>
@@ -69,31 +69,41 @@ const MyJobs: React.FC = () => {
             <Card
               key={job.id}
               onClick={() => navigate(`/tickets/${job.id}`)}
-              className="flex flex-col gap-4 hover:border-primary-hover active:border-primary-hover"
+              className="flex flex-col gap-4 hover:border-primary-hover active:border-primary-hover transition-all duration-300"
             >
               <div className="flex justify-between items-start">
                 <div>
-                  <span className="text-xs uppercase font-semibold tracking-wider text-text-muted">
+                  <span className="text-[0.72rem] uppercase font-semibold tracking-wider text-text-muted">
                     Registration
                   </span>
-                  <h2 className="text-xl font-bold text-text mt-0.5">{job.vehicle?.registration_number || 'N/A'}</h2>
+                  <h2 className="text-xl font-semibold text-text mt-0.5">{job.vehicle?.registration_number || 'N/A'}</h2>
                 </div>
                 <Badge variant={job.status === 'in_progress' ? 'in_progress' : job.status as BadgeVariant}>
                   {job.status.replace('_', ' ')}
                 </Badge>
               </div>
 
-              <div>
-                <span className="text-xs uppercase font-semibold tracking-wider text-text-muted">
-                  Vehicle
-                </span>
-                <p className="text-base font-semibold text-text mt-0.5">
-                  {job.vehicle?.make} {job.vehicle?.model} {job.vehicle?.year ? `(${job.vehicle?.year})` : ''}
-                </p>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <span className="text-[0.72rem] uppercase font-semibold tracking-wider text-text-muted">
+                    Customer
+                  </span>
+                  <p className="text-sm font-medium text-text mt-0.5">
+                    {job.customer?.name || 'N/A'}
+                  </p>
+                </div>
+                <div>
+                  <span className="text-[0.72rem] uppercase font-semibold tracking-wider text-text-muted">
+                    Vehicle
+                  </span>
+                  <p className="text-sm font-medium text-text mt-0.5">
+                    {job.vehicle?.make} {job.vehicle?.model}
+                  </p>
+                </div>
               </div>
 
               <div className="border-t border-border pt-4">
-                <span className="text-xs uppercase font-semibold tracking-wider text-text-muted">
+                <span className="text-[0.72rem] uppercase font-semibold tracking-wider text-text-muted">
                   Job Description
                 </span>
                 <p className="text-sm text-text-muted mt-1 line-clamp-2">
@@ -101,9 +111,15 @@ const MyJobs: React.FC = () => {
                 </p>
               </div>
 
-              <div className="text-xs text-text-muted mt-auto pt-2 flex justify-between">
+              <div className="text-[10px] uppercase tracking-wider text-text-muted mt-auto pt-2 flex justify-between">
                 <span>Created: {new Date(job.created_at).toLocaleDateString()}</span>
                 <span>Last Updated: {new Date(job.updated_at).toLocaleDateString()}</span>
+              </div>
+
+              <div className="pt-2 border-t border-border/60">
+                <Button variant="secondary" className="w-full tracking-wider text-[0.72rem] font-semibold uppercase">
+                  View & Update Status
+                </Button>
               </div>
             </Card>
           ))}

@@ -55,7 +55,8 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['Jost', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['Cormorant Garamond', 'Georgia', 'serif'],
       },
     },
   },

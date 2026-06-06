@@ -12,8 +12,8 @@ export const Card: React.FC<CardProps> = ({ children, className = '', onClick })
   return (
     <div
       onClick={onClick}
-      className={`bg-surface p-6 rounded-lg shadow-sm border border-border transition-all ${
-        isClickable ? 'cursor-pointer hover:shadow-md hover:border-border-focus' : ''
+      className={`premium-card p-6 ${
+        isClickable ? 'premium-card-hover cursor-pointer' : ''
       } ${className}`}
       role={isClickable ? 'button' : undefined}
       tabIndex={isClickable ? 0 : undefined}

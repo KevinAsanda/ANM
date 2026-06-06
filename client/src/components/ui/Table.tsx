@@ -24,33 +24,33 @@ export function Table<T extends { id: string }>({
 
   if (data.length === 0) {
     return (
-      <div className="p-8 text-center text-text-muted bg-surface border border-border rounded-lg">
+      <div className="p-8 text-center text-text-muted bg-surface border border-border rounded-xl shadow-sm italic text-sm animate-fade-in">
         {emptyMessage}
       </div>
     );
   }
 
   return (
-    <div className="w-full overflow-x-auto border border-border rounded-lg bg-surface">
+    <div className="w-full overflow-x-auto border border-border rounded-xl bg-surface shadow-sm">
       <table className="w-full text-left border-collapse">
         <thead>
-          <tr className="bg-background border-b border-border text-xs font-semibold text-text-muted uppercase tracking-wider">
+          <tr className="bg-background/40 border-b border-border text-[0.7rem] font-semibold text-text-muted uppercase tracking-wider">
             {columns.map((col) => (
               <th
                 key={col.key}
-                className={`px-6 py-4 font-semibold ${col.className || ''}`}
+                className={`px-6 py-3.5 font-semibold ${col.className || ''}`}
               >
                 {col.header}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-border text-sm">
+        <tbody className="divide-y divide-border text-xs">
           {data.map((row) => (
             <tr
               key={row.id}
               onClick={() => onRowClick?.(row)}
-              className={`hover:bg-primary-light/50 transition-colors ${
+              className={`hover:bg-primary/5 transition-colors ${
                 isClickable ? 'cursor-pointer' : ''
               }`}
             >

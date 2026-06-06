@@ -182,23 +182,23 @@ const CreateTicket: React.FC = () => {
   }));
 
   return (
-    <div className="flex flex-col gap-6 max-w-[640px] mx-auto">
+    <div className="flex flex-col gap-6 max-w-[640px] mx-auto animate-fade-in">
       <div className="flex items-center gap-4">
         <button
           onClick={() => navigate('/tickets')}
-          className="p-2 border border-border rounded-lg text-text-muted hover:bg-slate-100 transition-colors"
+          className="p-2 border border-border rounded-xl text-text-muted hover:bg-background hover:text-text transition-colors"
           aria-label="Back to tickets list"
         >
-          <ArrowLeft size={20} />
+          <ArrowLeft size={18} />
         </button>
         <div>
-          <h1 className="text-3xl font-bold text-text">New Service Ticket</h1>
-          <p className="text-text-muted text-sm mt-0.5">Create digital job card, register vehicle, and assign mechanic</p>
+          <h1 className="font-display font-medium text-4xl text-text">New Service Ticket</h1>
+          <p className="text-text-muted text-sm mt-0.5 font-light">Create digital job card, register vehicle, and assign mechanic</p>
         </div>
       </div>
 
       {submitError && (
-        <div className="p-4 bg-error-bg border border-error text-error rounded-lg flex items-center gap-3" role="alert">
+        <div className="p-4 bg-error-bg border border-error text-error rounded-xl flex items-center gap-3 animate-fade-in" role="alert">
           <AlertCircle size={20} />
           <p className="text-sm font-medium">{submitError}</p>
         </div>
@@ -206,8 +206,8 @@ const CreateTicket: React.FC = () => {
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-6" noValidate>
         {/* Section: Customer */}
-        <div className="bg-surface p-6 rounded-lg shadow-sm border border-border flex flex-col gap-4">
-          <h2 className="text-lg font-bold text-text border-b border-border pb-2">Customer Details</h2>
+        <div className="bg-surface p-6 rounded-xl shadow-sm border border-border flex flex-col gap-4">
+          <h2 className="font-display font-medium text-xl text-text border-b border-border pb-2">Customer Details</h2>
           
           <Input
             label="Phone Number"
@@ -241,15 +241,15 @@ const CreateTicket: React.FC = () => {
           />
 
           {existingCustomer && (
-            <div className="p-3 bg-blue-50 border border-blue-200 text-primary rounded text-xs font-semibold">
+            <div className="p-3 bg-primary/10 border border-primary/20 text-primary rounded-xl text-xs font-semibold animate-fade-in">
               ✓ Customer found. Details locked.
             </div>
           )}
         </div>
 
         {/* Section: Vehicle */}
-        <div className="bg-surface p-6 rounded-lg shadow-sm border border-border flex flex-col gap-4">
-          <h2 className="text-lg font-bold text-text border-b border-border pb-2">Vehicle Details</h2>
+        <div className="bg-surface p-6 rounded-xl shadow-sm border border-border flex flex-col gap-4">
+          <h2 className="font-display font-medium text-xl text-text border-b border-border pb-2">Vehicle Details</h2>
 
           <Input
             label="Registration Number"
@@ -293,8 +293,8 @@ const CreateTicket: React.FC = () => {
         </div>
 
         {/* Section: Job Details */}
-        <div className="bg-surface p-6 rounded-lg shadow-sm border border-border flex flex-col gap-4">
-          <h2 className="text-lg font-bold text-text border-b border-border pb-2">Job Specifications</h2>
+        <div className="bg-surface p-6 rounded-xl shadow-sm border border-border flex flex-col gap-4">
+          <h2 className="font-display font-medium text-xl text-text border-b border-border pb-2">Job Specifications</h2>
 
           <Textarea
             label="Job Description"
@@ -332,7 +332,7 @@ const CreateTicket: React.FC = () => {
         <Button
           type="submit"
           variant="primary"
-          className="w-full py-3 text-lg font-bold"
+          className="w-full py-3 tracking-wider text-[0.8rem] font-semibold uppercase"
           loading={isSubmitting}
         >
           Create Service Ticket

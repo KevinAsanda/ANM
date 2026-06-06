@@ -20,7 +20,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <div className="flex flex-col gap-1 w-full">
-        <label htmlFor={id} className="text-sm font-medium text-text">
+        <label htmlFor={id} className="text-[0.72rem] font-semibold text-text-muted uppercase tracking-wider mb-1.5 block">
           {label}
           {required && <span className="text-error ml-1" aria-hidden="true">*</span>}
         </label>
@@ -28,8 +28,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           id={id}
           ref={ref}
-          className={`px-3 py-2 border rounded font-sans text-base bg-surface text-text placeholder-text-muted focus:outline-none focus:border-border-focus focus:ring-1 focus:ring-border-focus disabled:bg-background disabled:cursor-not-allowed transition-all ${
-            error ? 'border-error' : 'border-border'
+          className={`px-3 py-2 border rounded-lg font-sans text-sm bg-surface text-text placeholder-text-muted focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 disabled:bg-background disabled:cursor-not-allowed transition-all duration-200 ${
+            error ? 'border-error focus:border-error focus:ring-error/10' : 'border-border'
           } ${className}`}
           aria-invalid={!!error}
           aria-describedby={describedBy || undefined}

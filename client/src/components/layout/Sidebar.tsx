@@ -4,43 +4,61 @@ import { useAuth } from '../../context/AuthContext.js';
 import { Button } from '../ui/Button.js';
 import { LayoutDashboard, FileText, ClipboardList, Users, LogOut } from 'lucide-react';
 
-export const Sidebar: React.FC = () => {
+interface SidebarProps {
+  onClose?: () => void;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
   const { user, logout } = useAuth();
 
   const adminLinks = [
-    { to: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
-    { to: '/tickets', label: 'Service Tickets', icon: <FileText size={20} /> },
-    { to: '/inventory', label: 'Inventory', icon: <ClipboardList size={20} /> },
-    { to: '/staff', label: 'Staff Directory', icon: <Users size={20} /> },
+    { to: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
+    { to: '/tickets', label: 'Service Tickets', icon: <FileText size={18} /> },
+    { to: '/inventory', label: 'Inventory Info', icon: <ClipboardList size={18} /> },
+    { to: '/staff', label: 'Staff Directory', icon: <Users size={18} /> },
   ];
 
   const mechanicLinks = [
-    { to: '/my-jobs', label: 'My Jobs', icon: <FileText size={20} /> },
+    { to: '/my-jobs', label: 'My Jobs Queue', icon: <FileText size={18} /> },
   ];
 
   const links = user?.role === 'admin' ? adminLinks : mechanicLinks;
 
+  const handleLinkClick = () => {
+    if (onClose) {
+      onClose();
+    }
+  };
+
   return (
-    <aside className="w-[240px] bg-slate-900 text-slate-100 flex flex-col h-screen fixed top-0 left-0 border-r border-slate-800">
-      {/* Brand */}
-      <div className="p-6 border-b border-slate-800">
-        <h1 className="text-xl font-bold tracking-tight text-white">ANM Workshop</h1>
-        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-          {user?.role} Portal
-        </span>
+    <aside className="w-full h-full md:w-[240px] bg-primary text-white flex flex-col md:h-screen md:fixed md:top-0 md:left-0 border-r border-white/10 select-none">
+      {/* Brand Logo & Header */}
+      <div className="p-5 bg-primary-hover border-b border-white/10 flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full border border-white/40 flex items-center justify-center font-display text-lg text-white font-semibold flex-shrink-0">
+          A
+        </div>
+        <div className="min-w-0">
+          <h1 className="font-display font-medium text-lg text-white leading-none tracking-wide">
+            ANM Workshop
+          </h1>
+          <span className="text-[9px] font-semibold text-white/60 uppercase tracking-widest block mt-1.5">
+            {user?.role} Portal
+          </span>
+        </div>
       </div>
 
-      {/* Nav Links */}
-      <nav className="flex-1 px-4 py-6 flex flex-col gap-1.5">
+      {/* Navigation List */}
+      <nav className="flex-1 px-3 py-6 flex flex-col gap-1">
         {links.map((link) => (
           <NavLink
             key={link.to}
             to={link.to}
+            onClick={handleLinkClick}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2.5 rounded-md font-medium text-sm transition-colors ${
+              `flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 border-l-4 ${
                 isActive
-                  ? 'bg-primary text-white'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  ? 'bg-white/15 text-white border-white font-semibold'
+                  : 'text-white/70 hover:text-white hover:bg-white/5 border-transparent'
               }`
             }
           >
@@ -50,21 +68,20 @@ export const Sidebar: React.FC = () => {
         ))}
       </nav>
 
-      {/* User Session Footer */}
-      <div className="p-4 border-t border-slate-800 flex flex-col gap-3">
-        <div className="flex flex-col">
-          <span className="text-sm font-semibold text-white truncate">{user?.name}</span>
-          <span className="text-xs text-slate-400 truncate">{user?.email}</span>
+      {/* User Session Information Footer */}
+      <div className="p-4 border-t border-white/10 bg-primary-hover/30 flex flex-col gap-3">
+        <div className="flex flex-col px-2">
+          <span className="text-[10px] uppercase font-semibold text-white/50 tracking-wider">User Account</span>
+          <span className="text-sm font-medium text-white truncate mt-1">{user?.name}</span>
+          <span className="text-xs text-white/70 truncate mt-0.5">{user?.email}</span>
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
+        <button
           onClick={logout}
-          className="w-full text-slate-400 hover:text-white hover:bg-slate-800 justify-start px-2 py-2 text-xs"
+          className="w-full text-white/80 hover:text-white hover:bg-white/10 flex items-center justify-start px-3 py-2 text-xs border border-white/20 hover:border-white/40 rounded-lg transition-colors font-medium tracking-wide uppercase text-[10px]"
         >
-          <LogOut size={16} className="mr-2" />
-          Log Out
-        </Button>
+          <LogOut size={14} className="mr-2 text-white/95" />
+          Log Out Session
+        </button>
       </div>
     </aside>
   );

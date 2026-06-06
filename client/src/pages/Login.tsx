@@ -72,51 +72,77 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <div className="w-full max-w-[400px] bg-surface p-8 rounded-lg shadow-md border border-border">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-text mb-2 tracking-tight">ANM Workshop</h1>
-          <p className="text-text-muted text-sm font-medium">Service Management System</p>
+    <div className="min-h-screen flex flex-col md:flex-row bg-background font-sans">
+      {/* Left Panel - Brand Accent (Teal) */}
+      <div className="hidden md:flex md:w-1/2 bg-primary items-center justify-center text-text-inverse p-12 flex-col select-none border-r border-slate-900/10">
+        <div className="flex flex-col items-center justify-center text-center max-w-md animate-fade-in">
+          <div className="w-28 h-28 rounded-full border border-text-inverse/35 flex items-center justify-center mb-6">
+            <span className="font-display text-6xl font-medium tracking-tight text-text-inverse">A</span>
+          </div>
+          <h1 className="font-display text-4xl font-medium tracking-widest text-text-inverse mb-1">ANM AUTOMOTIVE</h1>
+          <p className="font-sans text-[10px] font-bold tracking-widest text-text-inverse/70 uppercase">Service Management Portal</p>
         </div>
+      </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
-          <Input
-            label="Email Address"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            error={emailError}
-            placeholder="mechanic@anm.co.za"
-            disabled={isSubmitting}
-            required
-          />
-
-          <Input
-            label="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            error={passwordError}
-            placeholder="••••••••"
-            disabled={isSubmitting}
-            required
-          />
-
-          {loginError && (
-            <div className="p-3 rounded bg-error-bg border border-error text-error text-sm font-medium" role="alert">
-              {loginError}
+      {/* Right Panel - Login Form (Cream) */}
+      <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-12 animate-fade-in">
+        <div className="w-full max-w-[400px]">
+          {/* Mobile Brand Title */}
+          <div className="md:hidden text-center mb-8 flex flex-col items-center">
+            <div className="w-16 h-16 rounded-full border border-primary/30 flex items-center justify-center mb-3">
+              <span className="font-display text-3xl font-medium text-primary">A</span>
             </div>
-          )}
+            <h1 className="font-display text-2xl font-medium text-text tracking-widest">ANM AUTOMOTIVE</h1>
+            <p className="font-sans text-[9px] font-bold text-text-muted uppercase tracking-widest mt-1">Service Management Portal</p>
+          </div>
 
-          <Button
-            type="submit"
-            variant="primary"
-            className="w-full mt-2"
-            loading={isSubmitting}
-          >
-            Log In
-          </Button>
-        </form>
+          {/* Form Box */}
+          <div className="bg-surface p-8 rounded-xl border border-border shadow-sm">
+            <div className="hidden md:block mb-8">
+              <h2 className="font-display text-2xl font-medium text-text mb-1">Sign In</h2>
+              <p className="font-sans text-xs text-text-muted">Enter credentials to access the workspace.</p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
+              <Input
+                label="Email Address"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                error={emailError}
+                placeholder="staff@anm.co.za"
+                disabled={isSubmitting}
+                required
+              />
+
+              <Input
+                label="Password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                error={passwordError}
+                placeholder="••••••••"
+                disabled={isSubmitting}
+                required
+              />
+
+              {loginError && (
+                <div className="p-3 rounded bg-error-bg border border-error text-error text-xs font-semibold" role="alert">
+                  {loginError}
+                </div>
+              )}
+
+              <Button
+                type="submit"
+                variant="primary"
+                className="w-full mt-2"
+                loading={isSubmitting}
+              >
+                Log In
+              </Button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   );

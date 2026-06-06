@@ -1,35 +1,39 @@
 :root {
-  /* Brand */
-  --color-primary:        #1D4ED8;   /* buttons, links, focus rings */
-  --color-primary-hover:  #1E40AF;   /* hover state */
-  --color-primary-light:  #DBEAFE;   /* selected row highlight, subtle bg */
+  /* Brand - Refined Teal */
+  --color-primary:        #4a8c80;   /* Teal: Main brand accent */
+  --color-primary-hover:  #2e6b60;   /* Teal-dark: Hover states */
+  --color-primary-light:  #d0e8e4;   /* Teal-light: Highlighting */
 
-  /* Surfaces */
-  --color-surface:        #FFFFFF;   /* cards, modals, panels */
-  --color-background:     #F1F5F9;   /* page background */
-  --color-border:         #E2E8F0;   /* table borders, card borders */
-  --color-border-focus:   #3B82F6;   /* input focus ring */
+  /* Surfaces & Backdrop - Soft Neutrals */
+  --color-surface:        #fdfaf7;   /* Warm-white: Cards and panel surfaces */
+  --color-background:     #f5f0eb;   /* Cream: Cozy warm off-white backdrop */
+  --color-border:         #e8ddd2;   /* Sand: Warm borders and dividers */
+  --color-border-focus:   #4a8c80;   /* Focus outline states */
 
-  /* Text */
-  --color-text:           #0F172A;   /* headings, body — high contrast */
-  --color-text-muted:     #475569;   /* labels, hints, placeholder */
-  --color-text-inverse:   #FFFFFF;   /* text on dark backgrounds */
+  /* Text - High Contrast Ink */
+  --color-text:           #1c2b2a;   /* Ink: Deep dark teal-black primary text */
+  --color-text-muted:     #8c7b6e;   /* Stone: Label and secondary text */
+  --color-text-inverse:   #ffffff;   /* Contrast text */
 
-  /* Semantic */
-  --color-error:          #DC2626;   /* errors, destructive actions */
-  --color-error-bg:       #FEE2E2;   /* error alert backgrounds */
-  --color-success:        #16A34A;   /* success states */
-  --color-success-bg:     #DCFCE7;
-  --color-warning:        #D97706;   /* warnings, low stock */
-  --color-warning-bg:     #FEF3C7;
+  /* Semantic Tones */
+  --color-error:          #b05040;   /* Soft crimson for danger states */
+  --color-error-bg:       #f0ddd9;   
+  --color-success:        #5a9e75;   /* Soft emerald for complete states */
+  --color-success-bg:     #d4ede0;
+  --color-warning:        #c8922a;   /* Soft amber for stock and alert states */
+  --color-warning-bg:     #f5e8cc;
 
-  /* Status badges (ticket statuses) */
-  --status-pending-bg:    #FEF3C7;
-  --status-pending-text:  #92400E;
-  --status-inprogress-bg: #DBEAFE;
-  --status-inprogress-text: #1E40AF;
-  --status-completed-bg:  #DCFCE7;
-  --status-completed-text: #14532D;
-  --status-cancelled-bg:  #F1F5F9;
-  --status-cancelled-text: #475569;
+  /* Status Badges (Pills) */
+  --status-pending-bg:    #f5e8cc;
+  --status-pending-text:  #7a5a1a;
+  --status-inprogress-bg: #d0e8e4;
+  --status-inprogress-text: #2e6b60;
+  --status-completed-bg:  #d4ede0;
+  --status-completed-text: #2e6b4a;
+  --status-cancelled-bg:  #e8ddd2;
+  --status-cancelled-text: #8c7b6e;
+
+  /* Typography Fonts */
+  --font-display:         "Cormorant Garamond", Georgia, serif;
+  --font-body:            "Jost", sans-serif;
 }
