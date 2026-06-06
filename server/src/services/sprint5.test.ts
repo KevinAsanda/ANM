@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert';
-import { logPartOnTicket, getTicketParts, getTicketDetails, mockTicketParts } from './ticket.service.js';
-import { listInventory } from './inventory.service.js';
-
 // Setup environment for testing mock mode
 process.env.SUPABASE_URL = 'https://mockproject.supabase.co';
+
+const { logPartOnTicket, getTicketParts, getTicketDetails, mockTicketParts } = await import('./ticket.service.js');
+const { listInventory } = await import('./inventory.service.js');
 
 test('Sprint 5 - Parts Logging Service: log part, decrement inventory, validation, authorization', async () => {
   // Clear any existing mock ticket parts

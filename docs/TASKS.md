@@ -120,13 +120,13 @@
 
 | # | Task | Label | Status |
 |---|------|-------|--------|
-| D-01 | `GET /api/v1/dashboard/stats` — returns: active_jobs, completed_today, total_mechanics, low_stock_count | `[BACKEND]` | ⬜ |
-| D-02 | `GET /api/v1/dashboard/recent-tickets` — last 5 tickets (admin) | `[BACKEND]` | ⬜ |
-| D-03 | `GET /api/v1/dashboard/low-stock` — parts below reorder level | `[BACKEND]` | ⬜ |
-| D-04 | Build `StatsCard` component — icon, label, numeric value | `[FRONTEND]` | ⬜ |
-| D-05 | Build Admin Dashboard page — stats row, recent tickets list, low-stock alerts | `[FRONTEND]` | ⬜ |
-| D-06 | Build Navbar component — logo, nav links (role-conditional), user avatar + logout | `[FRONTEND]` | ⬜ |
-| D-07 | Build `Toast` notification component — success, error, info variants; auto-dismiss | `[FRONTEND]` | ⬜ |
+| D-01 | `GET /api/v1/dashboard/stats` — returns: active_jobs, completed_today, total_mechanics, low_stock_count | `[BACKEND]` | ✅ |
+| D-02 | `GET /api/v1/dashboard/recent-tickets` — last 5 tickets (admin) | `[BACKEND]` | ✅ |
+| D-03 | `GET /api/v1/dashboard/low-stock` — parts below reorder level | `[BACKEND]` | ✅ |
+| D-04 | Build `StatsCard` component — icon, label, numeric value | `[FRONTEND]` | ✅ |
+| D-05 | Build Admin Dashboard page — stats row, recent tickets list, low-stock alerts | `[FRONTEND]` | ✅ |
+| D-06 | Build Navbar component — logo, nav links (role-conditional), user avatar + logout | `[FRONTEND]` | ✅ |
+| D-07 | Build `Toast` notification component — success, error, info variants; auto-dismiss | `[FRONTEND]` | ✅ |
 
 ---
 

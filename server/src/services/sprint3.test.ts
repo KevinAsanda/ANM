@@ -1,16 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert';
-import {
+// Setup environment for testing mock mode
+process.env.SUPABASE_URL = 'https://mockproject.supabase.co';
+
+const {
   listTickets,
   listMechanicTickets,
   createTicket,
   getTicketDetails,
   updateTicketStatus,
   updateTicketNotes
-} from './ticket.service.js';
-
-// Setup environment for testing mock mode
-process.env.SUPABASE_URL = 'https://mockproject.supabase.co';
+} = await import('./ticket.service.js');
 
 test('Sprint 3 - Ticket Service: list, create, detail, status/notes update', async () => {
   const mechanicId = 'f5f7b03b-1798-444a-a435-08103cd58522'; // Asanda Cele

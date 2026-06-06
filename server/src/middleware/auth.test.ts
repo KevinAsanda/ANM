@@ -1,11 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert';
-import { authenticate } from './auth.js';
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../types/index.js';
 
 // Setup environment for testing mock tokens
 process.env.SUPABASE_URL = 'https://mockproject.supabase.co';
+
+const { authenticate } = await import('./auth.js');
 
 test('authenticate middleware - valid admin token', async () => {
   const req = {

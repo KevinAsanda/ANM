@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert';
-import { listInventory, addPart, updatePart } from './inventory.service.js';
-
 // Setup environment for testing mock mode
 process.env.SUPABASE_URL = 'https://mockproject.supabase.co';
+
+const { listInventory, addPart, updatePart } = await import('./inventory.service.js');
 
 test('Sprint 4 - Inventory Service: list, add, duplicate-check, update', async () => {
   // 1. List initial inventory

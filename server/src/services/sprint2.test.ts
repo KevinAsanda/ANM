@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert';
-import { createOrGetCustomer, listCustomers } from './customer.service.js';
-import { createVehicle, listVehiclesByCustomer } from './vehicle.service.js';
-
 // Setup environment for testing mock mode
 process.env.SUPABASE_URL = 'https://mockproject.supabase.co';
+
+const { createOrGetCustomer, listCustomers } = await import('./customer.service.js');
+const { createVehicle, listVehiclesByCustomer } = await import('./vehicle.service.js');
 
 test('Sprint 2 - Customer Service: list and create', async () => {
   // 1. List initial customers

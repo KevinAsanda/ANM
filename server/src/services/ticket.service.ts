@@ -41,7 +41,7 @@ const isMockMode = process.env.SUPABASE_URL?.includes('mockproject.supabase.co')
 // In-memory mock database for local development
 export let mockTicketParts: any[] = [];
 
-let mockTickets: Ticket[] = [
+export let mockTickets: Ticket[] = [
   {
     id: 't1b07384-d113-49c3-a558-8b9a103c8099',
     vehicle_id: 'v7b91d90-b183-4903-8888-0f19c9d09a80',
