@@ -5,7 +5,9 @@ import {
   createTicket,
   getTicketDetails,
   updateTicketStatus,
-  updateTicketNotes
+  updateTicketNotes,
+  logPartOnTicket,
+  getTicketParts
 } from '../services/ticket.service.js';
 import { AuthenticatedRequest } from '../types/index.js';
 
@@ -151,6 +153,49 @@ export async function patchTicketNotes(
       notes: ticket.notes,
       updated_at: ticket.updated_at
     });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function postTicketPart(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { id: ticketId } = req.params;
+    const { inventory_id, qty_used } = req.body;
+
+    const loggedBy = req.user!.id;
+    const userRole = req.user!.role;
+
+    const partLog = await logPartOnTicket(
+      ticketId,
+      inventory_id,
+      Number(qty_used),
+      loggedBy,
+      userRole
+    );
+
+    return res.status(201).json(partLog);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getTicketPartsList(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { id: ticketId } = req.params;
+    const loggedBy = req.user!.id;
+    const userRole = req.user!.role;
+
+    const parts = await getTicketParts(ticketId, loggedBy, userRole);
+    return res.status(200).json(parts);
   } catch (error) {
     next(error);
   }

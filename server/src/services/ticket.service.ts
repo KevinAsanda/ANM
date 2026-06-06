@@ -2,6 +2,7 @@ import { supabase } from '../config/supabase.js';
 import { mockCustomers } from './customer.service.js';
 import { mockVehicles } from './vehicle.service.js';
 import { mockStaff } from './staff.service.js';
+import { mockInventory } from './inventory.service.js';
 
 export interface Ticket {
   id: string;
@@ -38,6 +39,8 @@ export interface Ticket {
 const isMockMode = process.env.SUPABASE_URL?.includes('mockproject.supabase.co');
 
 // In-memory mock database for local development
+export let mockTicketParts: any[] = [];
+
 let mockTickets: Ticket[] = [
   {
     id: 't1b07384-d113-49c3-a558-8b9a103c8099',
@@ -237,6 +240,21 @@ export async function getTicketDetails(id: string): Promise<Ticket> {
       error.code = 'TICKET_NOT_FOUND';
       throw error;
     }
+    
+    // Fetch associated mock parts
+    const ticketParts = mockTicketParts.filter(p => p.ticket_id === id);
+    ticket.parts_used = ticketParts.map(p => {
+      const part = mockInventory.find(i => i.id === p.inventory_id);
+      const staff = mockStaff.find(s => s.id === p.logged_by);
+      return {
+        id: p.id,
+        part_name: part?.part_name || 'Unknown Part',
+        qty_used: p.qty_used,
+        unit_cost_at_time: p.unit_cost_at_time,
+        logged_by_name: staff?.name || 'Unknown',
+        created_at: p.created_at
+      };
+    });
     return ticket;
   }
 
@@ -395,4 +413,205 @@ export async function updateTicketNotes(id: string, notes: string): Promise<Tick
 
   if (error) throw error;
   return data as Ticket;
+}
+
+export async function logPartOnTicket(
+  ticketId: string,
+  inventoryId: string,
+  qtyUsed: number,
+  loggedByStaffId: string,
+  userRole: 'admin' | 'mechanic'
+): Promise<any> {
+  if (isMockMode) {
+    const ticket = mockTickets.find(t => t.id === ticketId);
+    if (!ticket) {
+      const error = new Error('Ticket not found') as any;
+      error.status = 404;
+      error.code = 'TICKET_NOT_FOUND';
+      throw error;
+    }
+
+    // Authorization check: mechanic can only log parts on assigned tickets
+    if (userRole === 'mechanic' && ticket.staff_id !== loggedByStaffId) {
+      const error = new Error('You do not have permission to log parts on this ticket.') as any;
+      error.status = 403;
+      error.code = 'FORBIDDEN';
+      throw error;
+    }
+
+    const part = mockInventory.find(i => i.id === inventoryId);
+    if (!part) {
+      const error = new Error('Part not found') as any;
+      error.status = 404;
+      error.code = 'PART_NOT_FOUND';
+      throw error;
+    }
+
+    if (part.qty_in_stock < qtyUsed) {
+      const error = new Error(`Insufficient stock. Only ${part.qty_in_stock} units available.`) as any;
+      error.status = 400;
+      error.code = 'INSUFFICIENT_STOCK';
+      throw error;
+    }
+
+    // Auto-decrement inventory
+    part.qty_in_stock -= qtyUsed;
+    part.updated_at = new Date().toISOString();
+
+    const newLog = {
+      id: `tp-${crypto.randomUUID()}`,
+      ticket_id: ticketId,
+      inventory_id: inventoryId,
+      qty_used: qtyUsed,
+      unit_cost_at_time: part.unit_cost ? Number(part.unit_cost) : 0.00,
+      logged_by: loggedByStaffId,
+      created_at: new Date().toISOString()
+    };
+
+    mockTicketParts.push(newLog);
+    return newLog;
+  }
+
+  // Real Supabase mode
+  // Verify ticket and authorization
+  const { data: ticket, error: ticketError } = await supabase
+    .from('service_tickets')
+    .select('staff_id')
+    .eq('id', ticketId)
+    .maybeSingle();
+
+  if (ticketError || !ticket) {
+    const error = new Error('Ticket not found') as any;
+    error.status = 404;
+    error.code = 'TICKET_NOT_FOUND';
+    throw error;
+  }
+
+  if (userRole === 'mechanic' && ticket.staff_id !== loggedByStaffId) {
+    const error = new Error('You do not have permission to log parts on this ticket.') as any;
+    error.status = 403;
+    error.code = 'FORBIDDEN';
+    throw error;
+  }
+
+  // Call PostgreSQL RPC function to do it atomically in a database transaction
+  const { data, error } = await supabase
+    .rpc('log_ticket_part', {
+      p_ticket_id: ticketId,
+      p_inventory_id: inventoryId,
+      p_qty_used: qtyUsed,
+      p_logged_by: loggedByStaffId
+    });
+
+  if (error) {
+    if (error.message.includes('Insufficient stock')) {
+      const customError = new Error(error.message) as any;
+      customError.status = 400;
+      customError.code = 'INSUFFICIENT_STOCK';
+      throw customError;
+    }
+    if (error.message.includes('PART_NOT_FOUND')) {
+      const customError = new Error('Part not found') as any;
+      customError.status = 404;
+      customError.code = 'PART_NOT_FOUND';
+      throw customError;
+    }
+    throw error;
+  }
+
+  const record = data[0];
+  if (!record) {
+    throw new Error('Failed to log part');
+  }
+
+  return {
+    id: record.id,
+    ticket_id: record.ticket_id,
+    inventory_id: record.inventory_id,
+    qty_used: Number(record.qty_used),
+    unit_cost_at_time: Number(record.unit_cost_at_time),
+    logged_by: record.logged_by,
+    created_at: record.created_at
+  };
+}
+
+export async function getTicketParts(
+  ticketId: string,
+  loggedByStaffId: string,
+  userRole: 'admin' | 'mechanic'
+): Promise<any[]> {
+  if (isMockMode) {
+    const ticket = mockTickets.find(t => t.id === ticketId);
+    if (!ticket) {
+      const error = new Error('Ticket not found') as any;
+      error.status = 404;
+      error.code = 'TICKET_NOT_FOUND';
+      throw error;
+    }
+
+    // Authorization check
+    if (userRole === 'mechanic' && ticket.staff_id !== loggedByStaffId) {
+      const error = new Error('You do not have permission to view parts on this ticket.') as any;
+      error.status = 403;
+      error.code = 'FORBIDDEN';
+      throw error;
+    }
+
+    const ticketParts = mockTicketParts.filter(p => p.ticket_id === ticketId);
+    return ticketParts.map(p => {
+      const part = mockInventory.find(i => i.id === p.inventory_id);
+      const staff = mockStaff.find(s => s.id === p.logged_by);
+      return {
+        id: p.id,
+        part_name: part?.part_name || 'Unknown Part',
+        qty_used: p.qty_used,
+        unit_cost_at_time: p.unit_cost_at_time,
+        logged_by_name: staff?.name || 'Unknown',
+        created_at: p.created_at
+      };
+    });
+  }
+
+  // Real Supabase mode
+  // Verify ticket exists and is authorized
+  const { data: ticket, error: ticketError } = await supabase
+    .from('service_tickets')
+    .select('staff_id')
+    .eq('id', ticketId)
+    .maybeSingle();
+
+  if (ticketError || !ticket) {
+    const error = new Error('Ticket not found') as any;
+    error.status = 404;
+    error.code = 'TICKET_NOT_FOUND';
+    throw error;
+  }
+
+  if (userRole === 'mechanic' && ticket.staff_id !== loggedByStaffId) {
+    const error = new Error('You do not have permission to view parts on this ticket.') as any;
+    error.status = 403;
+    error.code = 'FORBIDDEN';
+    throw error;
+  }
+
+  const { data, error } = await supabase
+    .from('ticket_parts')
+    .select(`
+      id, qty_used, unit_cost_at_time, created_at,
+      inventory(part_name),
+      logged_by_staff:staff!ticket_parts_logged_by_fkey(name)
+    `)
+    .eq('ticket_id', ticketId)
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+
+  return (data || []).map((p: any) => ({
+    id: p.id,
+    part_name: p.inventory?.part_name || 'Unknown Part',
+    qty_used: Number(p.qty_used),
+    unit_cost_at_time: Number(p.unit_cost_at_time),
+    logged_by_name: p.logged_by_staff?.name || 'Unknown',
+    created_at: p.created_at
+  }));
 }

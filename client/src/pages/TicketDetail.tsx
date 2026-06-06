@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.js';
 import { ticketsService } from '../services/ticketsService.js';
 import type { TicketRelation } from '../services/ticketsService.js';
+import { inventoryService } from '../services/inventoryService.js';
 import { Badge } from '../components/ui/Badge.js';
 import type { BadgeVariant } from '../components/ui/Badge.js';
 import { Button } from '../components/ui/Button.js';
@@ -29,6 +30,14 @@ const TicketDetail: React.FC = () => {
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [notesMessage, setNotesMessage] = useState<string | null>(null);
 
+  // Parts logging states
+  const [inventoryItems, setInventoryItems] = useState<any[]>([]);
+  const [selectedPartId, setSelectedPartId] = useState<string>('');
+  const [qtyToLog, setQtyToLog] = useState<number>(1);
+  const [isLoggingPart, setIsLoggingPart] = useState<boolean>(false);
+  const [logPartError, setLogPartError] = useState<string | null>(null);
+  const [logPartSuccess, setLogPartSuccess] = useState<string | null>(null);
+
   const isAdmin = user?.role === 'admin';
 
   const fetchTicket = async () => {
@@ -52,8 +61,18 @@ const TicketDetail: React.FC = () => {
     }
   };
 
+  const fetchInventory = async () => {
+    try {
+      const items = await inventoryService.getInventory();
+      setInventoryItems(items);
+    } catch (err) {
+      console.error('Failed to load inventory for parts logging:', err);
+    }
+  };
+
   useEffect(() => {
     fetchTicket();
+    fetchInventory();
   }, [id]);
 
   const handleStatusUpdate = async () => {
@@ -102,6 +121,46 @@ const TicketDetail: React.FC = () => {
       setIsSavingNotes(false);
     }
   };
+
+  const selectedPart = inventoryItems.find(item => item.id === selectedPartId);
+
+  const handleLogPart = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!id || !selectedPartId || qtyToLog < 1) return;
+
+    if (selectedPart && selectedPart.qty_in_stock < qtyToLog) {
+      setLogPartError(`Insufficient stock. Only ${selectedPart.qty_in_stock} units available.`);
+      return;
+    }
+
+    setIsLoggingPart(true);
+    setLogPartError(null);
+    setLogPartSuccess(null);
+
+    try {
+      await ticketsService.logPart(id, {
+        inventory_id: selectedPartId,
+        qty_used: qtyToLog
+      });
+
+      setLogPartSuccess('Part logged successfully!');
+      setSelectedPartId('');
+      setQtyToLog(1);
+
+      // Re-fetch details and inventory
+      await Promise.all([fetchTicket(), fetchInventory()]);
+
+      setTimeout(() => setLogPartSuccess(null), 3000);
+    } catch (err: any) {
+      console.error('Error logging part:', err);
+      setLogPartError(err.message || 'Failed to log part.');
+    } finally {
+      setIsLoggingPart(false);
+    }
+  };
+
+  const isAssignedMechanic = user?.role === 'mechanic' && ticket?.staff_id === user.id;
+  const canLogParts = ticket && (isAdmin || isAssignedMechanic) && ticket.status !== 'completed' && ticket.status !== 'cancelled';
 
   if (isLoading) {
     return (
@@ -267,7 +326,7 @@ const TicketDetail: React.FC = () => {
             </div>
           ) : null}
 
-          {/* Parts Used Section - (Sprint 5 implementation, showing empty list or logged parts list) */}
+          {/* Parts Used Section */}
           <div className="bg-surface p-6 rounded-lg shadow-sm border border-border flex flex-col gap-4">
             <h2 className="text-lg font-bold text-text border-b border-border pb-2">Parts Used on Ticket</h2>
             {ticket.parts_used && ticket.parts_used.length > 0 ? (
@@ -296,7 +355,75 @@ const TicketDetail: React.FC = () => {
                 </table>
               </div>
             ) : (
-              <p className="text-sm text-text-muted italic">No parts have been logged against this service ticket yet. (Sprint 5)</p>
+              <p className="text-sm text-text-muted italic">No parts have been logged against this service ticket yet.</p>
+            )}
+
+            {canLogParts && (
+              <div className="border-t border-border pt-4 mt-2">
+                <h3 className="text-md font-semibold text-text mb-3">Log a Part</h3>
+                <form onSubmit={handleLogPart} className="flex flex-col md:flex-row items-end gap-4">
+                  <div className="flex-1 min-w-[200px]">
+                    <Select
+                      label="Select Part"
+                      value={selectedPartId}
+                      onChange={(e) => {
+                        setSelectedPartId(e.target.value);
+                        setLogPartError(null);
+                      }}
+                      options={[
+                        { value: '', label: 'Select a part...' },
+                        ...inventoryItems.map(item => ({
+                          value: item.id,
+                          label: `${item.part_name} (${item.part_number || 'N/A'}) - R ${item.unit_cost?.toFixed(2) || '0.00'}`
+                        }))
+                      ]}
+                    />
+                    {selectedPart && (
+                      <p className={`text-xs mt-1 font-semibold ${selectedPart.qty_in_stock <= selectedPart.reorder_level ? 'text-amber-600' : 'text-text-muted'}`}>
+                        Live Stock Remaining: {selectedPart.qty_in_stock} unit{selectedPart.qty_in_stock !== 1 ? 's' : ''} 
+                        {selectedPart.qty_in_stock <= selectedPart.reorder_level && ' (Low Stock Alert)'}
+                      </p>
+                    )}
+                  </div>
+                  
+                  <div className="w-24">
+                    <label htmlFor="qty_used" className="block text-xs font-semibold text-text-muted mb-1">
+                      Qty
+                    </label>
+                    <input
+                      id="qty_used"
+                      type="number"
+                      min={1}
+                      max={selectedPart ? selectedPart.qty_in_stock : undefined}
+                      value={qtyToLog}
+                      onChange={(e) => setQtyToLog(Math.max(1, parseInt(e.target.value) || 1))}
+                      className="w-full px-3 py-2 border border-border rounded-lg text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      required
+                    />
+                  </div>
+
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    disabled={!selectedPartId || (selectedPart && selectedPart.qty_in_stock < qtyToLog)}
+                    loading={isLoggingPart}
+                  >
+                    Log Part
+                  </Button>
+                </form>
+
+                {logPartError && (
+                  <p className="text-xs text-error mt-2 flex items-center gap-1">
+                    <AlertCircle size={14} /> {logPartError}
+                  </p>
+                )}
+
+                {logPartSuccess && (
+                  <p className="text-xs text-success mt-2 flex items-center gap-1 font-medium">
+                    <CheckCircle size={14} /> {logPartSuccess}
+                  </p>
+                )}
+              </div>
             )}
           </div>
         </div>

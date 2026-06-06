@@ -142,5 +142,33 @@ export const ticketsService = {
     }
 
     return res.json();
+  },
+
+  async logPart(ticketId: string, data: { inventory_id: string; qty_used: number }): Promise<any> {
+    const res = await fetch(`${API_BASE_URL}/tickets/${ticketId}/parts`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(data)
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.message || 'Failed to log part on ticket');
+    }
+
+    return res.json();
+  },
+
+  async getTicketParts(ticketId: string): Promise<any[]> {
+    const res = await fetch(`${API_BASE_URL}/tickets/${ticketId}/parts`, {
+      headers: getHeaders()
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.message || 'Failed to fetch ticket parts');
+    }
+
+    return res.json();
   }
 };

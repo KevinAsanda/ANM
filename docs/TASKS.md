@@ -105,14 +105,14 @@
 
 | # | Task | Label | Status |
 |---|------|-------|--------|
-| P-01 | `POST /api/v1/tickets/:id/parts` — log part on ticket; auto-deduct from inventory; error if insufficient stock | `[BACKEND]` | ⬜ |
-| P-02 | `GET /api/v1/tickets/:id/parts` — list parts used on a ticket | `[BACKEND]` | ⬜ |
-| P-03 | Wrap inventory deduction and part-log creation in a **database transaction** | `[BACKEND]` | ⬜ |
-| P-04 | Input validation (part_id required, qty ≥ 1, not exceeding stock) | `[BACKEND]` | ⬜ |
-| P-05 | Build Log Part form on Ticket Detail page — part select dropdown + qty input | `[FRONTEND]` | ⬜ |
-| P-06 | Build Parts Used list on Ticket Detail page — part name, qty, cost, who logged it | `[FRONTEND]` | ⬜ |
-| P-07 | Show live stock remaining next to selected part in the Log Part form | `[FRONTEND]` | ⬜ |
-| P-08 | `[TEST]` Test: log part → confirm inventory decremented; test over-stock error | `[TEST]` | ⬜ |
+| P-01 | `POST /api/v1/tickets/:id/parts` — log part on ticket; auto-deduct from inventory; error if insufficient stock | `[BACKEND]` | ✅ |
+| P-02 | `GET /api/v1/tickets/:id/parts` — list parts used on a ticket | `[BACKEND]` | ✅ |
+| P-03 | Wrap inventory deduction and part-log creation in a **database transaction** | `[BACKEND]` | ✅ |
+| P-04 | Input validation (part_id required, qty ≥ 1, not exceeding stock) | `[BACKEND]` | ✅ |
+| P-05 | Build Log Part form on Ticket Detail page — part select dropdown + qty input | `[FRONTEND]` | ✅ |
+| P-06 | Build Parts Used list on Ticket Detail page — part name, qty, cost, who logged it | `[FRONTEND]` | ✅ |
+| P-07 | Show live stock remaining next to selected part in the Log Part form | `[FRONTEND]` | ✅ |
+| P-08 | `[TEST]` Test: log part → confirm inventory decremented; test over-stock error | `[TEST]` | ✅ |
 
 ---
 

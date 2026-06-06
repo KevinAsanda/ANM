@@ -6,7 +6,9 @@ import {
   postTicket,
   getTicket,
   patchTicketStatus,
-  patchTicketNotes
+  patchTicketNotes,
+  postTicketPart,
+  getTicketPartsList
 } from '../controllers/ticket.controller.js';
 import { authenticate, requireRole } from '../middleware/auth.js';
 import { validateRequest } from '../middleware/validate.js';
@@ -34,6 +36,13 @@ const updateNotesSchema = z.object({
   }),
 });
 
+const logPartSchema = z.object({
+  body: z.object({
+    inventory_id: z.string().regex(/^[a-zA-Z0-9-]{4,36}$/, 'Invalid inventory ID'),
+    qty_used: z.number().int('Quantity must be an integer').min(1, 'Quantity must be at least 1'),
+  }),
+});
+
 router.use(authenticate);
 
 // Mechanic jobs endpoint
@@ -49,5 +58,9 @@ router.patch('/:id/status', validateRequest(updateStatusSchema), patchTicketStat
 
 // Admin note update
 router.patch('/:id/notes', requireRole('admin'), validateRequest(updateNotesSchema), patchTicketNotes);
+
+// Parts logging routes (auth checked inside controller: admin or assigned mechanic only)
+router.post('/:id/parts', validateRequest(logPartSchema), postTicketPart);
+router.get('/:id/parts', getTicketPartsList);
 
 export default router;
