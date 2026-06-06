@@ -3,6 +3,8 @@ import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.routes.js';
+import customerRoutes from './routes/customer.routes.js';
+import vehicleRoutes from './routes/vehicle.routes.js';
 import { errorHandler } from './middleware/error.js';
 
 dotenv.config();
@@ -17,6 +19,8 @@ app.use(morgan('dev'));
 
 // Routes
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/customers', customerRoutes);
+app.use('/api/v1/vehicles', vehicleRoutes);
 
 // Root path diagnostic route
 app.get('/health', (req, res) => {
