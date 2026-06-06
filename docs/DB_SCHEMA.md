@@ -341,3 +341,66 @@ INSERT INTO inventory (part_name, part_number, qty_in_stock, reorder_level, unit
   ('Clutch Kit', 'CK-011', 1, 2, 1800.00),  -- low stock
   ('Power Steering Fluid', 'PS-012', 7, 5, 65.00);
 ```
+
+---
+
+## SQL: Database Transaction Functions
+
+```sql
+-- Transaction function — log a part on a ticket and decrement stock atomically
+CREATE OR REPLACE FUNCTION log_ticket_part(
+  p_ticket_id UUID,
+  p_inventory_id UUID,
+  p_qty_used INTEGER,
+  p_logged_by UUID
+)
+RETURNS TABLE (
+  id UUID,
+  ticket_id UUID,
+  inventory_id UUID,
+  qty_used INTEGER,
+  unit_cost_at_time NUMERIC(10,2),
+  logged_by UUID,
+  created_at TIMESTAMPTZ
+) AS $$
+DECLARE
+  v_qty_in_stock INTEGER;
+  v_unit_cost NUMERIC(10,2);
+  v_new_id UUID;
+  v_created_at TIMESTAMPTZ;
+BEGIN
+  -- Select stock and unit cost with locking (FOR UPDATE) to prevent race conditions
+  SELECT qty_in_stock, unit_cost INTO v_qty_in_stock, v_unit_cost
+  FROM inventory
+  WHERE id = p_inventory_id
+  FOR UPDATE;
+
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'PART_NOT_FOUND';
+  END IF;
+
+  IF v_qty_in_stock < p_qty_used THEN
+    RAISE EXCEPTION 'Insufficient stock. Only % units available.', v_qty_in_stock;
+  END IF;
+
+  -- Decrement stock
+  UPDATE inventory
+  SET qty_in_stock = qty_in_stock - p_qty_used
+  WHERE id = p_inventory_id;
+
+  -- Insert part log
+  INSERT INTO ticket_parts (ticket_id, inventory_id, qty_used, unit_cost_at_time, logged_by)
+  VALUES (p_ticket_id, p_inventory_id, p_qty_used, v_unit_cost, p_logged_by)
+  RETURNING ticket_parts.id, ticket_parts.created_at INTO v_new_id, v_created_at;
+
+  RETURN QUERY SELECT 
+    v_new_id,
+    p_ticket_id,
+    p_inventory_id,
+    p_qty_used,
+    v_unit_cost,
+    p_logged_by,
+    v_created_at;
+END;
+$$ LANGUAGE plpgsql;
+```
