@@ -11,7 +11,7 @@ export interface Customer {
 const isMockMode = process.env.SUPABASE_URL?.includes('mockproject.supabase.co');
 
 // In-memory mock database for local development
-let mockCustomers: Customer[] = [
+export let mockCustomers: Customer[] = [
   {
     id: 'c1f7b03b-1798-444a-a435-08103cd585e5',
     name: 'Sipho Khumalo',

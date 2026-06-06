@@ -1,4 +1,7 @@
 import { supabase } from '../config/supabase.js';
+import { mockCustomers } from './customer.service.js';
+import { mockVehicles } from './vehicle.service.js';
+import { mockStaff } from './staff.service.js';
 
 export interface Ticket {
   id: string;
@@ -168,24 +171,41 @@ export async function createTicket(
     };
 
     // Populate relations for mock response
-    newTicket.vehicle = {
-      id: vehicleId,
-      registration_number: 'ND123456',
-      make: 'Toyota',
-      model: 'Hilux',
-      year: 2018
-    };
-    newTicket.customer = {
-      id: 'c1f7b03b-1798-444a-a435-08103cd585e5',
-      name: 'Sipho Khumalo',
-      phone: '0821234567',
-      email: 'sipho@gmail.com'
-    };
-    newTicket.mechanic = {
-      id: staffId,
-      name: staffId === 'f5f7b03b-1798-444a-a435-08103cd58522' ? 'Asanda Cele' : 'New Mechanic',
-      email: 'mechanic@anm.co.za'
-    };
+    const vehicle = mockVehicles.find(v => v.id === vehicleId);
+    if (vehicle) {
+      newTicket.vehicle = {
+        id: vehicle.id,
+        registration_number: vehicle.registration_number,
+        make: vehicle.make,
+        model: vehicle.model,
+        year: vehicle.year
+      };
+
+      const customer = mockCustomers.find(c => c.id === vehicle.customer_id);
+      if (customer) {
+        newTicket.customer = {
+          id: customer.id,
+          name: customer.name,
+          phone: customer.phone,
+          email: customer.email
+        };
+      }
+    }
+
+    const mechanic = mockStaff.find(s => s.id === staffId);
+    if (mechanic) {
+      newTicket.mechanic = {
+        id: mechanic.id,
+        name: mechanic.name,
+        email: mechanic.email
+      };
+    } else {
+      newTicket.mechanic = {
+        id: staffId,
+        name: 'Unknown Mechanic',
+        email: 'mechanic@anm.co.za'
+      };
+    }
     newTicket.parts_used = [];
 
     mockTickets.push(newTicket);

@@ -11,7 +11,7 @@ export interface Staff {
 const isMockMode = process.env.SUPABASE_URL?.includes('mockproject.supabase.co');
 
 // In-memory mock database for local development
-let mockStaff: Staff[] = [
+export let mockStaff: Staff[] = [
   {
     id: 'd3b07384-d113-49c3-a558-8b9a103c801e',
     name: 'Mpume Zulu',

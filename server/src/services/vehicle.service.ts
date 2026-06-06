@@ -14,7 +14,7 @@ export interface Vehicle {
 const isMockMode = process.env.SUPABASE_URL?.includes('mockproject.supabase.co');
 
 // In-memory mock database for local development
-let mockVehicles: Vehicle[] = [
+export let mockVehicles: Vehicle[] = [
   {
     id: 'v7b91d90-b183-4903-8888-0f19c9d09a80',
     customer_id: 'c1f7b03b-1798-444a-a435-08103cd585e5',
