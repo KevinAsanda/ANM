@@ -10,6 +10,7 @@ import Staff from './pages/Staff.js';
 import MyJobs from './pages/MyJobs.js';
 import { ProtectedRoute } from './components/auth/ProtectedRoute.js';
 import { RoleRoute } from './components/auth/RoleRoute.js';
+import { AppShell } from './components/layout/AppShell.js';
 
 const App: React.FC = () => {
   return (
@@ -23,7 +24,9 @@ const App: React.FC = () => {
         element={
           <ProtectedRoute>
             <RoleRoute allowedRole="admin">
-              <Dashboard />
+              <AppShell>
+                <Dashboard />
+              </AppShell>
             </RoleRoute>
           </ProtectedRoute>
         }
@@ -33,7 +36,9 @@ const App: React.FC = () => {
         element={
           <ProtectedRoute>
             <RoleRoute allowedRole="admin">
-              <Tickets />
+              <AppShell>
+                <Tickets />
+              </AppShell>
             </RoleRoute>
           </ProtectedRoute>
         }
@@ -43,7 +48,9 @@ const App: React.FC = () => {
         element={
           <ProtectedRoute>
             <RoleRoute allowedRole="admin">
-              <CreateTicket />
+              <AppShell>
+                <CreateTicket />
+              </AppShell>
             </RoleRoute>
           </ProtectedRoute>
         }
@@ -53,7 +60,9 @@ const App: React.FC = () => {
         element={
           <ProtectedRoute>
             <RoleRoute allowedRole="admin">
-              <Inventory />
+              <AppShell>
+                <Inventory />
+              </AppShell>
             </RoleRoute>
           </ProtectedRoute>
         }
@@ -63,7 +72,9 @@ const App: React.FC = () => {
         element={
           <ProtectedRoute>
             <RoleRoute allowedRole="admin">
-              <Staff />
+              <AppShell>
+                <Staff />
+              </AppShell>
             </RoleRoute>
           </ProtectedRoute>
         }
@@ -75,7 +86,9 @@ const App: React.FC = () => {
         element={
           <ProtectedRoute>
             <RoleRoute allowedRole="mechanic">
-              <MyJobs />
+              <AppShell>
+                <MyJobs />
+              </AppShell>
             </RoleRoute>
           </ProtectedRoute>
         }
@@ -86,7 +99,9 @@ const App: React.FC = () => {
         path="/tickets/:id"
         element={
           <ProtectedRoute>
-            <TicketDetail />
+            <AppShell>
+              <TicketDetail />
+            </AppShell>
           </ProtectedRoute>
         }
       />

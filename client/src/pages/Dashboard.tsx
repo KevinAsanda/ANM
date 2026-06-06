@@ -1,20 +1,17 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext.js';
-import { Button } from '../components/ui/Button.js';
 
 const Dashboard: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
-      <p className="text-text-muted mb-6">Welcome back, {user?.name} ({user?.email})!</p>
+    <div>
+      <h1 className="text-3xl font-bold text-text mb-2">Admin Dashboard</h1>
+      <p className="text-text-muted mb-6">Welcome back, {user?.name}!</p>
       
-      <div className="bg-surface p-6 rounded shadow border border-border">
-        <p className="mb-4">This is the Admin Dashboard placeholder.</p>
-        <Button variant="danger" onClick={logout}>
-          Log Out
-        </Button>
+      <div className="bg-surface p-6 rounded-lg shadow-sm border border-border">
+        <h2 className="text-lg font-bold text-text mb-4">Workshop Overview</h2>
+        <p className="text-text-muted">This is the Admin Dashboard workspace. Sprint 6 will hook up real statistics and low stock warnings here.</p>
       </div>
     </div>
   );
