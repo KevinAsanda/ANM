@@ -20,7 +20,7 @@ let mockStaff: Staff[] = [
     created_at: new Date().toISOString()
   },
   {
-    id: 'm5f7b03b-1798-444a-a435-08103cd58522',
+    id: 'f5f7b03b-1798-444a-a435-08103cd58522',
     name: 'Asanda Cele',
     email: 'mechanic@anm.co.za',
     role: 'mechanic',

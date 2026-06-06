@@ -228,7 +228,7 @@ All endpoints are prefixed with `/api/v1`.
 ```json
 {
   "vehicle_id": "v7b91d90-b183-4903-8888-0f19c9d09a80", // required, valid UUID
-  "staff_id": "m5f7b03b-1798-444a-a435-08103cd58522",   // required, mechanic staff ID
+  "staff_id": "f5f7b03b-1798-444a-a435-08103cd58522",   // required, mechanic staff ID
   "description": "Oil change and basic maintenance check", // required
   "labour_cost": 450.00                                  // optional, default 0.00
 }
@@ -238,7 +238,7 @@ All endpoints are prefixed with `/api/v1`.
 {
   "id": "t1b07384-d113-49c3-a558-8b9a103c8099",
   "vehicle_id": "v7b91d90-b183-4903-8888-0f19c9d09a80",
-  "staff_id": "m5f7b03b-1798-444a-a435-08103cd58522",
+  "staff_id": "f5f7b03b-1798-444a-a435-08103cd58522",
   "created_by": "d3b07384-d113-49c3-a558-8b9a103c801e",
   "status": "pending",
   "description": "Oil change and basic maintenance check",
@@ -276,7 +276,7 @@ All endpoints are prefixed with `/api/v1`.
     "email": "sipho@gmail.com"
   },
   "mechanic": {
-    "id": "m5f7b03b-1798-444a-a435-08103cd58522",
+    "id": "f5f7b03b-1798-444a-a435-08103cd58522",
     "name": "Asanda Cele",
     "email": "asanda@anm.co.za"
   },
@@ -441,7 +441,7 @@ All endpoints are prefixed with `/api/v1`.
   "inventory_id": "i9b91d90-b183-4903-8888-0f19c9d09a11",
   "qty_used": 2,
   "unit_cost_at_time": 45.00,
-  "logged_by": "m5f7b03b-1798-444a-a435-08103cd58522",
+  "logged_by": "f5f7b03b-1798-444a-a435-08103cd58522",
   "created_at": "2026-06-06T15:35:00Z"
 }
 ```
@@ -545,7 +545,7 @@ All endpoints are prefixed with `/api/v1`.
     "created_at": "2026-06-06T15:00:00Z"
   },
   {
-    "id": "m5f7b03b-1798-444a-a435-08103cd58522",
+    "id": "f5f7b03b-1798-444a-a435-08103cd58522",
     "name": "Asanda Cele",
     "email": "asanda@anm.co.za",
     "role": "mechanic",

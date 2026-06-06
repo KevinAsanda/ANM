@@ -38,7 +38,7 @@ export async function authenticate(
         return next();
       } else if (token === 'mock-jwt-token-mechanic-12345') {
         req.user = {
-          id: 'm5f7b03b-1798-444a-a435-08103cd58522',
+          id: 'f5f7b03b-1798-444a-a435-08103cd58522',
           name: 'Asanda Cele',
           email: 'mechanic@anm.co.za',
           role: 'mechanic',

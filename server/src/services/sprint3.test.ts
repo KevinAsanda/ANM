@@ -13,7 +13,7 @@ import {
 process.env.SUPABASE_URL = 'https://mockproject.supabase.co';
 
 test('Sprint 3 - Ticket Service: list, create, detail, status/notes update', async () => {
-  const mechanicId = 'm5f7b03b-1798-444a-a435-08103cd58522'; // Asanda Cele
+  const mechanicId = 'f5f7b03b-1798-444a-a435-08103cd58522'; // Asanda Cele
   const adminId = 'd3b07384-d113-49c3-a558-8b9a103c801e'; // Mpume Zulu
   const vehicleId = 'v7b91d90-b183-4903-8888-0f19c9d09a80'; // Toyota Hilux
 

@@ -39,7 +39,7 @@ let mockTickets: Ticket[] = [
   {
     id: 't1b07384-d113-49c3-a558-8b9a103c8099',
     vehicle_id: 'v7b91d90-b183-4903-8888-0f19c9d09a80',
-    staff_id: 'm5f7b03b-1798-444a-a435-08103cd58522', // Asanda Cele
+    staff_id: 'f5f7b03b-1798-444a-a435-08103cd58522', // Asanda Cele
     created_by: 'd3b07384-d113-49c3-a558-8b9a103c801e', // Mpume Zulu
     status: 'pending',
     description: 'Front brake pads worn out and squealing. Replace pads.',
@@ -61,7 +61,7 @@ let mockTickets: Ticket[] = [
       email: 'sipho@gmail.com'
     },
     mechanic: {
-      id: 'm5f7b03b-1798-444a-a435-08103cd58522',
+      id: 'f5f7b03b-1798-444a-a435-08103cd58522',
       name: 'Asanda Cele',
       email: 'mechanic@anm.co.za'
     },
@@ -183,7 +183,7 @@ export async function createTicket(
     };
     newTicket.mechanic = {
       id: staffId,
-      name: staffId === 'm5f7b03b-1798-444a-a435-08103cd58522' ? 'Asanda Cele' : 'New Mechanic',
+      name: staffId === 'f5f7b03b-1798-444a-a435-08103cd58522' ? 'Asanda Cele' : 'New Mechanic',
       email: 'mechanic@anm.co.za'
     };
     newTicket.parts_used = [];

@@ -21,7 +21,7 @@ export async function loginUser(email: string, password: string): Promise<{ toke
       return {
         token: 'mock-jwt-token-mechanic-12345',
         user: {
-          id: 'm5f7b03b-1798-444a-a435-08103cd58522',
+          id: 'f5f7b03b-1798-444a-a435-08103cd58522',
           name: 'Asanda Cele',
           email: 'mechanic@anm.co.za',
           role: 'mechanic',
@@ -81,9 +81,9 @@ export async function getUserProfile(userId: string): Promise<UserProfile> {
         role: 'admin',
         created_at: new Date().toISOString()
       };
-    } else if (userId === 'm5f7b03b-1798-444a-a435-08103cd58522') {
+    } else if (userId === 'f5f7b03b-1798-444a-a435-08103cd58522') {
       return {
-        id: 'm5f7b03b-1798-444a-a435-08103cd58522',
+        id: 'f5f7b03b-1798-444a-a435-08103cd58522',
         name: 'Asanda Cele',
         email: 'mechanic@anm.co.za',
         role: 'mechanic',
