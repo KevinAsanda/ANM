@@ -143,7 +143,7 @@ BEGIN
   -- Select stock and unit cost with locking (FOR UPDATE) to prevent race conditions
   SELECT qty_in_stock, unit_cost INTO v_qty_in_stock, v_unit_cost
   FROM inventory
-  WHERE id = p_inventory_id
+  WHERE inventory.id = p_inventory_id
   FOR UPDATE;
 
   IF NOT FOUND THEN
@@ -157,7 +157,7 @@ BEGIN
   -- Decrement stock
   UPDATE inventory
   SET qty_in_stock = qty_in_stock - p_qty_used
-  WHERE id = p_inventory_id;
+  WHERE inventory.id = p_inventory_id;
 
   -- Insert part log
   INSERT INTO ticket_parts (ticket_id, inventory_id, qty_used, unit_cost_at_time, logged_by)
