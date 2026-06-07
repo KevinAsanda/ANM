@@ -303,7 +303,7 @@ CREATE POLICY "ticket_parts: mechanic insert own ticket" ON ticket_parts
   FOR INSERT WITH CHECK (
     EXISTS (
       SELECT 1 FROM service_tickets
-      WHERE id = ticket_id AND staff_id = auth.uid()
+      WHERE service_tickets.id = ticket_parts.ticket_id AND service_tickets.staff_id = auth.uid()
     )
   );
 
@@ -311,7 +311,7 @@ CREATE POLICY "ticket_parts: mechanic read own ticket" ON ticket_parts
   FOR SELECT USING (
     EXISTS (
       SELECT 1 FROM service_tickets
-      WHERE id = ticket_id AND staff_id = auth.uid()
+      WHERE service_tickets.id = ticket_parts.ticket_id AND service_tickets.staff_id = auth.uid()
     )
   );
 ```
@@ -363,6 +363,7 @@ RETURNS TABLE (
   logged_by UUID,
   created_at TIMESTAMPTZ
 ) AS $$
+#variable_conflict use_column
 DECLARE
   v_qty_in_stock INTEGER;
   v_unit_cost NUMERIC(10,2);
