@@ -1,5 +1,6 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import Login from './pages/Login.js';
 import Dashboard from './pages/Dashboard.js';
 import Tickets from './pages/Tickets.js';
@@ -14,101 +15,104 @@ import { AppShell } from './components/layout/AppShell.js';
 
 const App: React.FC = () => {
   return (
-    <Routes>
-      {/* Public Routes */}
-      <Route path="/login" element={<Login />} />
+    <>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/login" element={<Login />} />
 
-      {/* Protected Admin Routes */}
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <RoleRoute allowedRole="admin">
-              <AppShell>
-                <Dashboard />
-              </AppShell>
-            </RoleRoute>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/tickets"
-        element={
-          <ProtectedRoute>
-            <RoleRoute allowedRole="admin">
-              <AppShell>
-                <Tickets />
-              </AppShell>
-            </RoleRoute>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/tickets/new"
-        element={
-          <ProtectedRoute>
-            <RoleRoute allowedRole="admin">
-              <AppShell>
-                <CreateTicket />
-              </AppShell>
-            </RoleRoute>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/inventory"
-        element={
-          <ProtectedRoute>
-            <RoleRoute allowedRole="admin">
-              <AppShell>
-                <Inventory />
-              </AppShell>
-            </RoleRoute>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/staff"
-        element={
-          <ProtectedRoute>
-            <RoleRoute allowedRole="admin">
-              <AppShell>
-                <Staff />
-              </AppShell>
-            </RoleRoute>
-          </ProtectedRoute>
-        }
-      />
+        {/* Protected Admin Routes */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <RoleRoute allowedRole="admin">
+                <AppShell>
+                  <Dashboard />
+                </AppShell>
+              </RoleRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tickets"
+          element={
+            <ProtectedRoute>
+              <RoleRoute allowedRole="admin">
+                <AppShell>
+                  <Tickets />
+                </AppShell>
+              </RoleRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tickets/new"
+          element={
+            <ProtectedRoute>
+              <RoleRoute allowedRole="admin">
+                <AppShell>
+                  <CreateTicket />
+                </AppShell>
+              </RoleRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/inventory"
+          element={
+            <ProtectedRoute>
+              <RoleRoute allowedRole="admin">
+                <AppShell>
+                  <Inventory />
+                </AppShell>
+              </RoleRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/staff"
+          element={
+            <ProtectedRoute>
+              <RoleRoute allowedRole="admin">
+                <AppShell>
+                  <Staff />
+                </AppShell>
+              </RoleRoute>
+            </ProtectedRoute>
+          }
+        />
 
-      {/* Protected Mechanic Routes */}
-      <Route
-        path="/my-jobs"
-        element={
-          <ProtectedRoute>
-            <RoleRoute allowedRole="mechanic">
+        {/* Protected Mechanic Routes */}
+        <Route
+          path="/my-jobs"
+          element={
+            <ProtectedRoute>
+              <RoleRoute allowedRole="mechanic">
+                <AppShell>
+                  <MyJobs />
+                </AppShell>
+              </RoleRoute>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Shared Protected Routes (auth checks only, role filtering handled on detail page or backend) */}
+        <Route
+          path="/tickets/:id"
+          element={
+            <ProtectedRoute>
               <AppShell>
-                <MyJobs />
+                <TicketDetail />
               </AppShell>
-            </RoleRoute>
-          </ProtectedRoute>
-        }
-      />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* Shared Protected Routes (auth checks only, role filtering handled on detail page or backend) */}
-      <Route
-        path="/tickets/:id"
-        element={
-          <ProtectedRoute>
-            <AppShell>
-              <TicketDetail />
-            </AppShell>
-          </ProtectedRoute>
-        }
-      />
-
-      {/* Default Route */}
-      <Route path="*" element={<Navigate to="/login" replace />} />
-    </Routes>
+        {/* Default Route */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+      <SpeedInsights />
+    </>
   );
 };
 
