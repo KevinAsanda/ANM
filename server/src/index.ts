@@ -39,6 +39,6 @@ app.get('/health', (req, res) => {
 app.use(errorHandler);
 
 // Start Server
-app.listen(PORT, () => {
+app.listen(Number(PORT), '0.0.0.0', () => {
   console.log(`[Server] ANM Service Management API running on http://localhost:${PORT}`);
 });
