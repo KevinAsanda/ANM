@@ -1,0 +1,39 @@
+:root {
+  /* Brand - Refined Teal */
+  --color-primary:        #4a8c80;   /* Teal: Main brand accent */
+  --color-primary-hover:  #2e6b60;   /* Teal-dark: Hover states */
+  --color-primary-light:  #d0e8e4;   /* Teal-light: Highlighting */
+
+  /* Surfaces & Backdrop - Soft Neutrals */
+  --color-surface:        #fdfaf7;   /* Warm-white: Cards and panel surfaces */
+  --color-background:     #f5f0eb;   /* Cream: Cozy warm off-white backdrop */
+  --color-border:         #e8ddd2;   /* Sand: Warm borders and dividers */
+  --color-border-focus:   #4a8c80;   /* Focus outline states */
+
+  /* Text - High Contrast Ink */
+  --color-text:           #1c2b2a;   /* Ink: Deep dark teal-black primary text */
+  --color-text-muted:     #8c7b6e;   /* Stone: Label and secondary text */
+  --color-text-inverse:   #ffffff;   /* Contrast text */
+
+  /* Semantic Tones */
+  --color-error:          #b05040;   /* Soft crimson for danger states */
+  --color-error-bg:       #f0ddd9;   
+  --color-success:        #5a9e75;   /* Soft emerald for complete states */
+  --color-success-bg:     #d4ede0;
+  --color-warning:        #c8922a;   /* Soft amber for stock and alert states */
+  --color-warning-bg:     #f5e8cc;
+
+  /* Status Badges (Pills) */
+  --status-pending-bg:    #f5e8cc;
+  --status-pending-text:  #7a5a1a;
+  --status-inprogress-bg: #d0e8e4;
+  --status-inprogress-text: #2e6b60;
+  --status-completed-bg:  #d4ede0;
+  --status-completed-text: #2e6b4a;
+  --status-cancelled-bg:  #e8ddd2;
+  --status-cancelled-text: #8c7b6e;
+
+  /* Typography Fonts */
+  --font-display:         "Cormorant Garamond", Georgia, serif;
+  --font-body:            "Jost", sans-serif;
+}

@@ -10,11 +10,7 @@ import Staff from './pages/Staff.js';
 import MyJobs from './pages/MyJobs.js';
 import Invoices from './pages/Invoices.js';
 import InvoiceDetail from './pages/InvoiceDetail.js';
-import PublicInvoice from './pages/PublicInvoice.js';
 import Analytics from './pages/Analytics.js';
-import Home from './pages/Home.js';
-import PublicBooking from './pages/PublicBooking.js';
-import PublicTracker from './pages/PublicTracker.js';
 import { ProtectedRoute } from './components/auth/ProtectedRoute.js';
 import { RoleRoute } from './components/auth/RoleRoute.js';
 import { AppShell } from './components/layout/AppShell.js';
@@ -22,12 +18,9 @@ import { AppShell } from './components/layout/AppShell.js';
 const App: React.FC = () => {
   return (
     <Routes>
-      {/* Public Routes */}
-      <Route path="/" element={<Home />} />
+      {/* Root redirects to Dashboard */}
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/public/booking" element={<PublicBooking />} />
-      <Route path="/public/track/:token" element={<PublicTracker />} />
-      <Route path="/public/invoices/:token" element={<PublicInvoice />} />
 
       {/* Protected Admin Routes */}
       <Route
