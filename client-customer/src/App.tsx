@@ -11,11 +11,11 @@ const App: React.FC = () => {
       {/* Customer Portal Routes */}
       <Route path="/" element={<Home />} />
       <Route path="/booking" element={<PublicBooking />} />
-      <Route path="/public/booking" element={<Navigate to="/booking" replace />} />
+      <Route path="/public/booking" element={<PublicBooking />} />
       <Route path="/track/:token" element={<PublicTracker />} />
-      <Route path="/public/track/:token" element={<Navigate to="/track/:token" replace />} />
+      <Route path="/public/track/:token" element={<PublicTracker />} />
       <Route path="/invoices/:token" element={<PublicInvoice />} />
-      <Route path="/public/invoices/:token" element={<Navigate to="/invoices/:token" replace />} />
+      <Route path="/public/invoices/:token" element={<PublicInvoice />} />
 
       {/* Fallback to Home */}
       <Route path="*" element={<Navigate to="/" replace />} />
