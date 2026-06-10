@@ -392,6 +392,16 @@ export async function updateTicketStatus(
 
     ticket.status = status;
     ticket.updated_at = new Date().toISOString();
+
+    if (status === 'completed') {
+      try {
+        const { createInvoice } = await import('./invoice.service.js');
+        await createInvoice(id);
+      } catch (invErr) {
+        console.error('Mock Invoice auto-creation failed:', invErr);
+      }
+    }
+
     return ticket;
   }
 
@@ -419,6 +429,16 @@ export async function updateTicketStatus(
     .single();
 
   if (error) throw error;
+
+  if (status === 'completed') {
+    try {
+      const { createInvoice } = await import('./invoice.service.js');
+      await createInvoice(id);
+    } catch (invErr) {
+      console.error('Invoice auto-creation failed:', invErr);
+    }
+  }
+
   return data as Ticket;
 }
 

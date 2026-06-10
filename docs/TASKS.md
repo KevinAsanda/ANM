@@ -158,11 +158,26 @@
 
 ---
 
-## V2 Features (Do Not Build Yet)
+## SPRINT 9 — Invoicing & WhatsApp (V2)
+
+| # | Task | Label | Status |
+|---|------|-------|--------|
+| I-901 | Run SQL migrations to create the `invoices` table, trigger indexes, and RLS policies | `[BACKEND]` | ✅ |
+| I-902 | Write the Invoice repository service and Express controller routes | `[BACKEND]` | ✅ |
+| I-903 | Build Twilio/mock WhatsApp Notification Service (`whatsapp.service.ts`) | `[BACKEND]` | ✅ |
+| I-904 | Hook status patch updates (`completed`) to trigger invoice generation and notifications | `[BACKEND]` | ✅ |
+| I-905 | Write backend unit tests for invoice calculations and WhatsApp triggers | `[TEST]` | ✅ |
+| I-906 | Design and build the Admin Invoice List & Detail page | `[FRONTEND]` | ✅ |
+| I-907 | Design and build the public customer-facing invoice view page (`/public/invoices/:token`) | `[FRONTEND]` | ✅ |
+| I-908 | Integrate print-friendly stylesheet/button to download/print the invoice layout | `[FRONTEND]` | ✅ |
+| I-909 | Update `docs/PROJECT_OVERVIEW.md`, `docs/USER_STORIES.md`, and `docs/TASKS.md` | `[DOCS]` | ✅ |
+
+---
+
+## V2 Features (Future)
 
 - Customer-facing booking portal
 - Barcode scanner IoT integration
-- WhatsApp/SMS notifications
 - Payroll module
 - Financial reports
 

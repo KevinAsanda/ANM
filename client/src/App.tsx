@@ -8,6 +8,9 @@ import TicketDetail from './pages/TicketDetail.js';
 import Inventory from './pages/Inventory.js';
 import Staff from './pages/Staff.js';
 import MyJobs from './pages/MyJobs.js';
+import Invoices from './pages/Invoices.js';
+import InvoiceDetail from './pages/InvoiceDetail.js';
+import PublicInvoice from './pages/PublicInvoice.js';
 import { ProtectedRoute } from './components/auth/ProtectedRoute.js';
 import { RoleRoute } from './components/auth/RoleRoute.js';
 import { AppShell } from './components/layout/AppShell.js';
@@ -17,6 +20,7 @@ const App: React.FC = () => {
     <Routes>
       {/* Public Routes */}
       <Route path="/login" element={<Login />} />
+      <Route path="/public/invoices/:token" element={<PublicInvoice />} />
 
       {/* Protected Admin Routes */}
       <Route
@@ -74,6 +78,30 @@ const App: React.FC = () => {
             <RoleRoute allowedRole="admin">
               <AppShell>
                 <Staff />
+              </AppShell>
+            </RoleRoute>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/invoices"
+        element={
+          <ProtectedRoute>
+            <RoleRoute allowedRole="admin">
+              <AppShell>
+                <Invoices />
+              </AppShell>
+            </RoleRoute>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/invoices/:id"
+        element={
+          <ProtectedRoute>
+            <RoleRoute allowedRole="admin">
+              <AppShell>
+                <InvoiceDetail />
               </AppShell>
             </RoleRoute>
           </ProtectedRoute>

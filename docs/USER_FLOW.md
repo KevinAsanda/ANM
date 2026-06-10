@@ -18,7 +18,7 @@ All users land on the **Login Screen** first. There is no public-facing page in 
   ├── Quick stats: active jobs / completed today / total mechanics / low stock count
   ├── Recent tickets list (last 5) → [Ticket Detail]
   ├── Low-stock alerts → [Inventory List]
-  └── Navbar links → [Tickets List] [Inventory] [Staff] [Logout]
+  └── Navbar links → [Tickets List] [Inventory] [Staff] [Invoices List] [Logout]
 
 [Tickets List]
   ├── Filter tabs: All | Pending | In Progress | Completed | Cancelled
@@ -36,10 +36,26 @@ All users land on the **Login Screen** first. There is no public-facing page in 
 [Ticket Detail]
   ├── Shows: customer, vehicle, mechanic, status badge, description, notes, parts used
   ├── Status dropdown → change status → (saved) → [badge updates]
+  │     └── If status set to 'completed' → [System generates Invoice] → [WhatsApp trigger]
   ├── Notes field → save → [notes updated]
   ├── "Log Part Used" → Part select + qty input → (submit) → [parts list updates, inventory deducts]
   │     └── (insufficient stock) → [inline error: "Only [n] units available"]
+  ├── "View/Create Invoice" button (if not generated yet) → [Generate Invoice dialog] → [Invoice Detail]
   └── Back → [Tickets List]
+
+[Invoices List]
+  ├── Table: invoice number, ticket ref (vehicle reg), customer, total amount, status, date
+  ├── Click invoice row → [Invoice Detail]
+  └── Status filters: All | Unpaid | Paid | Void
+
+[Invoice Detail]
+  ├── Shows: invoice metadata, customer, vehicle, parts breakdown, labor cost, VAT, total
+  ├── Print button → open browser print dialog (print-friendly CSS stylesheet)
+  └── Toggle Payment button → [Toggle Payment Modal]
+
+[Toggle Payment Modal]
+  ├── Select payment method (cash, card, eft)
+  └── Submit → [Invoice Detail updates status to 'paid']
 
 [Inventory List]
   ├── Table: part name, part number, qty in stock, reorder level, unit cost
@@ -47,7 +63,7 @@ All users land on the **Login Screen** first. There is no public-facing page in 
   ├── "Add Part" button → [Add Part Modal]
   ├── Edit icon → [Edit Part Modal]
   └── (no parts yet) → [Empty state]
-
+  
 [Add Part Modal / Edit Part Modal]
   ├── (valid submit) → [Modal closes, table updates]
   ├── (missing required fields) → [field-level errors inside modal]
@@ -85,10 +101,19 @@ All users land on the **Login Screen** first. There is no public-facing page in 
 [Ticket Detail — Mechanic View]
   ├── Shows: vehicle info, job description, status badge, parts used
   ├── Status dropdown → Pending → In Progress → Completed (cannot set Cancelled)
-  │     └── (update) → [status badge updates]
+  │     └── (update) → [status badge updates] → [System generates Invoice] → [WhatsApp trigger]
   ├── "Log Part Used" → Part select + qty + submit → [parts list updates, inventory deducts]
   │     └── (insufficient stock) → [error: "Only [n] units available"]
   └── Back → [My Jobs]
+```
+
+---
+
+## Public Customer Flow
+
+```
+[WhatsApp Notification Link]
+  → [Public Invoice View] (no login required, read-only)
 ```
 
 ---
@@ -102,6 +127,9 @@ All users land on the **Login Screen** first. There is no public-facing page in 
 | Tickets List | `/tickets` | Admin only |
 | Create Ticket | `/tickets/new` | Admin only |
 | Ticket Detail | `/tickets/:id` | Admin + mechanic (own tickets) |
+| Invoices List | `/invoices` | Admin only |
+| Invoice Detail | `/invoices/:id` | Admin only |
+| Public Invoice View | `/public/invoices/:token` | Public (unauthenticated) |
 | Inventory List | `/inventory` | Admin only |
 | Staff List | `/staff` | Admin only |
 | My Jobs | `/my-jobs` | Mechanic only |
@@ -132,3 +160,5 @@ Every screen must handle these four states:
 | Admin tries to register duplicate email for new mechanic | Field-level error message |
 | Auth token expires mid-session | Silent redirect to login on next API call |
 | Create ticket: customer phone matches existing record | Customer fields auto-filled |
+| Customer opens public invoice link with invalid token | Display "Invoice not found" empty state |
+| User tries to view `/invoices` while logged out | Redirect to `/login` |

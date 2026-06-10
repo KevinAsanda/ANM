@@ -96,6 +96,18 @@ genuinely excellent — well-typed props, ARIA attributes, all states covered.
 
 ---
 
+## Invoicing Components — `client/src/components/invoices/`
+
+| Component | Status | Notes |
+|-----------|--------|-------|
+| `InvoiceRow.tsx` | `[NEW]` | Table row showing Invoice No, Vehicle Reg, Customer Name, Total, Status, Created Date |
+| `InvoiceDetailCard.tsx` | `[NEW]` | Complete invoice layout: parts list, labor, VAT, total, ANM banking details |
+| `InvoiceStatusBadge.tsx` | `[NEW]` | Status badge: unpaid (amber), paid (green), void (grey) |
+| `PaymentToggleForm.tsx` | `[NEW]` | Modal form to select payment method (cash, card, eft) and record payment status |
+| `PrintInvoiceStyle.css` | `[NEW]` | Print-friendly CSS rules to hide UI chrome and format printed invoices |
+
+---
+
 ## Component Build Priority
 
 Build in this order — each depends on the one before:
@@ -103,12 +115,12 @@ Build in this order — each depends on the one before:
 1. `Spinner` — needed by Button
 2. `Button` — needed by everything
 3. `Input`, `Select`, `Textarea` — needed by all forms
-4. `Badge` — needed by TicketStatusBadge
-5. `Card` — needed by TicketCard
-6. `Modal` — needed by PartForm, AddMechanicForm
+4. `Badge` — needed by TicketStatusBadge, InvoiceStatusBadge
+5. `Card` — needed by TicketCard, InvoiceDetailCard
+6. `Modal` — needed by PartForm, AddMechanicForm, PaymentToggleForm
 7. `EmptyState` — needed by all list pages
-8. `Table` — needed by TicketRow, InventoryTable, StaffTable
+8. `Table` — needed by TicketRow, InventoryTable, StaffTable, InvoiceRow
 9. `Toast` — needed by all write operations
 10. `PageHeader` — needed by all page layouts
 11. `SkeletonRow` — needed by loading states
-12. Feature components in sprint order (Auth → Tickets → Inventory → Parts → Dashboard → Staff)
+12. Feature components in sprint order (Auth → Tickets → Inventory → Parts → Dashboard → Staff → Invoices)

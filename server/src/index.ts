@@ -9,6 +9,7 @@ import ticketRoutes from './routes/ticket.routes.js';
 import staffRoutes from './routes/staff.routes.js';
 import inventoryRoutes from './routes/inventory.routes.js';
 import dashboardRoutes from './routes/dashboard.routes.js';
+import invoiceRoutes from './routes/invoice.routes.js';
 import { errorHandler } from './middleware/error.js';
 
 dotenv.config();
@@ -29,6 +30,7 @@ app.use('/api/v1/tickets', ticketRoutes);
 app.use('/api/v1/staff', staffRoutes);
 app.use('/api/v1/inventory', inventoryRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
+app.use('/api/v1/invoices', invoiceRoutes);
 
 // Root path diagnostic route
 app.get('/health', (req, res) => {

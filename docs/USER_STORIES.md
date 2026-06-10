@@ -211,7 +211,47 @@
 
 ---
 
-## V2 Stories (Not in MVP)
+## Sprint 9 — Invoicing & WhatsApp (V2)
+
+### INV-01 — Create & View Invoices (Admin)
+> As an **admin**, I want to generate an invoice for a service ticket so that I can capture the final billing details (labor, parts, and VAT) and track payment status.
+
+**Acceptance Criteria:**
+- [ ] Admin can generate an invoice for any service ticket.
+- [ ] System automatically calculates:
+  - `parts_cost` by summing all `qty_used * unit_cost_at_time` from `ticket_parts`.
+  - `tax_amount` as 15% VAT of the subtotal (labor + parts).
+  - `total_amount` as the sum of labor, parts, and VAT.
+- [ ] Invoice numbers are sequential and formatted as `INV-YYYYMM-XXXX`.
+- [ ] Admin can view a list of all invoices with status filters (`unpaid`, `paid`, `void`).
+- [ ] Admin can manually toggle invoice status to `paid` and record the payment method (`cash`, `card`, `eft`).
+
+---
+
+### INV-02 — Automated WhatsApp Notifications
+> As the **workshop system**, I want to automatically send a WhatsApp message to the customer and the admin when a job is marked completed, including invoice totals and a link to view details.
+
+**Acceptance Criteria:**
+- [ ] Marking a ticket status as `completed` automatically generates an `invoice` record if one does not exist.
+- [ ] System triggers WhatsApp notifications to:
+  - **Customer**: "Hi [Name], your vehicle [Make Model] is ready for collection! Total Invoice: R[Total]. View details here: [Public Link]"
+  - **Admin**: "Admin alert: Job [Registration] completed. Invoice [No] generated. Total: R[Total]. Link: [Public Link]"
+- [ ] If Twilio credentials are not configured in `.env`, the system prints the WhatsApp payload to the server logs and registers a mock notification event (graceful fallback).
+
+---
+
+### INV-03 — Public Customer Invoice Page
+> As a **customer**, I want to view my invoice details via the link sent to my phone without needing to log in, so that I can see parts, labor, and banking details for payment.
+
+**Acceptance Criteria:**
+- [ ] Clicking the public link redirects the customer to a styled, unauthenticated page `/public/invoices/:secure_token`.
+- [ ] Displays ANM branding, invoice number, status, customer/vehicle metadata, detailed parts list, labor cost, VAT, total, and ANM's EFT banking details.
+- [ ] The page is fully responsive for easy reading on smartphones.
+- [ ] Accessing this route with an invalid or non-existent token displays a clean "Invoice not found" empty state.
+
+---
+
+## V2 Stories (Future)
 
 - As a customer, I want to book a consultation online so that I don't need to call
 - As a mechanic, I want to scan a barcode to log a part so that data entry is faster

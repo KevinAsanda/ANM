@@ -8,7 +8,7 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "node --loader ts-node/esm src/index.ts",
-    "test": "tsc && node dist/middleware/auth.test.js && node dist/services/sprint2.test.js && node dist/services/sprint3.test.js && node dist/services/sprint4.test.js && node dist/services/sprint5.test.js && node dist/services/sprint6.test.js && node dist/services/sprint7.test.js",
+    "test": "tsc && node dist/middleware/auth.test.js && node dist/services/sprint2.test.js && node dist/services/sprint3.test.js && node dist/services/sprint4.test.js && node dist/services/sprint5.test.js && node dist/services/sprint6.test.js && node dist/services/sprint7.test.js && node dist/services/sprint9.test.js",
     "seed": "tsc && node dist/config/seed.js",
     "lint": "tsc --noEmit"
   },
