@@ -1,0 +1,61 @@
+services:
+  # 1. Backend API Web Service (Node.js)
+  - type: web
+    name: anm-backend-api
+    env: node
+    plan: free
+    rootDir: server
+    buildCommand: npm install && npm run build
+    startCommand: node dist/index.js
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: NODE_ENV
+        value: production
+      - key: SUPABASE_URL
+        sync: false # User will input this on Render dashboard
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false # User will input this on Render dashboard
+      - key: JWT_SECRET
+        sync: false # User will input this on Render dashboard
+
+  # 2. Customer Portal Static Site (React/Vite)
+  - type: static
+    name: anm-customer-portal
+    env: static
+    rootDir: client-customer
+    buildCommand: npm install && npm run build
+    publishPath: dist
+    routes:
+      # Ensure client-side routing works for React Router SPAs
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_BASE_URL
+        # Pulls the live URL of the web service dynamically
+        fromService:
+          type: web
+          name: anm-backend-api
+          property: host
+        value: https://${anm-backend-api.host}/api/v1
+
+  # 3. Staff Portal Static Site (React/Vite)
+  - type: static
+    name: anm-staff-portal
+    env: static
+    rootDir: client-staff
+    buildCommand: npm install && npm run build
+    publishPath: dist
+    routes:
+      # Ensure client-side routing works for React Router SPAs
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_BASE_URL
+        fromService:
+          type: web
+          name: anm-backend-api
+          property: host
+        value: https://${anm-backend-api.host}/api/v1
