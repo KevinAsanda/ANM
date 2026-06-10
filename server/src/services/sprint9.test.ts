@@ -28,7 +28,7 @@ test('Sprint 9 - Invoicing Service: calculations, token queries, payment states,
   assert.ok(ticket);
   
   // Set labor cost
-  ticket.labour_cost = 200.00;
+  ticket!.labour_cost = 200.00;
 
   // Add mock parts on this ticket
   mockTicketParts.push(
@@ -127,8 +127,8 @@ test('Sprint 9 - Invoicing Service: calculations, token queries, payment states,
   const allInvoices = await listInvoices();
   const autoInvoice = allInvoices.find(inv => inv.ticket_id === otherTicketId);
   assert.ok(autoInvoice, 'Invoice should be auto-created on ticket completion');
-  assert.strictEqual(autoInvoice.status, 'unpaid');
-  assert.strictEqual(autoInvoice.labour_cost, 100.00);
+  assert.strictEqual(autoInvoice!.status, 'unpaid');
+  assert.strictEqual(autoInvoice!.labour_cost, 100.00);
 
   // Clean up mock array updates
   mockTicketParts.splice(0, mockTicketParts.length); // Clear parts

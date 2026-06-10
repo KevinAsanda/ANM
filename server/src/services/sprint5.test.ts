@@ -20,7 +20,7 @@ test('Sprint 5 - Parts Logging Service: log part, decrement inventory, validatio
   const initialInventory = await listInventory();
   const oilFilter = initialInventory.find(i => i.id === partId);
   assert.ok(oilFilter);
-  const initialStock = oilFilter.qty_in_stock;
+  const initialStock = oilFilter!.qty_in_stock;
 
   // 1. Log part: Happy path (assigned mechanic logs 2 oil filters)
   const log1 = await logPartOnTicket(ticketId, partId, 2, assignedMechanicId, 'mechanic');
@@ -96,6 +96,6 @@ test('Sprint 5 - Parts Logging Service: log part, decrement inventory, validatio
   // 6. Get ticket details should now include parts_used
   const ticketDetails = await getTicketDetails(ticketId);
   assert.ok(ticketDetails.parts_used);
-  assert.strictEqual(ticketDetails.parts_used.length, 2);
-  assert.strictEqual(ticketDetails.parts_used[0].part_name, 'Oil Filter');
+  assert.strictEqual(ticketDetails.parts_used!.length, 2);
+  assert.strictEqual(ticketDetails.parts_used![0].part_name, 'Oil Filter');
 });
