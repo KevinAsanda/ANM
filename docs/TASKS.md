@@ -174,12 +174,45 @@
 
 ---
 
+## SPRINT 10 — Financial Reports & Analytics (V2)
+
+| # | Task | Label | Status |
+|---|------|-------|--------|
+| A-1001 | Create database views `monthly_financial_summary` and `staff_performance_summary` | `[BACKEND]` | ✅ |
+| A-1002 | Write the Analytics repository service `analytics.service.ts` | `[BACKEND]` | ✅ |
+| A-1003 | Write Express controller route `GET /api/v1/dashboard/financials` | `[BACKEND]` | ✅ |
+| A-1004 | Write backend unit tests for financials aggregations and queries | `[TEST]` | ✅ |
+| A-1005 | Build the client `analyticsService.ts` API fetch | `[FRONTEND]` | ✅ |
+| A-1006 | Design and build the Admin Financial Reports page (`/analytics`) | `[FRONTEND]` | ✅ |
+| A-1007 | Implement pure CSS/SVG chart components (Bar, Donut) to keep bundle lightweight | `[FRONTEND]` | ✅ |
+| A-1008 | Register routes and sidebar navigation links | `[FRONTEND]` | ✅ |
+| A-1009 | Update `docs/PROJECT_OVERVIEW.md`, `docs/USER_STORIES.md`, and `docs/TASKS.md` | `[DOCS]` | ✅ |
+
+---
+
+## SPRINT 11 — Customer Booking & Tracking Portal (V2)
+
+| # | Task | Label | Status |
+|---|------|-------|--------|
+| A-1101 | Execute SQL migrations for draft status, nullable fields, date/time preferences, and tracking token | `[BACKEND]` | ⬜ |
+| A-1102 | Update TypeScript interfaces and models for `Ticket` and `Invoice` to support Sprint 11 fields | `[BACKEND]` | ⬜ |
+| A-1103 | Implement booking request creation service and `POST /api/v1/public/booking` controller route | `[BACKEND]` | ⬜ |
+| A-1104 | Implement tracking data fetch service and `GET /api/v1/public/track/:trackingToken` route | `[BACKEND]` | ⬜ |
+| A-1105 | Implement admin ticket approval service and `PATCH /api/v1/tickets/:id/approve` route | `[BACKEND]` | ⬜ |
+| A-1106 | Write backend unit tests (`sprint11.test.ts`) for booking requests, tracking, and approvals | `[TEST]` | ⬜ |
+| A-1107 | Design and build the client Booking request page (`/public/booking`) with slots selection | `[FRONTEND]` | ⬜ |
+| A-1107a | Design and build the client Landing Page (`/`) with services list, CTA, tracking search, and contact footer | `[FRONTEND]` | ⬜ |
+| A-1108 | Design and build the client Progress Tracker page (`/public/track/:token`) with visual stepper | `[FRONTEND]` | ⬜ |
+| A-1109 | Update Admin Dashboard to show active Booking Requests count and add "Drafts" filters/sections | `[FRONTEND]` | ⬜ |
+| A-1110 | Build Approval and Assignment Panel on the Ticket Detail page for draft bookings | `[FRONTEND]` | ⬜ |
+| A-1111 | Update `docs/PROJECT_OVERVIEW.md`, `docs/USER_STORIES.md`, and `docs/TASKS.md` | `[DOCS]` | ⬜ |
+
+---
+
 ## V2 Features (Future)
 
-- Customer-facing booking portal
 - Barcode scanner IoT integration
 - Payroll module
-- Financial reports
 
 ---
 

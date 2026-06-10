@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ticketsService } from '../services/ticketsService.js';
 import type { TicketRelation } from '../services/ticketsService.js';
 import { Table } from '../components/ui/Table.js';
@@ -12,8 +12,11 @@ import { Spinner } from '../components/ui/Spinner.js';
 import { PlusCircle, AlertCircle, FileText } from 'lucide-react';
 
 const Tickets: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const statusParam = searchParams.get('status') || 'all';
+
   const [tickets, setTickets] = useState<TicketRelation[]>([]);
-  const [activeTab, setActiveTab] = useState<string>('all');
+  const [activeTab, setActiveTab] = useState<string>(statusParam);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,11 +37,23 @@ const Tickets: React.FC = () => {
   };
 
   useEffect(() => {
+    if (statusParam) {
+      setActiveTab(statusParam);
+    }
+  }, [statusParam]);
+
+  useEffect(() => {
     fetchTickets(activeTab);
   }, [activeTab]);
 
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId);
+    setSearchParams({ status: tabId });
+  };
+
   const tabs = [
     { id: 'all', label: 'All' },
+    { id: 'draft', label: 'Draft Requests' },
     { id: 'pending', label: 'Pending' },
     { id: 'in_progress', label: 'In Progress' },
     { id: 'completed', label: 'Completed' },
@@ -99,7 +114,7 @@ const Tickets: React.FC = () => {
         {tabs.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => handleTabChange(tab.id)}
             className={`px-4 py-2.5 text-[0.72rem] font-semibold uppercase tracking-wider border-b-2 -mb-[2px] transition-all whitespace-nowrap ${
               activeTab === tab.id
                 ? 'border-primary text-primary'

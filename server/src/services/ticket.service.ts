@@ -1,18 +1,21 @@
 import { supabase } from '../config/supabase.js';
-import { mockCustomers } from './customer.service.js';
-import { mockVehicles } from './vehicle.service.js';
+import { mockCustomers, createOrGetCustomer } from './customer.service.js';
+import { mockVehicles, createVehicle, getVehicleByRegistration } from './vehicle.service.js';
 import { mockStaff } from './staff.service.js';
 import { mockInventory } from './inventory.service.js';
 
 export interface Ticket {
   id: string;
   vehicle_id: string;
-  staff_id: string;
-  created_by: string;
-  status: 'pending' | 'in_progress' | 'completed' | 'cancelled';
+  staff_id: string | null;
+  created_by: string | null;
+  status: 'draft' | 'pending' | 'in_progress' | 'completed' | 'cancelled';
   description: string;
   notes: string | null;
   labour_cost: number;
+  preferred_date?: string | null;
+  preferred_time?: 'morning' | 'afternoon' | null;
+  tracking_token?: string;
   created_at: string;
   updated_at: string;
   vehicle?: {
@@ -51,6 +54,7 @@ export let mockTickets: Ticket[] = [
     description: 'Front brake pads worn out and squealing. Replace pads.',
     notes: 'Customer reports squealing noise when braking.',
     labour_cost: 350.00,
+    tracking_token: 'b62rdieof-e82b-4720-a61f-9a103c8099ea',
     created_at: new Date(Date.now() - 3600000 * 2).toISOString(), // 2 hrs ago
     updated_at: new Date(Date.now() - 3600000 * 2).toISOString(),
     vehicle: {
@@ -109,6 +113,9 @@ export async function listTickets(status?: string): Promise<Ticket[]> {
     description: t.description,
     notes: t.notes,
     labour_cost: Number(t.labour_cost),
+    preferred_date: t.preferred_date,
+    preferred_time: t.preferred_time,
+    tracking_token: t.tracking_token,
     created_at: t.created_at,
     updated_at: t.updated_at,
     vehicle: t.vehicle ? {
@@ -160,6 +167,9 @@ export async function listMechanicTickets(mechanicId: string): Promise<Ticket[]>
     description: t.description,
     notes: t.notes,
     labour_cost: Number(t.labour_cost),
+    preferred_date: t.preferred_date,
+    preferred_time: t.preferred_time,
+    tracking_token: t.tracking_token,
     created_at: t.created_at,
     updated_at: t.updated_at,
     vehicle: t.vehicle ? {
@@ -335,6 +345,9 @@ export async function getTicketDetails(id: string): Promise<Ticket> {
     description: t.description,
     notes: t.notes,
     labour_cost: Number(t.labour_cost),
+    preferred_date: t.preferred_date,
+    preferred_time: t.preferred_time,
+    tracking_token: t.tracking_token,
     created_at: t.created_at,
     updated_at: t.updated_at,
     vehicle: t.vehicle ? {
@@ -361,7 +374,7 @@ export async function getTicketDetails(id: string): Promise<Ticket> {
 
 export async function updateTicketStatus(
   id: string,
-  status: 'pending' | 'in_progress' | 'completed' | 'cancelled',
+  status: 'draft' | 'pending' | 'in_progress' | 'completed' | 'cancelled',
   role: 'admin' | 'mechanic',
   mechanicId?: string
 ): Promise<Ticket> {
@@ -666,4 +679,276 @@ export async function getTicketParts(
     logged_by_name: p.logged_by_staff?.name || 'Unknown',
     created_at: p.created_at
   }));
+}
+
+export async function createBookingRequest(
+  customerName: string,
+  customerPhone: string,
+  customerEmail: string | null,
+  registrationNumber: string,
+  make: string,
+  model: string,
+  year: number | null,
+  description: string,
+  preferredDate: string,
+  preferredTime: 'morning' | 'afternoon'
+): Promise<Ticket> {
+  const { customer } = await createOrGetCustomer(customerName, customerPhone, customerEmail);
+  
+  let vehicle = await getVehicleByRegistration(registrationNumber);
+  if (!vehicle) {
+    vehicle = await createVehicle(customer.id, registrationNumber, null, make, model, year);
+  }
+
+  if (isMockMode) {
+    const newTicket: Ticket = {
+      id: crypto.randomUUID(),
+      vehicle_id: vehicle.id,
+      staff_id: null,
+      created_by: null,
+      status: 'draft',
+      description,
+      notes: null,
+      labour_cost: 0.00,
+      preferred_date: preferredDate,
+      preferred_time: preferredTime,
+      tracking_token: crypto.randomUUID(),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      vehicle: {
+        id: vehicle.id,
+        registration_number: vehicle.registration_number,
+        make: vehicle.make,
+        model: vehicle.model,
+        year: vehicle.year
+      },
+      customer: {
+        id: customer.id,
+        name: customer.name,
+        phone: customer.phone,
+        email: customer.email
+      },
+      parts_used: []
+    };
+
+    mockTickets.push(newTicket);
+    return newTicket;
+  }
+
+  const { data, error } = await supabase
+    .from('service_tickets')
+    .insert({
+      vehicle_id: vehicle.id,
+      status: 'draft',
+      description,
+      preferred_date: preferredDate,
+      preferred_time: preferredTime,
+      labour_cost: 0.00
+    })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data as Ticket;
+}
+
+export async function getTicketByTrackingToken(
+  trackingToken: string
+): Promise<{ ticket: Ticket; invoice: any | null }> {
+  if (isMockMode) {
+    const ticket = mockTickets.find(
+      t => t.tracking_token === trackingToken || t.id === trackingToken
+    );
+
+    if (!ticket) {
+      const error = new Error('Tracking record not found') as any;
+      error.status = 404;
+      error.code = 'TRACKING_NOT_FOUND';
+      throw error;
+    }
+
+    // Populate relations
+    const vehicle = mockVehicles.find(v => v.id === ticket.vehicle_id);
+    if (vehicle) {
+      ticket.vehicle = {
+        id: vehicle.id,
+        registration_number: vehicle.registration_number,
+        make: vehicle.make,
+        model: vehicle.model,
+        year: vehicle.year
+      };
+
+      const customer = mockCustomers.find(c => c.id === vehicle.customer_id);
+      if (customer) {
+        ticket.customer = {
+          id: customer.id,
+          name: customer.name,
+          phone: customer.phone,
+          email: customer.email
+        };
+      }
+    }
+
+    if (ticket.staff_id) {
+      const mechanic = mockStaff.find(s => s.id === ticket.staff_id);
+      if (mechanic) {
+        ticket.mechanic = {
+          id: mechanic.id,
+          name: mechanic.name,
+          email: mechanic.email
+        };
+      }
+    }
+
+    const ticketParts = mockTicketParts.filter(p => p.ticket_id === ticket.id);
+    ticket.parts_used = ticketParts.map(p => {
+      const part = mockInventory.find(i => i.id === p.inventory_id);
+      const staff = mockStaff.find(s => s.id === p.logged_by);
+      return {
+        id: p.id,
+        part_name: part?.part_name || 'Unknown Part',
+        qty_used: p.qty_used,
+        unit_cost_at_time: p.unit_cost_at_time,
+        logged_by_name: staff?.name || 'Unknown',
+        created_at: p.created_at
+      };
+    });
+
+    let invoice = null;
+    if (ticket.status === 'completed') {
+      const { mockInvoices } = await import('./invoice.service.js');
+      invoice = mockInvoices.find(inv => inv.ticket_id === ticket.id) || null;
+    }
+
+    return { ticket, invoice };
+  }
+
+  // Real Supabase lookup
+  const { data: t, error } = await supabase
+    .from('service_tickets')
+    .select(`
+      *,
+      vehicle:vehicles(
+        id, registration_number, make, model, year, 
+        customer:customers(id, name, phone, email)
+      ),
+      mechanic:staff!service_tickets_staff_id_fkey(id, name, email),
+      parts:ticket_parts(
+        id, qty_used, unit_cost_at_time, created_at,
+        inventory(part_name),
+        logged_by_staff:staff!ticket_parts_logged_by_fkey(name)
+      )
+    `)
+    .eq('tracking_token', trackingToken)
+    .maybeSingle();
+
+  if (error || !t) {
+    const customError = new Error('Tracking record not found') as any;
+    customError.status = 404;
+    customError.code = 'TRACKING_NOT_FOUND';
+    throw customError;
+  }
+
+  // Map parts relationship
+  const parts_used = (t.parts || []).map((p: any) => ({
+    id: p.id,
+    part_name: p.inventory?.part_name || 'Unknown Part',
+    qty_used: p.qty_used,
+    unit_cost_at_time: Number(p.unit_cost_at_time),
+    logged_by_name: p.logged_by_staff?.name || 'Unknown',
+    created_at: p.created_at
+  }));
+
+  const ticket: Ticket = {
+    id: t.id,
+    vehicle_id: t.vehicle_id,
+    staff_id: t.staff_id,
+    created_by: t.created_by,
+    status: t.status,
+    description: t.description,
+    notes: t.notes,
+    labour_cost: Number(t.labour_cost),
+    preferred_date: t.preferred_date,
+    preferred_time: t.preferred_time,
+    tracking_token: t.tracking_token,
+    created_at: t.created_at,
+    updated_at: t.updated_at,
+    vehicle: t.vehicle ? {
+      id: t.vehicle.id,
+      registration_number: t.vehicle.registration_number,
+      make: t.vehicle.make,
+      model: t.vehicle.model,
+      year: t.vehicle.year
+    } : undefined,
+    customer: t.vehicle?.customer ? {
+      id: t.vehicle.customer.id,
+      name: t.vehicle.customer.name,
+      phone: t.vehicle.customer.phone,
+      email: t.vehicle.customer.email
+    } : undefined,
+    mechanic: t.mechanic ? {
+      id: t.mechanic.id,
+      name: t.mechanic.name,
+      email: t.mechanic.email
+    } : undefined,
+    parts_used
+  };
+
+  let invoice = null;
+  if (t.status === 'completed') {
+    const { data: invData } = await supabase
+      .from('invoices')
+      .select('*')
+      .eq('ticket_id', t.id)
+      .maybeSingle();
+    invoice = invData;
+  }
+
+  return { ticket, invoice };
+}
+
+export async function approveBooking(
+  ticketId: string,
+  staffId: string,
+  labourCost: number
+): Promise<Ticket> {
+  if (isMockMode) {
+    const ticket = mockTickets.find(t => t.id === ticketId);
+    if (!ticket) {
+      const error = new Error('Ticket not found') as any;
+      error.status = 404;
+      error.code = 'TICKET_NOT_FOUND';
+      throw error;
+    }
+
+    ticket.status = 'pending';
+    ticket.staff_id = staffId;
+    ticket.labour_cost = labourCost;
+    ticket.updated_at = new Date().toISOString();
+
+    const mechanic = mockStaff.find(s => s.id === staffId);
+    if (mechanic) {
+      ticket.mechanic = {
+        id: mechanic.id,
+        name: mechanic.name,
+        email: mechanic.email
+      };
+    }
+
+    return ticket;
+  }
+
+  const { data, error } = await supabase
+    .from('service_tickets')
+    .update({
+      status: 'pending',
+      staff_id: staffId,
+      labour_cost: labourCost
+    })
+    .eq('id', ticketId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data as Ticket;
 }

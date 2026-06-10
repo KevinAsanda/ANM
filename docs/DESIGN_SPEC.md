@@ -280,6 +280,31 @@ States:
   Error    → error + retry
 ```
 
+### Financial Reports & Analytics
+
+```
+Layout: Sidebar (left, 240px) + main content area
+
+Main content:
+  [Page title: "Financial Reports"]
+  [Date Range Selector: 30 Days | 90 Days | Year to Date (tabs)]
+  
+  [KPI Grid - 4 Cards:]
+    Gross Revenue | Labor Fees | Parts Billed | VAT Collected
+  
+  [Two-column Grid on Desktop, Stacked on Mobile:]
+    Left column: "Monthly Earnings Trend" — SVG bar chart showing monthly billing splits
+    Right column: "Revenue Split" — SVG Donut chart showing Labor vs Parts proportion
+    
+  [Full-width Table:]
+    "Technician Performance" — rankings of mechanics by completed tickets, labor generated, and parts logged.
+
+States:
+  Loading → Shimmer KPI cards, skeleton charts (SVG placeholders), skeleton table rows
+  Empty   → "No financial data available" (e.g. no paid invoices in date range)
+  Error   → Error banner with retry option
+```
+
 ---
 
 ## Interactive Element States

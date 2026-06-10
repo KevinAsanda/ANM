@@ -1,6 +1,7 @@
 import React from 'react';
 
 export type BadgeVariant =
+  | 'draft'
   | 'pending'
   | 'in_progress'
   | 'completed'
@@ -16,6 +17,7 @@ interface BadgeProps {
 
 export const Badge: React.FC<BadgeProps> = ({ variant, children }) => {
   const styles = {
+    draft: 'bg-slate-100 text-slate-600 border border-slate-300/60',
     pending: 'bg-status-pending-bg text-status-pending-text border border-status-pending-text/10',
     in_progress: 'bg-status-inprogress-bg text-status-inprogress-text border border-status-inprogress-text/10',
     completed: 'bg-status-completed-bg text-status-completed-text border border-status-completed-text/10',

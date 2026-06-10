@@ -18,7 +18,7 @@ All users land on the **Login Screen** first. There is no public-facing page in 
   ├── Quick stats: active jobs / completed today / total mechanics / low stock count
   ├── Recent tickets list (last 5) → [Ticket Detail]
   ├── Low-stock alerts → [Inventory List]
-  └── Navbar links → [Tickets List] [Inventory] [Staff] [Invoices List] [Logout]
+  └── Navbar links → [Tickets List] [Inventory] [Staff] [Invoices List] [Financial Reports] [Logout]
 
 [Tickets List]
   ├── Filter tabs: All | Pending | In Progress | Completed | Cancelled
@@ -56,6 +56,13 @@ All users land on the **Login Screen** first. There is no public-facing page in 
 [Toggle Payment Modal]
   ├── Select payment method (cash, card, eft)
   └── Submit → [Invoice Detail updates status to 'paid']
+
+[Financial Reports]
+  ├── Date range selector: 30 days | 90 days | Year to Date
+  ├── KPI Row: Gross Revenue, Labor Revenue, Parts Revenue, VAT Collected
+  ├── Earnings trend chart (Monthly SVG bar/line chart)
+  ├── Revenue split donut chart (SVG donut)
+  └── Technician Performance rankings table → click mechanic → [Staff List] (scoped profile)
 
 [Inventory List]
   ├── Table: part name, part number, qty in stock, reorder level, unit cost
@@ -130,6 +137,7 @@ All users land on the **Login Screen** first. There is no public-facing page in 
 | Invoices List | `/invoices` | Admin only |
 | Invoice Detail | `/invoices/:id` | Admin only |
 | Public Invoice View | `/public/invoices/:token` | Public (unauthenticated) |
+| Financial Reports | `/analytics` | Admin only |
 | Inventory List | `/inventory` | Admin only |
 | Staff List | `/staff` | Admin only |
 | My Jobs | `/my-jobs` | Mechanic only |
@@ -161,4 +169,5 @@ Every screen must handle these four states:
 | Auth token expires mid-session | Silent redirect to login on next API call |
 | Create ticket: customer phone matches existing record | Customer fields auto-filled |
 | Customer opens public invoice link with invalid token | Display "Invoice not found" empty state |
-| User tries to view `/invoices` while logged out | Redirect to `/login` |
+| User tries to view `/invoices` or `/analytics` while logged out | Redirect to `/login` |
+| Mechanic tries to view `/analytics` | Redirect to `/my-jobs` |

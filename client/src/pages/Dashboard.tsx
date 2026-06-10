@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext.js';
 import { dashboardService } from '../services/dashboardService.js';
 import type { DashboardStats } from '../services/dashboardService.js';
 import type { TicketRelation } from '../services/ticketsService.js';
+import { ticketsService } from '../services/ticketsService.js';
 import type { InventoryItem } from '../services/inventoryService.js';
 import { StatsCard } from '../components/ui/StatsCard.js';
 import { Table } from '../components/ui/Table.js';
@@ -30,6 +31,7 @@ const Dashboard: React.FC = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recentTickets, setRecentTickets] = useState<TicketRelation[]>([]);
   const [lowStockItems, setLowStockItems] = useState<InventoryItem[]>([]);
+  const [draftTickets, setDraftTickets] = useState<TicketRelation[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,14 +39,16 @@ const Dashboard: React.FC = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const [statsData, ticketsData, stockData] = await Promise.all([
+      const [statsData, ticketsData, stockData, draftsData] = await Promise.all([
         dashboardService.getStats(),
         dashboardService.getRecentTickets(),
-        dashboardService.getLowStockItems()
+        dashboardService.getLowStockItems(),
+        ticketsService.getTickets('draft').catch(() => []) // Fallback in case of API mismatch
       ]);
       setStats(statsData);
       setRecentTickets(ticketsData);
       setLowStockItems(stockData);
+      setDraftTickets(draftsData);
     } catch (err: any) {
       console.error('Error fetching dashboard data:', err);
       setError(err.message || 'Failed to load dashboard data. Please try again.');
@@ -148,6 +152,26 @@ const Dashboard: React.FC = () => {
         <h1 className="font-display font-medium text-4xl text-text">Dashboard</h1>
         <p className="text-text-muted text-sm mt-1 font-light">Welcome back, {user?.name}! Here is the workshop status for today.</p>
       </div>
+
+      {/* Booking Requests Alert */}
+      {draftTickets.length > 0 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 animate-slide-in shadow-sm">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="text-amber-600 shrink-0 mt-0.5" size={20} />
+            <div>
+              <p className="font-semibold text-amber-900 text-sm">Pending Booking Requests</p>
+              <p className="text-xs text-amber-700 mt-0.5">You have {draftTickets.length} new booking request(s) awaiting mechanic assignment and scheduling approval.</p>
+            </div>
+          </div>
+          <Button
+            variant="primary"
+            onClick={() => navigate('/tickets?status=draft')}
+            className="text-xs py-2 px-4 bg-amber-600 hover:bg-amber-700 text-white font-semibold border-none self-end sm:self-auto"
+          >
+            Review Requests
+          </Button>
+        </div>
+      )}
 
       {/* Stats Cards Row */}
       {stats && (

@@ -100,11 +100,34 @@ genuinely excellent — well-typed props, ARIA attributes, all states covered.
 
 | Component | Status | Notes |
 |-----------|--------|-------|
-| `InvoiceRow.tsx` | `[NEW]` | Table row showing Invoice No, Vehicle Reg, Customer Name, Total, Status, Created Date |
-| `InvoiceDetailCard.tsx` | `[NEW]` | Complete invoice layout: parts list, labor, VAT, total, ANM banking details |
-| `InvoiceStatusBadge.tsx` | `[NEW]` | Status badge: unpaid (amber), paid (green), void (grey) |
-| `PaymentToggleForm.tsx` | `[NEW]` | Modal form to select payment method (cash, card, eft) and record payment status |
-| `PrintInvoiceStyle.css` | `[NEW]` | Print-friendly CSS rules to hide UI chrome and format printed invoices |
+| `InvoiceRow.tsx` | `✅ DONE` | Table row showing Invoice No, Vehicle Reg, Customer Name, Total, Status, Created Date |
+| `InvoiceDetailCard.tsx` | `✅ DONE` | Complete invoice layout: parts list, labor, VAT, total, ANM banking details |
+| `InvoiceStatusBadge.tsx` | `✅ DONE` | Status badge: unpaid (amber), paid (green), void (grey) |
+| `PaymentToggleForm.tsx` | `✅ DONE` | Modal form to select payment method (cash, card, eft) and record payment status |
+| `PrintInvoiceStyle.css` | `✅ DONE` | Print-friendly CSS rules to hide UI chrome and format printed invoices |
+
+---
+
+## Analytics Components — Built inline in `client/src/pages/Analytics.tsx`
+
+| Component | Status | Notes |
+|-----------|--------|-------|
+| `FinancialStats` | `✅ DONE` | KPI cards: Gross Revenue, Labor Revenue, Parts Revenue, VAT Collected |
+| `RevenueTrendChart` | `✅ DONE` | SVG-based responsive bar chart showing monthly trends for labor and parts |
+| `RevenueSplitChart` | `✅ DONE` | SVG-based donut chart displaying Labor vs Parts percentage split |
+| `TechnicianTable` | `✅ DONE` | Table showing mechanic name, tickets completed, labor generated, parts value |
+
+---
+
+## Booking & Tracking Components — `client/src/components/booking/` (or inline in pages)
+
+| Component | Status | Notes |
+|-----------|--------|-------|
+| `LandingPage` | `[NEW]` | Unauthenticated landing page at root route `/` with hero, features, status lookups, and contact footer |
+| `BookingForm` | `[NEW]` | Unauthenticated form: name, phone, email, vehicle reg, make, model, year, description, date, slot |
+| `BookingSuccess` | `[NEW]` | Confirmation view with copyable link and secure tracking token |
+| `ProgressStepper` | `[NEW]` | Visual progress bar or stepper indicating: Requested → Scheduled → Repairing → Completed |
+| `ApprovalPanel` | `[NEW]` | Admin-only detail card section: select mechanic, set labor, approve draft to pending |
 
 ---
 
@@ -119,8 +142,8 @@ Build in this order — each depends on the one before:
 5. `Card` — needed by TicketCard, InvoiceDetailCard
 6. `Modal` — needed by PartForm, AddMechanicForm, PaymentToggleForm
 7. `EmptyState` — needed by all list pages
-8. `Table` — needed by TicketRow, InventoryTable, StaffTable, InvoiceRow
+8. `Table` — needed by TicketRow, InventoryTable, StaffTable, InvoiceRow, TechnicianTable
 9. `Toast` — needed by all write operations
 10. `PageHeader` — needed by all page layouts
 11. `SkeletonRow` — needed by loading states
-12. Feature components in sprint order (Auth → Tickets → Inventory → Parts → Dashboard → Staff → Invoices)
+12. Feature components in sprint order (Auth → Tickets → Inventory → Parts → Dashboard → Staff → Invoices → Analytics)

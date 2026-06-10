@@ -115,3 +115,23 @@ export async function createVehicle(
 
   return created as Vehicle;
 }
+
+export async function getVehicleByRegistration(registrationNumber: string): Promise<Vehicle | null> {
+  const normalizedReg = registrationNumber.trim().toUpperCase();
+
+  if (isMockMode) {
+    return mockVehicles.find(v => v.registration_number === normalizedReg) || null;
+  }
+
+  const { data, error } = await supabase
+    .from('vehicles')
+    .select('*')
+    .eq('registration_number', normalizedReg)
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+
+  return data as Vehicle | null;
+}

@@ -42,14 +42,14 @@ decisions from.
 5. **Management Dashboard** — Live stats: active jobs, completed jobs, mechanic workload, low stock alerts
 6. **Staff Management** — Owner creates and manages mechanic accounts
 
-## V2 Features (Sprint 9 Active)
+## V2 Features (Sprint 10 Active)
 
-- [🔄] Invoicing System — generate final billing details (labor, parts, VAT)
-- [🔄] Automated WhatsApp notifications to customers and admin on job completion
+- [✅] Invoicing System — generate final billing details (labor, parts, VAT)
+- [✅] Automated WhatsApp notifications to customers and admin on job completion
+- [✅] Financial Reporting & Dashboard — visualize monthly revenues, parts margins, and technician performance
 - [ ] Customer-facing online booking portal
 - [ ] Barcode scanner IoT integration (hardware: handheld USB scanner)
 - [ ] Payroll calculation from clock-in/out records
-- [ ] Financial reporting (revenue vs parts cost per job)
 - [ ] SMS reminders for vehicle service due dates
 
 ## What I Learned
@@ -78,4 +78,4 @@ If I were to rebuild this project, I would implement a full end-to-end integrati
 
 ## Status
 
-🔄 Sprint 9 (V2 Invoicing & WhatsApp Notifications) in progress
+✅ Sprint 10 (V2 Financial Reports & Analytics) completed

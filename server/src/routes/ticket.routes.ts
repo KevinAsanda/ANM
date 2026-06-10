@@ -8,7 +8,10 @@ import {
   patchTicketStatus,
   patchTicketNotes,
   postTicketPart,
-  getTicketPartsList
+  getTicketPartsList,
+  postBookingRequest,
+  getTrackingDetails,
+  patchApproveBooking
 } from '../controllers/ticket.controller.js';
 import { authenticate, requireRole } from '../middleware/auth.js';
 import { validateRequest } from '../middleware/validate.js';
@@ -26,7 +29,7 @@ const createTicketSchema = z.object({
 
 const updateStatusSchema = z.object({
   body: z.object({
-    status: z.enum(['pending', 'in_progress', 'completed', 'cancelled']),
+    status: z.enum(['draft', 'pending', 'in_progress', 'completed', 'cancelled']),
   }),
 });
 
@@ -43,6 +46,32 @@ const logPartSchema = z.object({
   }),
 });
 
+const publicBookingSchema = z.object({
+  body: z.object({
+    customerName: z.string().min(2, 'Name must be at least 2 characters'),
+    customerPhone: z.string().min(9, 'Phone number must be at least 9 characters'),
+    customerEmail: z.string().email('Invalid email address').optional().nullable(),
+    registrationNumber: z.string().min(3, 'Registration number must be at least 3 characters'),
+    make: z.string().min(2, 'Vehicle make is required'),
+    model: z.string().min(2, 'Vehicle model is required'),
+    year: z.number().int().min(1900).max(2100).optional().nullable(),
+    description: z.string().min(5, 'Issue description must be at least 5 characters'),
+    preferredDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Preferred date must be YYYY-MM-DD'),
+    preferredTime: z.enum(['morning', 'afternoon']),
+  }),
+});
+
+const approveBookingSchema = z.object({
+  body: z.object({
+    staffId: z.string().uuid('Invalid staff UUID'),
+    labourCost: z.number().nonnegative('Labour cost must be 0 or greater'),
+  }),
+});
+
+// Unauthenticated public customer routes
+router.post('/public/booking', validateRequest(publicBookingSchema), postBookingRequest);
+router.get('/public/track/:trackingToken', getTrackingDetails);
+
 router.use(authenticate);
 
 // Mechanic jobs endpoint
@@ -58,6 +87,7 @@ router.patch('/:id/status', validateRequest(updateStatusSchema), patchTicketStat
 
 // Admin note update
 router.patch('/:id/notes', requireRole('admin'), validateRequest(updateNotesSchema), patchTicketNotes);
+router.patch('/:id/approve', requireRole('admin'), validateRequest(approveBookingSchema), patchApproveBooking);
 
 // Parts logging routes (auth checked inside controller: admin or assigned mechanic only)
 router.post('/:id/parts', validateRequest(logPartSchema), postTicketPart);

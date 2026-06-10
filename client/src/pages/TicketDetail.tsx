@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext.js';
 import { ticketsService } from '../services/ticketsService.js';
 import type { TicketRelation } from '../services/ticketsService.js';
 import { inventoryService } from '../services/inventoryService.js';
+import { staffService } from '../services/staffService.js';
 import { Badge } from '../components/ui/Badge.js';
 import type { BadgeVariant } from '../components/ui/Badge.js';
 import { Button } from '../components/ui/Button.js';
@@ -29,6 +30,13 @@ const TicketDetail: React.FC = () => {
   const [isSavingNotes, setIsSavingNotes] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [notesMessage, setNotesMessage] = useState<string | null>(null);
+
+  // Booking approval states
+  const [staffList, setStaffList] = useState<any[]>([]);
+  const [selectedStaffId, setSelectedStaffId] = useState<string>('');
+  const [labourCostInput, setLabourCostInput] = useState<string>('0.00');
+  const [isApproving, setIsApproving] = useState<boolean>(false);
+  const [approvalError, setApprovalError] = useState<string | null>(null);
 
   // Parts logging states
   const [inventoryItems, setInventoryItems] = useState<any[]>([]);
@@ -70,10 +78,22 @@ const TicketDetail: React.FC = () => {
     }
   };
 
+  const fetchStaff = async () => {
+    try {
+      const staff = await staffService.getStaff();
+      setStaffList(staff.filter((s: any) => s.role === 'mechanic'));
+    } catch (err) {
+      console.error('Failed to load staff list:', err);
+    }
+  };
+
   useEffect(() => {
     fetchTicket();
     fetchInventory();
-  }, [id]);
+    if (isAdmin) {
+      fetchStaff();
+    }
+  }, [id, isAdmin]);
 
   const handleStatusUpdate = async () => {
     if (!id || !selectedStatus || !ticket) return;
@@ -122,6 +142,36 @@ const TicketDetail: React.FC = () => {
     }
   };
 
+  const handleApproveBooking = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!id) return;
+    if (!selectedStaffId) {
+      setApprovalError('Please select a mechanic to assign.');
+      return;
+    }
+
+    const cost = parseFloat(labourCostInput);
+    if (isNaN(cost) || cost < 0) {
+      setApprovalError('Labour cost must be 0 or greater.');
+      return;
+    }
+
+    setIsApproving(true);
+    setApprovalError(null);
+    try {
+      await ticketsService.approveBooking(id, {
+        staffId: selectedStaffId,
+        labourCost: cost
+      });
+      // Success: reload the ticket
+      await fetchTicket();
+    } catch (err: any) {
+      setApprovalError(err.message || 'Failed to approve booking request.');
+    } finally {
+      setIsApproving(false);
+    }
+  };
+
   const selectedPart = inventoryItems.find(item => item.id === selectedPartId);
 
   const handleLogPart = async (e: React.FormEvent) => {
@@ -160,7 +210,7 @@ const TicketDetail: React.FC = () => {
   };
 
   const isAssignedMechanic = user?.role === 'mechanic' && ticket?.staff_id === user.id;
-  const canLogParts = ticket && (isAdmin || isAssignedMechanic) && ticket.status !== 'completed' && ticket.status !== 'cancelled';
+  const canLogParts = ticket && (isAdmin || isAssignedMechanic) && ticket.status !== 'completed' && ticket.status !== 'cancelled' && ticket.status !== 'draft';
 
   if (isLoading) {
     return (
@@ -431,45 +481,114 @@ const TicketDetail: React.FC = () => {
 
         {/* Right Column - Status Control and Assignments */}
         <div className="flex flex-col gap-6">
-          <div className="bg-surface p-6 rounded-xl shadow-sm border border-border flex flex-col gap-4">
-            <h2 className="font-display font-medium text-xl text-text border-b border-border pb-2 flex items-center justify-between">
-              Job Status Control
-              {statusMessage && (
-                <span className="text-xs text-success flex items-center gap-1 font-normal animate-fade-in">
-                  <CheckCircle size={14} /> {statusMessage}
-                </span>
-              )}
-            </h2>
+          {ticket.status === 'draft' ? (
+            isAdmin ? (
+              <form onSubmit={handleApproveBooking} className="bg-surface p-6 rounded-xl shadow-sm border border-border flex flex-col gap-4">
+                <h2 className="font-display font-medium text-xl text-text border-b border-border pb-2">
+                  Review & Approve Request
+                </h2>
+                
+                <Select
+                  label="Assign Mechanic*"
+                  value={selectedStaffId}
+                  onChange={(e) => {
+                    setSelectedStaffId(e.target.value);
+                    setApprovalError(null);
+                  }}
+                  options={[
+                    { value: '', label: 'Select mechanic...' },
+                    ...staffList.map(s => ({ value: s.id, label: s.name }))
+                  ]}
+                  required
+                />
 
-            <Select
-              label="Select Current Stage"
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-              options={statusOptions}
-              disabled={isUpdatingStatus}
-            />
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="labour_cost" className="block text-[0.72rem] font-semibold text-text-muted uppercase tracking-wider">
+                    Labour Fee Estimate (ZAR)*
+                  </label>
+                  <input
+                    id="labour_cost"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={labourCostInput}
+                    onChange={(e) => {
+                      setLabourCostInput(e.target.value);
+                      setApprovalError(null);
+                    }}
+                    className="w-full px-3 py-2 border border-border rounded-lg text-text focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-surface transition-all"
+                    required
+                  />
+                </div>
 
-            <Button
-              variant="primary"
-              onClick={handleStatusUpdate}
-              loading={isUpdatingStatus}
-              className="w-full tracking-wider text-[0.8rem] font-semibold uppercase"
-            >
-              Update Status
-            </Button>
-          </div>
+                {approvalError && (
+                  <p className="text-xs text-error flex items-center gap-1 mt-1 animate-fade-in">
+                    <AlertCircle size={14} /> {approvalError}
+                  </p>
+                )}
 
-          <div className="bg-surface p-6 rounded-xl shadow-sm border border-border flex flex-col gap-4 text-sm">
-            <h2 className="font-display font-medium text-xl text-text border-b border-border pb-2">Assignments</h2>
-            <div>
-              <span className="text-[0.72rem] font-semibold text-text-muted uppercase tracking-wider block mb-1">Assigned Mechanic</span>
-              <p className="text-text font-medium">{ticket.mechanic?.name || 'Unassigned'}</p>
-            </div>
-            <div>
-              <span className="text-[0.72rem] font-semibold text-text-muted uppercase tracking-wider block mb-1">Labour Billing</span>
-              <p className="text-text font-semibold text-lg text-primary">R {ticket.labour_cost.toFixed(2)}</p>
-            </div>
-          </div>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  loading={isApproving}
+                  className="w-full tracking-wider text-[0.8rem] font-semibold uppercase mt-2"
+                >
+                  Approve & Create Ticket
+                </Button>
+              </form>
+            ) : (
+              <div className="bg-surface p-6 rounded-xl shadow-sm border border-border flex flex-col gap-4">
+                <h2 className="font-display font-medium text-xl text-text border-b border-border pb-2">
+                  Booking Status
+                </h2>
+                <p className="text-sm text-text-muted italic leading-relaxed">
+                  This booking request is pending admin review and mechanic assignment.
+                </p>
+              </div>
+            )
+          ) : (
+            <>
+              <div className="bg-surface p-6 rounded-xl shadow-sm border border-border flex flex-col gap-4">
+                <h2 className="font-display font-medium text-xl text-text border-b border-border pb-2 flex items-center justify-between">
+                  Job Status Control
+                  {statusMessage && (
+                    <span className="text-xs text-success flex items-center gap-1 font-normal animate-fade-in">
+                      <CheckCircle size={14} /> {statusMessage}
+                    </span>
+                  )}
+                </h2>
+
+                <Select
+                  label="Select Current Stage"
+                  value={selectedStatus}
+                  onChange={(e) => setSelectedStatus(e.target.value)}
+                  options={statusOptions}
+                  disabled={isUpdatingStatus}
+                />
+
+                <Button
+                  variant="primary"
+                  onClick={handleStatusUpdate}
+                  loading={isUpdatingStatus}
+                  className="w-full tracking-wider text-[0.8rem] font-semibold uppercase"
+                >
+                  Update Status
+                </Button>
+              </div>
+
+              <div className="bg-surface p-6 rounded-xl shadow-sm border border-border flex flex-col gap-4 text-sm">
+                <h2 className="font-display font-medium text-xl text-text border-b border-border pb-2">Assignments</h2>
+                <div>
+                  <span className="text-[0.72rem] font-semibold text-text-muted uppercase tracking-wider block mb-1">Assigned Mechanic</span>
+                  <p className="text-text font-medium">{ticket.mechanic?.name || 'Unassigned'}</p>
+                </div>
+                <div>
+                  <span className="text-[0.72rem] font-semibold text-text-muted uppercase tracking-wider block mb-1">Labour Billing</span>
+                  <p className="text-text font-semibold text-lg text-primary">R {ticket.labour_cost.toFixed(2)}</p>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

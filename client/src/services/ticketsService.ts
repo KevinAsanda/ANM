@@ -2,10 +2,13 @@ import { authService } from './authService.js';
 
 export interface TicketRelation {
   id: string;
-  status: 'pending' | 'in_progress' | 'completed' | 'cancelled';
+  status: 'draft' | 'pending' | 'in_progress' | 'completed' | 'cancelled';
   description: string;
   notes: string | null;
   labour_cost: number;
+  preferred_date?: string | null;
+  preferred_time?: 'morning' | 'afternoon' | null;
+  tracking_token?: string;
   created_at: string;
   updated_at: string;
   vehicle?: {
@@ -25,7 +28,7 @@ export interface TicketRelation {
     id: string;
     name: string;
     email: string;
-  };
+  } | null;
   parts_used?: Array<{
     id: string;
     part_name: string;
@@ -167,6 +170,67 @@ export const ticketsService = {
     if (!res.ok) {
       const errData = await res.json().catch(() => ({}));
       throw new Error(errData.message || 'Failed to fetch ticket parts');
+    }
+
+    return res.json();
+  },
+
+  async createBookingRequest(data: {
+    customerName: string;
+    customerPhone: string;
+    customerEmail?: string | null;
+    registrationNumber: string;
+    make: string;
+    model: string;
+    year?: number | null;
+    description: string;
+    preferredDate: string;
+    preferredTime: 'morning' | 'afternoon';
+  }): Promise<{ message: string; ticketId: string; trackingToken: string; trackingUrl: string }> {
+    const res = await fetch(`${API_BASE_URL}/tickets/public/booking`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.message || 'Failed to submit booking request');
+    }
+
+    return res.json();
+  },
+
+  async getTrackingDetails(trackingToken: string): Promise<{ ticket: TicketRelation; invoice: any | null }> {
+    const res = await fetch(`${API_BASE_URL}/tickets/public/track/${trackingToken}`, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.message || 'Failed to fetch tracking details');
+    }
+
+    return res.json();
+  },
+
+  async approveBooking(
+    id: string,
+    data: { staffId: string; labourCost: number }
+  ): Promise<{ message: string; ticket: TicketRelation }> {
+    const res = await fetch(`${API_BASE_URL}/tickets/${id}/approve`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify(data)
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.message || 'Failed to approve booking request');
     }
 
     return res.json();

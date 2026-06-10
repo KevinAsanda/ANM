@@ -1,4 +1,4 @@
-import { Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import {
   listTickets,
   listMechanicTickets,
@@ -7,7 +7,10 @@ import {
   updateTicketStatus,
   updateTicketNotes,
   logPartOnTicket,
-  getTicketParts
+  getTicketParts,
+  createBookingRequest,
+  getTicketByTrackingToken,
+  approveBooking
 } from '../services/ticket.service.js';
 import { AuthenticatedRequest } from '../types/index.js';
 
@@ -196,6 +199,96 @@ export async function getTicketPartsList(
 
     const parts = await getTicketParts(ticketId, loggedBy, userRole);
     return res.status(200).json(parts);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function postBookingRequest(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const {
+      customerName,
+      customerPhone,
+      customerEmail,
+      registrationNumber,
+      make,
+      model,
+      year,
+      description,
+      preferredDate,
+      preferredTime
+    } = req.body;
+
+    const ticket = await createBookingRequest(
+      customerName,
+      customerPhone,
+      customerEmail || null,
+      registrationNumber,
+      make,
+      model,
+      year ? Number(year) : null,
+      description,
+      preferredDate,
+      preferredTime
+    );
+
+    return res.status(201).json({
+      message: 'Booking request submitted successfully.',
+      ticketId: ticket.id,
+      trackingToken: ticket.tracking_token,
+      trackingUrl: `/public/track/${ticket.tracking_token}`
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getTrackingDetails(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { trackingToken } = req.params;
+    if (!trackingToken) {
+      return res.status(400).json({
+        error: 'VALIDATION_ERROR',
+        message: 'Tracking token is required.'
+      });
+    }
+
+    const details = await getTicketByTrackingToken(trackingToken);
+    return res.status(200).json(details);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function patchApproveBooking(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { id } = req.params;
+    const { staffId, labourCost } = req.body;
+
+    if (!id || !staffId) {
+      return res.status(400).json({
+        error: 'VALIDATION_ERROR',
+        message: 'Ticket ID and Mechanic ID (staffId) are required.'
+      });
+    }
+
+    const ticket = await approveBooking(id, staffId, Number(labourCost));
+    return res.status(200).json({
+      message: 'Booking request approved and ticket transitioned to pending status.',
+      ticket
+    });
   } catch (error) {
     next(error);
   }

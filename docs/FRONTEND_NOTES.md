@@ -31,3 +31,14 @@ This document captures key technical decisions, architectural patterns, and desi
 - **Form Labels**: Labels inside `Input`, `Select`, and `Textarea` primitives were updated to uppercase small styling with proper unique `htmlFor` properties mapped to element IDs for keyboard screen-readers.
 - **Focus Rings**: Standardized visible, outline-free rings with `ring-2 ring-primary ring-offset-2` to support keyboard navigability.
 - **Micro-Animations**: Appended `animate-fade-in` and `animate-slide-in` class transitions to all page content wrappers and drawer menus to make UI state changes feel fluid and professional.
+
+---
+
+## 4. Sprint 10: Financial Reports & Analytics (V2)
+
+- **Pure SVG/CSS Graphing**: To maintain a lightweight frontend bundle and avoid dependency overhead, we avoided charting libraries.
+  - **Donut Chart**: Built using SVG `<circle>` vectors with stroke dash arrays and calculated `strokeDashoffset` coordinates for the Labor vs. Parts split.
+  - **Bar Chart**: Leveraged standard HTML/CSS Flexbox alignments with dynamic `height` percentages computed from raw backend data arrays, displaying stacked segments (Labor vs. Parts) for monthly revenue trends.
+- **Strict Role Isolation**: Secured route access in `App.tsx` and menu links in `Sidebar.tsx` utilizing the `<RoleRoute allowedRole="admin">` wrapper, preventing mechanics from accessing financial dashboards.
+- **Vite Bundling Optimization**: Handled import types explicitly using `import type` (e.g. for `TableColumn`) to ensure Vite/Rollup compiles the frontend cleanly with zero warnings or dead-code emissions.
+
