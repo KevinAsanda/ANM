@@ -11,7 +11,8 @@ import { Button } from '../components/ui/Button.js';
 import { Select } from '../components/ui/Select.js';
 import { Textarea } from '../components/ui/Textarea.js';
 import { Spinner } from '../components/ui/Spinner.js';
-import { ArrowLeft, AlertCircle, Save, CheckCircle } from 'lucide-react';
+import { ArrowLeft, AlertCircle, Save, CheckCircle, Smartphone } from 'lucide-react';
+import { MobileScannerModal } from '../components/inventory/MobileScannerModal.js';
 
 const TicketDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -45,6 +46,23 @@ const TicketDetail: React.FC = () => {
   const [isLoggingPart, setIsLoggingPart] = useState<boolean>(false);
   const [logPartError, setLogPartError] = useState<string | null>(null);
   const [logPartSuccess, setLogPartSuccess] = useState<string | null>(null);
+  const [isScannerOpen, setIsScannerOpen] = useState<boolean>(false);
+
+  const handleBarcodeScanned = (barcode: string) => {
+    // Search inventoryItems for the barcode matching part_number
+    const matchedPart = inventoryItems.find(item => 
+      item.part_number && item.part_number.trim() === barcode.trim()
+    );
+
+    if (matchedPart) {
+      setSelectedPartId(matchedPart.id);
+      setLogPartError(null);
+      setLogPartSuccess(`Barcode matched: ${matchedPart.part_name}`);
+      setIsScannerOpen(false);
+    } else {
+      setLogPartError(`No part found in inventory with barcode/number: ${barcode}`);
+    }
+  };
 
   const isAdmin = user?.role === 'admin';
 
@@ -413,21 +431,34 @@ const TicketDetail: React.FC = () => {
                 <h3 className="font-display font-medium text-lg text-text mb-3">Log a Part</h3>
                 <form onSubmit={handleLogPart} className="flex flex-col md:flex-row items-end gap-4">
                   <div className="flex-1 min-w-[200px] w-full">
-                    <Select
-                      label="Select Part"
-                      value={selectedPartId}
-                      onChange={(e) => {
-                        setSelectedPartId(e.target.value);
-                        setLogPartError(null);
-                      }}
-                      options={[
-                        { value: '', label: 'Select a part...' },
-                        ...inventoryItems.map(item => ({
-                          value: item.id,
-                          label: `${item.part_name} (${item.part_number || 'N/A'}) - R ${item.unit_cost?.toFixed(2) || '0.00'}`
-                        }))
-                      ]}
-                    />
+                    <div className="flex items-end gap-2">
+                      <div className="flex-1">
+                        <Select
+                          label="Select Part"
+                          value={selectedPartId}
+                          onChange={(e) => {
+                            setSelectedPartId(e.target.value);
+                            setLogPartError(null);
+                          }}
+                          options={[
+                            { value: '', label: 'Select a part...' },
+                            ...inventoryItems.map(item => ({
+                              value: item.id,
+                              label: `${item.part_name} (${item.part_number || 'N/A'}) - R ${item.unit_cost?.toFixed(2) || '0.00'}`
+                            }))
+                          ]}
+                        />
+                      </div>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={() => setIsScannerOpen(true)}
+                        className="p-2 border-dashed h-[42px] shrink-0"
+                        title="Scan part using phone"
+                      >
+                        <Smartphone size={18} />
+                      </Button>
+                    </div>
                     {selectedPart && (
                       <p className={`text-xs mt-1 font-semibold ${selectedPart.qty_in_stock <= selectedPart.reorder_level ? 'text-warning' : 'text-text-muted'}`}>
                         Live Stock Remaining: {selectedPart.qty_in_stock} unit{selectedPart.qty_in_stock !== 1 ? 's' : ''} 
@@ -591,6 +622,14 @@ const TicketDetail: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Remote Phone Scanner Modal */}
+      <MobileScannerModal
+        isOpen={isScannerOpen}
+        onClose={() => setIsScannerOpen(false)}
+        onScan={handleBarcodeScanned}
+        title="Scan Part to Ticket Log"
+      />
     </div>
   );
 };

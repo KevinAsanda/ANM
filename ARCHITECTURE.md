@@ -72,6 +72,9 @@ Rather than introducing heavy third-party charting dependencies (like Chart.js o
 ### D. Payroll Shift Approvals (Sprint 12)
 To replace manual physical timesheets, a shift time-tracking mechanism records clock-in/out timestamps. The server calculates decimal durations and total wages based on the technician's stored `hourly_rate`. Admins review logs in a dedicated panel and approve logs, transitioning them to `approved` status for auditing and disbursement. Access controls (Express middleware and Supabase RLS) restrict mechanics to viewing/clocking their own shifts, preventing IDOR/privilege escalation.
 
+### E. IoT Remote Barcode Scanning (Sprint 13)
+To avoid expensive hardware installations, technicians connect their personal smartphones as remote barcode scanners. The desktop console generates a secure connection QR code with a unique, registered session ID. The mobile browser scans this code, prompts for password confirmation (re-authentication), and loads a scanning viewport. As barcodes are scanned physically or simulated, the phone transmits them to the server. The desktop polls this registry and automatically populates the target part details (filtering inventory lists or auto-filling parts logging form) in real-time.
+
 ---
 
 ## 3. Database Schema Relationships

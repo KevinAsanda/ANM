@@ -9,12 +9,17 @@ import { Spinner } from '../components/ui/Spinner.js';
 import { EmptyState } from '../components/ui/EmptyState.js';
 import { Modal } from '../components/ui/Modal.js';
 import { PartForm } from '../components/inventory/PartForm.js';
-import { ClipboardList, PlusCircle, AlertCircle, Edit2 } from 'lucide-react';
+import { ClipboardList, PlusCircle, AlertCircle, Edit2, Search, Smartphone, X } from 'lucide-react';
+import { MobileScannerModal } from '../components/inventory/MobileScannerModal.js';
 
 const Inventory: React.FC = () => {
   const [items, setItems] = useState<InventoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Search and Remote Scanner State
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isScannerOpen, setIsScannerOpen] = useState<boolean>(false);
 
   // Modal Control
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,6 +37,11 @@ const Inventory: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleBarcodeScanned = (barcode: string) => {
+    setSearchQuery(barcode);
+    setIsScannerOpen(false); // Close scanner on scan
   };
 
   useEffect(() => {
@@ -112,6 +122,11 @@ const Inventory: React.FC = () => {
     }
   ];
 
+  const filteredItems = items.filter(item => 
+    item.part_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (item.part_number && item.part_number.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
   return (
     <div className="flex flex-col gap-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
@@ -122,6 +137,36 @@ const Inventory: React.FC = () => {
         <Button variant="primary" onClick={handleOpenAddModal} className="gap-2 self-start sm:self-auto">
           <PlusCircle size={18} />
           Add Part
+        </Button>
+      </div>
+
+      {/* Toolbar: Search and Barcode Scanner Integration */}
+      <div className="flex flex-col sm:flex-row gap-3 items-center bg-surface p-4 rounded-xl border border-border/60">
+        <div className="relative flex-1 w-full">
+          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by part name or scan barcode..."
+            className="w-full bg-background border border-border/80 rounded-xl pl-10 pr-10 py-2.5 text-sm text-text placeholder-text-muted focus:outline-none focus:border-primary transition-colors"
+          />
+          {searchQuery && (
+            <button 
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-text-muted hover:text-text hover:bg-background rounded-lg transition-colors"
+            >
+              <X size={14} />
+            </button>
+          )}
+        </div>
+        <Button 
+          variant="secondary" 
+          onClick={() => setIsScannerOpen(true)}
+          className="gap-2 w-full sm:w-auto shrink-0 py-2.5 border-dashed"
+        >
+          <Smartphone size={16} />
+          Connect Phone Scanner
         </Button>
       </div>
 
@@ -150,10 +195,16 @@ const Inventory: React.FC = () => {
             onClick: handleOpenAddModal
           }}
         />
+      ) : filteredItems.length === 0 ? (
+        <div className="flex flex-col items-center justify-center p-12 text-center bg-surface border border-border rounded-xl gap-4">
+          <h3 className="font-display font-medium text-xl text-text">No parts match search query</h3>
+          <p className="text-text-muted text-sm max-w-sm">Try searching for a different keyword or scan another part barcode.</p>
+          <Button variant="secondary" onClick={() => setSearchQuery('')}>Clear Search Filter</Button>
+        </div>
       ) : (
         <Table
           columns={columns}
-          data={items}
+          data={filteredItems}
         />
       )}
 
@@ -169,6 +220,14 @@ const Inventory: React.FC = () => {
           onCancel={() => setIsModalOpen(false)}
         />
       </Modal>
+
+      {/* Remote Phone Scanner Modal */}
+      <MobileScannerModal
+        isOpen={isScannerOpen}
+        onClose={() => setIsScannerOpen(false)}
+        onScan={handleBarcodeScanned}
+        title="Connect Smartphone Barcode Scanner"
+      />
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login.js';
+import ScannerSession from './pages/ScannerSession.js';
 import Dashboard from './pages/Dashboard.js';
 import Tickets from './pages/Tickets.js';
 import CreateTicket from './pages/CreateTicket.js';
@@ -22,6 +23,7 @@ const App: React.FC = () => {
       {/* Root redirects to Dashboard */}
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/scanner-session" element={<ScannerSession />} />
 
       {/* Protected Admin Routes */}
       <Route

@@ -225,9 +225,26 @@
 
 ---
 
+## SPRINT 13 — Barcode Scanner Integration (V2)
+
+| # | Task | Label | Status |
+|---|------|-------|--------|
+| A-1301 | Implement in-memory scanning session registry and polling service in `scanner.controller.ts` | `[BACKEND]` | ✅ |
+| A-1302 | Implement Express routes at `/api/v1/scanner/` protected by JWT authentication | `[BACKEND]` | ✅ |
+| A-1303 | Write backend unit tests in `sprint13.test.ts` verifying session creation, polling, and scan events | `[TEST]` | ✅ |
+| A-1304 | Design and build client-side `scannerService.ts` for desktop/mobile API calls | `[FRONTEND]` | ✅ |
+| A-1305 | Design and build mobile scanner interface (`ScannerSession.tsx`) with password confirmation | `[FRONTEND]` | ✅ |
+| A-1306 | Build mobile-simulate dashboard with mock workshop parts (spark plug, brake pads, Castrol oil, etc.) | `[FRONTEND]` | ✅ |
+| A-1307 | Design and build desktop reusable `MobileScannerModal.tsx` displaying connection QR code and live polling | `[FRONTEND]` | ✅ |
+| A-1308 | Integrate scanner triggers and filtering logic on the Inventory page | `[FRONTEND]` | ✅ |
+| A-1309 | Integrate scanner triggers and selection logic on the Ticket Detail parts logging form | `[FRONTEND]` | ✅ |
+| A-1310 | Update documentation (`docs/PROJECT_OVERVIEW.md`, `docs/TASKS.md`, `README.md`, `ARCHITECTURE.md`) | `[DOCS]` | ✅ |
+
+---
+
 ## V2 Features (Future)
 
-- Barcode scanner IoT integration
+- SMS reminders for vehicle service due dates
 
 ---
 

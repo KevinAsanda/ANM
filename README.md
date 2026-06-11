@@ -41,6 +41,7 @@ This project serves as a university portfolio submission for ISYS300 (Mangosuthu
 *   💳 **Invoicing & Settle States**: Automatic invoice generation upon repair completion. Admins track paid/unpaid states and payment methods (card, cash, EFT).
 *   📊 **Financial Reports & Analytics**: Renders KPI summaries and pure SVG-based charts (Monthly Earnings bar charts, Revenue Split donut charts) without external library bloat.
 *   ⏱️ **Payroll & Shift Tracking**: Mechanics clock-in/out to log shift hours. The system automatically computes decimal hours and earnings based on hourly rates. Admins oversee stats and approve timesheet logs.
+*   📷 **Remote Barcode Scanner**: Links a smartphone as a remote barcode scanner by scanning a QR code. Runs a browser scanning interface with simulated/wedge triggers and real-time transmission back to active desktop screens (filtering inventory or auto-selecting parts).
 
 ---
 
@@ -123,7 +124,7 @@ npm run lint
 
 - [ ] **Twilio WhatsApp API Key Integration**: Transition the mock WhatsApp service to a live Twilio instance to send real SMS/WhatsApp messages.
 - [ ] **Offline Mode Syncing**: Enable Service Workers to store log entries locally when mobile data connectivity in the workshop drops, syncing with Supabase once reconnected.
-- [ ] **Barcode Scanning API**: Scan barcodes via smartphone camera to log parts to tickets instantly.
+- [ ] **SMS Service Reminders**: Send periodic SMS reminders to customers 12 months after their last repair job card.
 
 ---
 

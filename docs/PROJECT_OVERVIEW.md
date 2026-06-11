@@ -42,14 +42,14 @@ decisions from.
 5. **Management Dashboard** — Live stats: active jobs, completed jobs, mechanic workload, low stock alerts
 6. **Staff Management** — Owner creates and manages mechanic accounts
 
-## V2 Features (Sprint 12 Completed)
+## V2 Features (Sprint 13 Completed)
 
 - [✅] Invoicing System — generate final billing details (labor, parts, VAT)
 - [✅] Automated WhatsApp notifications to customers and admin on job completion (mocked via Twilio service)
 - [✅] Financial Reporting & Dashboard — visualize monthly revenues, parts margins, and technician performance
 - [✅] Customer-facing online booking portal & tracking wizard (V2 Split Frontend)
 - [✅] Payroll calculation & shift time tracking from clock-in/out logs (Sprint 12)
-- [ ] Barcode scanner IoT integration (hardware: handheld USB scanner)
+- [✅] Remote phone-to-system barcode scanner IoT integration (Sprint 13)
 - [ ] SMS reminders for vehicle service due dates
 
 ## What I Learned
@@ -63,6 +63,7 @@ decisions from.
 5. How to connect real-world business pain points to specific technical solutions at a system design level
 6. How to physically split a single React application into two optimized web projects (Customer and Staff) to reduce bundle sizes (down to ~230-280 kB) and isolate security contexts.
 7. How to build a fully automated payroll time-tracking module that computes hours worked and shifts payouts while securing access limits via RBAC and RLS.
+8. How to implement a remote IoT barcode scanning system linking a mobile browser (camera-scanner) to active desktop sessions in real-time.
 
 ## What I Would Do Differently
 
@@ -81,5 +82,5 @@ If I were to rebuild this project, I would implement a full end-to-end integrati
 
 ## Status
 
-✅ Sprint 12 (Payroll & Shift Time Tracking) completed
+✅ Sprint 13 (Remote Phone-to-System Barcode Scanner Integration) completed
 

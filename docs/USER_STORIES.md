@@ -333,7 +333,21 @@
 
 ---
 
+### SPRINT 13 — Barcode Scanner Integration (V2)
+> As a **mechanic**, I want to link my phone as a remote barcode scanner by scanning a QR code, so that I can scan physical barcodes using my phone's camera and automatically transmit them to my active desktop session.
+
+**Acceptance Criteria:**
+- [x] Admins/Mechanics can click "Connect Phone Scanner" to generate a secure session QR code.
+- [x] Scanning the QR code on a mobile phone opens a portal connection link.
+- [x] Prompts for password verification to ensure only authenticated staff link devices.
+- [x] Provides a clean simulated camera viewfinder overlay on the mobile browser.
+- [x] Synthesizes an audible beep confirmation (Web Audio API) and visual flash indicators upon barcode scans.
+- [x] Transmits barcodes in real-time to the active desktop session via backend polling.
+- [x] Automatically inputs scanned barcodes into the desktop Inventory list search bar (filtering the table) or the Ticket Detail part-logging selector (auto-matching and selecting the part).
+
+---
+
 ## V2 Stories (Future)
 
-- As a mechanic, I want to scan a barcode to log a part so that data entry is faster
+- As a customer, I want to receive SMS reminders for vehicle service due dates
 
