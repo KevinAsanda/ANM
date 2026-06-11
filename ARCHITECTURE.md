@@ -69,6 +69,9 @@ Rather than introducing heavy third-party charting dependencies (like Chart.js o
 *   **Bar Chart**: Draws dynamic `<rect>` tags to show monthly earnings splits.
 *   **Donut Chart**: Uses `<circle>` with `strokeDasharray` and `strokeDashoffset` calculations to display Labor vs. Parts revenue proportions.
 
+### D. Payroll Shift Approvals (Sprint 12)
+To replace manual physical timesheets, a shift time-tracking mechanism records clock-in/out timestamps. The server calculates decimal durations and total wages based on the technician's stored `hourly_rate`. Admins review logs in a dedicated panel and approve logs, transitioning them to `approved` status for auditing and disbursement. Access controls (Express middleware and Supabase RLS) restrict mechanics to viewing/clocking their own shifts, preventing IDOR/privilege escalation.
+
 ---
 
 ## 3. Database Schema Relationships

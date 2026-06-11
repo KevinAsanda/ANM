@@ -42,14 +42,14 @@ decisions from.
 5. **Management Dashboard** — Live stats: active jobs, completed jobs, mechanic workload, low stock alerts
 6. **Staff Management** — Owner creates and manages mechanic accounts
 
-## V2 Features (Sprint 11 Completed)
+## V2 Features (Sprint 12 Completed)
 
 - [✅] Invoicing System — generate final billing details (labor, parts, VAT)
 - [✅] Automated WhatsApp notifications to customers and admin on job completion (mocked via Twilio service)
 - [✅] Financial Reporting & Dashboard — visualize monthly revenues, parts margins, and technician performance
 - [✅] Customer-facing online booking portal & tracking wizard (V2 Split Frontend)
+- [✅] Payroll calculation & shift time tracking from clock-in/out logs (Sprint 12)
 - [ ] Barcode scanner IoT integration (hardware: handheld USB scanner)
-- [ ] Payroll calculation from clock-in/out records
 - [ ] SMS reminders for vehicle service due dates
 
 ## What I Learned
@@ -62,6 +62,7 @@ decisions from.
 4. How to use React context and protected routes to manage authentication state across a multi-role application
 5. How to connect real-world business pain points to specific technical solutions at a system design level
 6. How to physically split a single React application into two optimized web projects (Customer and Staff) to reduce bundle sizes (down to ~230-280 kB) and isolate security contexts.
+7. How to build a fully automated payroll time-tracking module that computes hours worked and shifts payouts while securing access limits via RBAC and RLS.
 
 ## What I Would Do Differently
 
@@ -80,5 +81,5 @@ If I were to rebuild this project, I would implement a full end-to-end integrati
 
 ## Status
 
-✅ Sprint 11 (Customer Booking & Tracking Portal + Split Frontend Architecture) completed
+✅ Sprint 12 (Payroll & Shift Time Tracking) completed
 

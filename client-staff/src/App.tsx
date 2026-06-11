@@ -11,6 +11,7 @@ import MyJobs from './pages/MyJobs.js';
 import Invoices from './pages/Invoices.js';
 import InvoiceDetail from './pages/InvoiceDetail.js';
 import Analytics from './pages/Analytics.js';
+import Payroll from './pages/Payroll.js';
 import { ProtectedRoute } from './components/auth/ProtectedRoute.js';
 import { RoleRoute } from './components/auth/RoleRoute.js';
 import { AppShell } from './components/layout/AppShell.js';
@@ -141,6 +142,17 @@ const App: React.FC = () => {
           <ProtectedRoute>
             <AppShell>
               <TicketDetail />
+            </AppShell>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/payroll"
+        element={
+          <ProtectedRoute>
+            <AppShell>
+              <Payroll />
             </AppShell>
           </ProtectedRoute>
         }

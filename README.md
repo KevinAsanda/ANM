@@ -40,6 +40,7 @@ This project serves as a university portfolio submission for ISYS300 (Mangosuthu
 *   ⚙️ **Atomic Parts Logging**: Mechanics log inventory items directly to tickets. The database automatically decrements quantity on hand via database transactions and halts updates if stock is insufficient.
 *   💳 **Invoicing & Settle States**: Automatic invoice generation upon repair completion. Admins track paid/unpaid states and payment methods (card, cash, EFT).
 *   📊 **Financial Reports & Analytics**: Renders KPI summaries and pure SVG-based charts (Monthly Earnings bar charts, Revenue Split donut charts) without external library bloat.
+*   ⏱️ **Payroll & Shift Tracking**: Mechanics clock-in/out to log shift hours. The system automatically computes decimal hours and earnings based on hourly rates. Admins oversee stats and approve timesheet logs.
 
 ---
 

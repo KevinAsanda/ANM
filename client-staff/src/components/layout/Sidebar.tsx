@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.js';
 import { Button } from '../ui/Button.js';
-import { LayoutDashboard, FileText, ClipboardList, Users, LogOut, Receipt, BarChart2 } from 'lucide-react';
+import { LayoutDashboard, FileText, ClipboardList, Users, LogOut, Receipt, BarChart2, Clock } from 'lucide-react';
 
 interface SidebarProps {
   onClose?: () => void;
@@ -18,10 +18,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
     { to: '/staff', label: 'Staff Directory', icon: <Users size={18} /> },
     { to: '/invoices', label: 'Invoices Billing', icon: <Receipt size={18} /> },
     { to: '/analytics', label: 'Financial Reports', icon: <BarChart2 size={18} /> },
+    { to: '/payroll', label: 'Payroll & Shifts', icon: <Clock size={18} /> },
   ];
 
   const mechanicLinks = [
     { to: '/my-jobs', label: 'My Jobs Queue', icon: <FileText size={18} /> },
+    { to: '/payroll', label: 'My Timesheets', icon: <Clock size={18} /> },
   ];
 
   const links = user?.role === 'admin' ? adminLinks : mechanicLinks;

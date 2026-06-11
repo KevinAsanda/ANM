@@ -319,8 +319,21 @@
 
 ---
 
+### SPRINT 12 — Payroll & Shift Management (V2)
+> As a **mechanic**, I want to clock in and out of my shifts, so that my hours are accurately tracked.
+> As an **admin**, I want to view a summary of hours and payouts, and approve finished shifts, so that payroll calculations are verified.
+
+**Acceptance Criteria:**
+- [x] Mechanics can clock-in to start their shift. The system checks and blocks double clock-ins.
+- [x] Mechanics can clock-out to end their shift. The system automatically computes decimal hours and earnings based on their hourly rate.
+- [x] Mechanics can view a history of their own shift logs and approval states.
+- [x] Admins can configure mechanic hourly rates (default: ZAR 85.00/hour).
+- [x] Admins can view aggregated dashboard metrics (Total Hours, Total Payroll, Pending Approvals) and list all logs.
+- [x] Admins can click "Approve" on finished shifts to sign them off.
+
+---
+
 ## V2 Stories (Future)
 
 - As a mechanic, I want to scan a barcode to log a part so that data entry is faster
-- As an admin, I want to view a payroll summary based on hours worked
 

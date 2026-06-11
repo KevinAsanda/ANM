@@ -209,10 +209,25 @@
 
 ---
 
+## SPRINT 12 — Payroll & Shift Management (V2)
+
+| # | Task | Label | Status |
+|---|------|-------|--------|
+| A-1201 | Execute SQL migrations for timesheets table, staff hourly rate, index mappings, and RLS policies | `[BACKEND]` | ✅ |
+| A-1202 | Implement clock-in, clock-out, status retrieval, and approval services in `payroll.service.ts` | `[BACKEND]` | ✅ |
+| A-1203 | Implement Express controller routes mapping to `/api/v1/payroll/` actions | `[BACKEND]` | ✅ |
+| A-1204 | Write backend unit tests in `sprint12.test.ts` for clocking processes and double clock-in protection | `[TEST]` | ✅ |
+| A-1205 | Design and build client-side `payrollService.ts` for API query calls | `[FRONTEND]` | ✅ |
+| A-1206 | Design and build frontend Clock-In/Clock-Out mechanic controls with ticking shift timer | `[FRONTEND]` | ✅ |
+| A-1207 | Design and build admin Payroll Manager dashboard (`/payroll`) with stats and timesheet approval logs | `[FRONTEND]` | ✅ |
+| A-1208 | Register routes and sidebar navigation links | `[FRONTEND]` | ✅ |
+| A-1209 | Update documentation (`docs/PROJECT_OVERVIEW.md`, `docs/TASKS.md`, `README.md`, `ARCHITECTURE.md`) | `[DOCS]` | ✅ |
+
+---
+
 ## V2 Features (Future)
 
 - Barcode scanner IoT integration
-- Payroll module
 
 ---
 
