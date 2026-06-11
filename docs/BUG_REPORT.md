@@ -49,6 +49,36 @@ This document captures issues discovered during Sprint 8 (QA & Polish phase) and
 
 ---
 
+### BUG-004 — React Router redirection parameter interpolation fails
+
+- **Severity:** 🔴 Critical (breaks tracking links and invoice links)
+- **Environment:** Deployed Customer Portal (client-customer)
+- **Description:** Navigating to `/public/track/:token` redirected literally to `/track/:token` as a string because React Router's `<Navigate to="/track/:token" />` does not automatically translate parameters from parent routes. This broke all client-side URL requests, causing 404s and a blank screen.
+- **Resolution:** Updated `App.tsx` in `client-customer` to directly mount the components for both short and long paths, removing Navigate redirects for parameterized paths.
+- **Status:** ✅ RESOLVED
+
+---
+
+### BUG-005 — ReferenceError: Calendar is not defined at runtime
+
+- **Severity:** 🔴 Critical (crashes progress tracker page on render, showing a blank screen)
+- **Environment:** Deployed Customer Portal (client-customer)
+- **Description:** The calendar icon (`<Calendar />`) was used in the progress timeline stepper in `PublicTracker.tsx` but was never imported from `lucide-react`. The compiler resolved it to the global built-in type `Calendar` (due to `skipLibCheck: true` and DOM library types), causing the build to succeed, but threw a runtime `ReferenceError` in the browser.
+- **Resolution:** Explicitly imported `Calendar` from `lucide-react` in `PublicTracker.tsx`.
+- **Status:** ✅ RESOLVED
+
+---
+
+### BUG-006 — Render backend build fails due to missing typescript devDependencies
+
+- **Severity:** 🔴 Critical (blocks backend API deployment on Render)
+- **Environment:** Deployed Backend API (server)
+- **Description:** With `NODE_ENV=production` set, Render skipped devDependencies during `npm install`. Since `typescript` and `@types/node`/`@types/express` were in devDependencies, the compiler threw multiple compilation errors because it couldn't find Node.js types and globals (like `process`, `console`, `Buffer`, `crypto`).
+- **Resolution:** Updated `render.yaml` (and manual dashboard build configuration) to use `npm install --include=dev && npm run build` to force devDependencies installation during the build phase.
+- **Status:** ✅ RESOLVED
+
+---
+
 ## Open Issues
 
-- **None.** All functional tests and quality gates pass successfully. Zero Critical/High severity issues remaining.
+- **None.** All V2 functional tests and quality gates pass successfully. Zero Critical/High severity issues remaining.

@@ -86,9 +86,45 @@ This document maps the acceptance criteria from [USER_STORIES.md](file:///C:/Use
 
 ---
 
-## 3. Automated Unit Test Summary
+## 3. V2 Features Test Cases
 
-Backend unit test suite runs with 11 core tests. All test execution results:
+### Invoicing & Notifications (Sprint 9)
+
+| Test ID | Description | Expected Behaviour | Status | Notes |
+| :--- | :--- | :--- | :---: | :--- |
+| **TC-INV-V2-01** | Auto-create invoice on completion | Ticket status updated to `completed` automatically generates an unpaid invoice. | ✅ PASS | Verified via status hooks. |
+| **TC-INV-V2-02** | Settle Invoice | Admin updates invoice status to `paid` and selects Card/EFT. | ✅ PASS | Verified admin invoice panel update. |
+| **TC-INV-V2-03** | Public Invoice Retrieve | Customer accesses `/invoices/:token` to view billing details. | ✅ PASS | Displays clean, print-friendly layout. |
+
+### Financial Reports & Analytics (Sprint 10)
+
+| Test ID | Description | Expected Behaviour | Status | Notes |
+| :--- | :--- | :--- | :---: | :--- |
+| **TC-FIN-V2-01** | KPI Cards | Gross Revenue, Labor Fees, Parts Billed, and VAT are calculated correctly. | ✅ PASS | Matches backend views. |
+| **TC-FIN-V2-02** | Pure SVG Charts | Earnings Trend bar chart and Revenue Split donut chart render correctly. | ✅ PASS | Lightweight charts load without external libraries. |
+| **TC-FIN-V2-03** | Staff Performance Table | Mechanic completed ticket count, labor fees, and parts logged are displayed. | ✅ PASS | Lists ranks clearly. |
+
+### Customer Booking & Tracking Portal (Sprint 11)
+
+| Test ID | Description | Expected Behaviour | Status | Notes |
+| :--- | :--- | :--- | :---: | :--- |
+| **TC-PORT-V2-01** | Public Landing Page | Loads home page with services, testimonials, FAQs, and contact info. | ✅ PASS | Cormorant/Jost typography renders correctly. |
+| **TC-PORT-V2-02** | Booking Request Wizard | Customers fill form to request date/time slots. | ✅ PASS | Multi-step wizard validation succeeds. |
+| **TC-PORT-V2-03** | Progress Tracker Page | Visual Repair Stepper updates dynamically based on status changes. | ✅ PASS | Checked progress timeline stepper. |
+| **TC-PORT-V2-04** | Booking Approval | Admin review panel assigns mechanic and sets labor cost. | ✅ PASS | Approving moves ticket to pending status. |
+
+### Architectural Separation & Deployments
+
+| Test ID | Description | Expected Behaviour | Status | Notes |
+| :--- | :--- | :--- | :---: | :--- |
+| **TC-ARCH-V2-01** | client-customer build | Independent bundle containing only customer pages, zero admin dashboards. | ✅ PASS | Compiles cleanly down to 236 kB. |
+| **TC-ARCH-V2-02** | client-staff build | Independent bundle containing admin/mechanic portal, base URL redirects to login. | ✅ PASS | Compiles cleanly down to 279 kB. |
+
+---
+
+## 4. Automated Unit Test Summary
+
+Backend unit test suite runs with 13 core tests. All test execution results:
 - **Auth Middleware**: 4 tests PASS.
 - **Sprint 2 (Customers & Vehicles)**: 2 tests PASS.
 - **Sprint 3 (Service Tickets)**: 1 test PASS.
@@ -96,5 +132,7 @@ Backend unit test suite runs with 11 core tests. All test execution results:
 - **Sprint 5 (Parts Logging)**: 1 test PASS.
 - **Sprint 6 (Dashboard Stats)**: 1 test PASS.
 - **Sprint 7 (Staff Creation)**: 1 test PASS.
+- **Sprint 10 (Financial Analytics)**: 1 test PASS.
+- **Sprint 11 (Customer Portal & Approvals)**: 1 test PASS.
 
-Total: **11/11 tests passing**.
+Total: **13/13 tests passing**.
