@@ -5,7 +5,7 @@ import type { TicketRelation } from '../services/ticketsService.js';
 import { InvoiceDetailCard } from '../components/invoices/InvoiceDetailCard.js';
 import { Button } from '../components/ui/Button.js';
 import { Spinner } from '../components/ui/Spinner.js';
-import { AlertCircle, ArrowLeft, Printer, Wrench, Shield, Clipboard, CheckCircle, HelpCircle } from 'lucide-react';
+import { AlertCircle, ArrowLeft, Printer, Wrench, Shield, Clipboard, CheckCircle, HelpCircle, Calendar } from 'lucide-react';
 
 export const PublicTracker: React.FC = () => {
   const { token } = useParams<{ token: string }>();
