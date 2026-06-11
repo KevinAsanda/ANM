@@ -4,7 +4,8 @@ import { authService } from '../services/authService.js';
 import { scannerService } from '../services/scannerService.js';
 import { Button } from '../components/ui/Button.js';
 import { Input } from '../components/ui/Input.js';
-import { Clock, CheckCircle, AlertCircle, Scan, ShieldAlert, Smartphone } from 'lucide-react';
+import { Clock, CheckCircle, AlertCircle, Scan, ShieldAlert, Smartphone, Camera, Eye } from 'lucide-react';
+import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 
 export const ScannerSession: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -18,6 +19,11 @@ export const ScannerSession: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Scanner UI States
+  const [scanMode, setScanMode] = useState<'camera' | 'simulator'>('simulator');
+  const [cameraError, setCameraError] = useState<string | null>(null);
+  const [isCameraActive, setIsCameraActive] = useState<boolean>(false);
 
   const [scannedBarcode, setScannedBarcode] = useState<string>('');
   const [lastScanned, setLastScanned] = useState<string | null>(null);
@@ -53,6 +59,74 @@ export const ScannerSession: React.FC = () => {
     }
   }, [emailParam]);
 
+  // Real Camera scan control
+  useEffect(() => {
+    let html5QrcodeScanner: Html5Qrcode | null = null;
+    
+    if (isAuthenticated && scanMode === 'camera') {
+      setIsCameraActive(true);
+      setCameraError(null);
+      
+      // Delay slightly to ensure #camera-reader is fully mounted in the DOM
+      const timer = setTimeout(() => {
+        try {
+          html5QrcodeScanner = new Html5Qrcode('camera-reader');
+          
+          const formats = [
+            Html5QrcodeSupportedFormats.EAN_13,
+            Html5QrcodeSupportedFormats.EAN_8,
+            Html5QrcodeSupportedFormats.CODE_128,
+            Html5QrcodeSupportedFormats.CODE_39,
+            Html5QrcodeSupportedFormats.UPC_A,
+            Html5QrcodeSupportedFormats.QR_CODE
+          ];
+
+          html5QrcodeScanner.start(
+            { facingMode: 'environment' }, // Back camera
+            {
+              fps: 10,
+              qrbox: (width, height) => {
+                // Return a landscape bounding rectangle optimized for EAN-13 barcodes
+                const boxWidth = Math.min(width * 0.85, 260);
+                const boxHeight = Math.min(height * 0.45, 120);
+                return { width: boxWidth, height: boxHeight };
+              },
+              formatsToSupport: formats
+            },
+            (decodedText) => {
+              // Automatically transmit barcode once successfully scanned
+              handleTransmit(decodedText);
+            },
+            () => {
+              // Frame processing failure (ignored to prevent console flooding)
+            }
+          ).catch(err => {
+            console.error('Camera access failed:', err);
+            setCameraError('Failed to access phone camera. Please grant camera permissions.');
+            setIsCameraActive(false);
+          });
+        } catch (e: any) {
+          console.error('Html5Qrcode init failed:', e);
+          setCameraError('Failed to initialize barcode scanner.');
+          setIsCameraActive(false);
+        }
+      }, 400);
+
+      return () => {
+        clearTimeout(timer);
+        if (html5QrcodeScanner) {
+          if (html5QrcodeScanner.isScanning) {
+            html5QrcodeScanner.stop().then(() => {
+              console.log('Camera scanner stopped.');
+            }).catch(stopErr => {
+              console.error('Failed to stop camera scanner:', stopErr);
+            });
+          }
+        }
+      };
+    }
+  }, [isAuthenticated, scanMode]);
+
   const handleLoginAndConnect = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -64,10 +138,7 @@ export const ScannerSession: React.FC = () => {
         throw new Error('Please enter both your email and password.');
       }
 
-      // 1. Authenticate user credentials
       await authService.login(loginEmail, password);
-      
-      // 2. Grant session access
       setIsAuthenticated(true);
       playScannerBeep();
     } catch (err: any) {
@@ -91,8 +162,8 @@ export const ScannerSession: React.FC = () => {
       setScannedBarcode('');
       setFlashMessage(`Transmitted: ${barcodeToSend.trim()}`);
       
-      // Clear flash message after 2s
-      setTimeout(() => setFlashMessage(null), 2000);
+      // Auto-flash message clears after 1.5s
+      setTimeout(() => setFlashMessage(null), 1500);
     } catch (err: any) {
       console.error('Transmit error:', err);
       setError(err.message || 'Failed to transmit scan to desktop.');
@@ -101,7 +172,6 @@ export const ScannerSession: React.FC = () => {
     }
   };
 
-  // Mock items to make the live presentation foolproof and easy
   const mockParts = [
     { name: 'Spark Plug NGK BKR6', barcode: '6001234000010' },
     { name: 'Front Brake Pads ATE', barcode: '6001234000027' },
@@ -194,24 +264,67 @@ export const ScannerSession: React.FC = () => {
         </span>
       </header>
 
-      {/* Simulated Camera Scanner Viewport */}
+      {/* Mode Selectors */}
+      <div className="grid grid-cols-2 bg-primary-hover/30 border-b border-white/10 text-xs">
+        <button
+          onClick={() => setScanMode('camera')}
+          className={`py-3 flex items-center justify-center gap-2 border-b-2 font-semibold transition-all ${scanMode === 'camera' ? 'border-emerald-500 text-white bg-white/5' : 'border-transparent text-white/60 hover:text-white'}`}
+        >
+          <Camera size={14} />
+          Use Camera
+        </button>
+        <button
+          onClick={() => setScanMode('simulator')}
+          className={`py-3 flex items-center justify-center gap-2 border-b-2 font-semibold transition-all ${scanMode === 'simulator' ? 'border-emerald-500 text-white bg-white/5' : 'border-transparent text-white/60 hover:text-white'}`}
+        >
+          <Eye size={14} />
+          Demo Simulator
+        </button>
+      </div>
+
+      {/* Viewport: Camera reader or simulated laser */}
       <div className="relative aspect-video bg-black flex items-center justify-center border-b border-white/10 overflow-hidden">
-        {/* Sweeping laser line animation */}
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-red-600 shadow-[0_0_10px_#ef4444] animate-bounce z-10" style={{ animationDuration: '3s' }} />
-        
-        {/* Corner framing indicators */}
-        <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-emerald-400" />
-        <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-emerald-400" />
-        <div className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-emerald-400" />
-        <div className="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2 border-emerald-400" />
+        {scanMode === 'camera' ? (
+          <div className="w-full h-full relative">
+            <div id="camera-reader" className="w-full h-full object-cover"></div>
+            {isCameraActive && (
+              <>
+                {/* Horizontal scanner red overlay */}
+                <div className="absolute top-[40%] left-[10%] right-[10%] h-[2px] bg-red-500/80 shadow-[0_0_8px_#ef4444] animate-pulse z-10" />
+                <div className="absolute top-[20%] bottom-[20%] left-[10%] right-[10%] border border-white/20 rounded-lg pointer-events-none" />
+              </>
+            )}
+            {cameraError && (
+              <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center p-4 text-center gap-2 z-20">
+                <AlertCircle size={24} className="text-red-400" />
+                <p className="text-xs text-white/95 leading-relaxed">{cameraError}</p>
+                <Button variant="secondary" size="sm" onClick={() => setScanMode('simulator')}>
+                  Use Demo Simulator
+                </Button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <>
+            {/* Sweeping laser line animation for simulator */}
+            <div className="absolute top-0 left-0 right-0 h-[2px] bg-red-600 shadow-[0_0_10px_#ef4444] animate-bounce z-10" style={{ animationDuration: '3s' }} />
+            
+            {/* Corner framing indicators */}
+            <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-emerald-400" />
+            <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-emerald-400" />
+            <div className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-emerald-400" />
+            <div className="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2 border-emerald-400" />
 
-        <div className="flex flex-col items-center gap-2 text-center z-0 p-4">
-          <Scan size={36} className="text-white/40 animate-pulse" />
-          <span className="text-[10px] text-white/50 uppercase tracking-widest font-semibold">Camera Active</span>
-        </div>
+            <div className="flex flex-col items-center gap-2 text-center z-0 p-4">
+              <Scan size={36} className="text-white/40 animate-pulse" />
+              <span className="text-[10px] text-white/50 uppercase tracking-widest font-semibold">Demo Viewport Active</span>
+            </div>
+          </>
+        )}
 
+        {/* Successful Scan Splash Overlay */}
         {flashMessage && (
-          <div className="absolute inset-0 bg-emerald-600/90 flex flex-col items-center justify-center gap-2 text-white font-display text-md font-semibold animate-fade-in z-20">
+          <div className="absolute inset-0 bg-emerald-600/95 flex flex-col items-center justify-center gap-2 text-white font-display text-md font-semibold animate-fade-in z-30">
             <CheckCircle size={32} />
             {flashMessage}
           </div>
@@ -221,7 +334,7 @@ export const ScannerSession: React.FC = () => {
       {/* Status Bar */}
       <div className="bg-primary-hover/40 px-4 py-2 border-b border-white/10 flex justify-between items-center text-[10px] text-white/70">
         <span>Session ID: <span className="font-mono text-emerald-300">{sessionId.slice(0, 12)}</span></span>
-        {lastScanned && <span>Last scan: <span className="font-mono text-emerald-300">{lastScanned}</span></span>}
+        {lastScanned && <span>Last scan: <span className="font-mono text-emerald-300 text-xs font-semibold">{lastScanned}</span></span>}
       </div>
 
       {/* Main Body */}
@@ -256,7 +369,7 @@ export const ScannerSession: React.FC = () => {
           </div>
         </div>
 
-        {/* Foolproof Simulation Panel */}
+        {/* Foolproof Simulation Panel - shown in both modes as a fallback */}
         <div className="flex flex-col gap-2">
           <label className="text-[10px] uppercase font-semibold tracking-wider text-white/60">Simulated Workshop Items (Tap to Scan)</label>
           <div className="flex flex-col gap-2">
