@@ -42,12 +42,12 @@ decisions from.
 5. **Management Dashboard** — Live stats: active jobs, completed jobs, mechanic workload, low stock alerts
 6. **Staff Management** — Owner creates and manages mechanic accounts
 
-## V2 Features (Sprint 10 Active)
+## V2 Features (Sprint 11 Completed)
 
 - [✅] Invoicing System — generate final billing details (labor, parts, VAT)
-- [✅] Automated WhatsApp notifications to customers and admin on job completion
+- [✅] Automated WhatsApp notifications to customers and admin on job completion (mocked via Twilio service)
 - [✅] Financial Reporting & Dashboard — visualize monthly revenues, parts margins, and technician performance
-- [ ] Customer-facing online booking portal
+- [✅] Customer-facing online booking portal & tracking wizard (V2 Split Frontend)
 - [ ] Barcode scanner IoT integration (hardware: handheld USB scanner)
 - [ ] Payroll calculation from clock-in/out records
 - [ ] SMS reminders for vehicle service due dates
@@ -61,6 +61,7 @@ decisions from.
 3. How to structure a Node.js + Express API with service-layer separation so business logic is testable independent of HTTP
 4. How to use React context and protected routes to manage authentication state across a multi-role application
 5. How to connect real-world business pain points to specific technical solutions at a system design level
+6. How to physically split a single React application into two optimized web projects (Customer and Staff) to reduce bundle sizes (down to ~230-280 kB) and isolate security contexts.
 
 ## What I Would Do Differently
 
@@ -68,9 +69,10 @@ If I were to rebuild this project, I would implement a full end-to-end integrati
 
 ## Live Demo
 
-- **Frontend Client (Vercel)**: *Ready for deployment*
-- **Backend API (Render)**: *Ready for deployment*
-- **Database (Supabase)**: Live instance configured and seeded
+- **Customer Booking & Tracking Portal**: [https://anm-customer-portal.onrender.com](https://anm-customer-portal.onrender.com)
+- **Internal Staff & Admin Portal**: [https://anm-staff-portal.onrender.com](https://anm-staff-portal.onrender.com)
+- **Backend REST API**: [https://anm-backend-api.onrender.com](https://anm-backend-api.onrender.com)
+- **Database (Supabase)**: Live instance configured, migrated, and seeded
 
 ## Repository
 
@@ -78,4 +80,5 @@ If I were to rebuild this project, I would implement a full end-to-end integrati
 
 ## Status
 
-✅ Sprint 10 (V2 Financial Reports & Analytics) completed
+✅ Sprint 11 (Customer Booking & Tracking Portal + Split Frontend Architecture) completed
+
