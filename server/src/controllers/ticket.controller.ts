@@ -337,9 +337,14 @@ export async function sendTrackingEmail(
     if (resend) {
       try {
         const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+        // Override recipient to verified Resend account email for sandbox testing
+        const recipientEmail = 'kevinasanda99@gmail.com';
+        
+        console.log(`[Resend Sandbox Override] Redirecting email from ${ticket.customer.email} to verified account ${recipientEmail}`);
+
         const { data, error } = await resend.emails.send({
           from: `ANM Workshop <${fromEmail}>`,
-          to: ticket.customer.email,
+          to: recipientEmail,
           subject,
           text: body,
         });
