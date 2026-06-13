@@ -165,14 +165,6 @@ const Home: React.FC = () => {
             <a href="#tracking" className="hover:text-primary transition-colors">Track Repair</a>
             <a href="#faqs" className="hover:text-primary transition-colors">FAQs</a>
             <a href="#contact" className="hover:text-primary transition-colors">Contact</a>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => navigate('/login')}
-              className="text-xs tracking-wider"
-            >
-              Staff Portal
-            </Button>
           </nav>
           <div className="md:hidden flex items-center gap-2">
             <Button
@@ -182,14 +174,6 @@ const Home: React.FC = () => {
               className="text-xs font-semibold"
             >
               Book Now
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate('/login')}
-              className="text-xs"
-            >
-              Portal
             </Button>
           </div>
         </div>
