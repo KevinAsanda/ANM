@@ -293,3 +293,62 @@ export async function patchApproveBooking(
     next(error);
   }
 }
+
+export async function sendTrackingEmail(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({
+        error: 'VALIDATION_ERROR',
+        message: 'Ticket ID is required.'
+      });
+    }
+
+    const ticket = await getTicketDetails(id);
+    if (!ticket.customer || !ticket.customer.email) {
+      return res.status(400).json({
+        error: 'VALIDATION_ERROR',
+        message: 'Customer email is not registered for this ticket.'
+      });
+    }
+
+    if (!ticket.tracking_token) {
+      return res.status(400).json({
+        error: 'VALIDATION_ERROR',
+        message: 'Tracking token has not been generated for this ticket.'
+      });
+    }
+
+    const clientUrl = process.env.CLIENT_CUSTOMER_URL || 'http://localhost:5173';
+    const trackingUrl = `${clientUrl}/public/track/${ticket.tracking_token}`;
+    const subject = `Track your vehicle repair status at ANM Workshop`;
+    const body = `Hi ${ticket.customer.name},\n\nYour vehicle repair request for ${ticket.vehicle?.make} ${ticket.vehicle?.model} (${ticket.vehicle?.registration_number}) is registered under status "${ticket.status.toUpperCase()}".\n\nYou can track its live status, parts utilized, and invoice here:\n${trackingUrl}\n\nRegards,\nANM Workshop Team`;
+
+    console.log(`
+=========================================
+[SIMULATED EMAIL SENT]
+To: ${ticket.customer.email}
+Subject: ${subject}
+Body: 
+${body}
+=========================================
+`);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Tracking link email simulated successfully.',
+      recipient: ticket.customer.email,
+      simulatedEmail: {
+        to: ticket.customer.email,
+        subject,
+        body
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+}

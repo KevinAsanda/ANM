@@ -234,5 +234,19 @@ export const ticketsService = {
     }
 
     return res.json();
+  },
+
+  async sendTrackingEmail(id: string): Promise<{ success: boolean; message: string; recipient: string }> {
+    const res = await fetch(`${API_BASE_URL}/tickets/${id}/send-tracking-email`, {
+      method: 'POST',
+      headers: getHeaders()
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.message || 'Failed to send tracking email');
+    }
+
+    return res.json();
   }
 };

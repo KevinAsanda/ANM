@@ -11,7 +11,8 @@ import {
   getTicketPartsList,
   postBookingRequest,
   getTrackingDetails,
-  patchApproveBooking
+  patchApproveBooking,
+  sendTrackingEmail
 } from '../controllers/ticket.controller.js';
 import { authenticate, requireRole } from '../middleware/auth.js';
 import { validateRequest } from '../middleware/validate.js';
@@ -84,6 +85,7 @@ router.post('/', requireRole('admin'), validateRequest(createTicketSchema), post
 // Shared route (authorization checked inside controller)
 router.get('/:id', getTicket);
 router.patch('/:id/status', validateRequest(updateStatusSchema), patchTicketStatus);
+router.post('/:id/send-tracking-email', sendTrackingEmail);
 
 // Admin note update
 router.patch('/:id/notes', requireRole('admin'), validateRequest(updateNotesSchema), patchTicketNotes);

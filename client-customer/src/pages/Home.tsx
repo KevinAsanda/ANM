@@ -30,8 +30,6 @@ const Home: React.FC = () => {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const navigate = useNavigate();
 
-  const demoToken = 'b62rdieof-e82b-4720-a61f-9a103c8099ea';
-
   const handleTrackSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSearchError(null);
@@ -49,11 +47,6 @@ const Home: React.FC = () => {
     } else {
       setSearchError('Invalid tracking token format. Please check your token.');
     }
-  };
-
-  const handleDemoFill = () => {
-    setTokenInput(demoToken);
-    setSearchError(null);
   };
 
   const toggleFaq = (index: number) => {
@@ -268,20 +261,6 @@ const Home: React.FC = () => {
                       Lookup Repair Status
                     </Button>
                   </form>
-
-                  {/* Demo Token Assist */}
-                  <div className="mt-5 pt-4 border-t border-border flex flex-col gap-2 bg-primary/5 p-3.5 rounded-xl border border-primary/10">
-                    <p className="text-[11px] text-primary font-medium">Want to test the customer portal?</p>
-                    <p className="text-[10px] text-text-muted leading-tight">
-                      Click below to load a simulated active ticket showing diagnostic notes and live invoice generation:
-                    </p>
-                    <button
-                      onClick={handleDemoFill}
-                      className="text-[11px] font-mono text-primary hover:text-primary-hover font-semibold mt-1 text-left break-all select-all hover:underline"
-                    >
-                      {demoToken}
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>

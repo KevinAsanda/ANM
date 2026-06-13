@@ -11,7 +11,7 @@ import { Button } from '../components/ui/Button.js';
 import { Select } from '../components/ui/Select.js';
 import { Textarea } from '../components/ui/Textarea.js';
 import { Spinner } from '../components/ui/Spinner.js';
-import { ArrowLeft, AlertCircle, Save, CheckCircle, Smartphone } from 'lucide-react';
+import { ArrowLeft, AlertCircle, Save, CheckCircle, Smartphone, Mail } from 'lucide-react';
 import { MobileScannerModal } from '../components/inventory/MobileScannerModal.js';
 
 const TicketDetail: React.FC = () => {
@@ -47,6 +47,11 @@ const TicketDetail: React.FC = () => {
   const [logPartError, setLogPartError] = useState<string | null>(null);
   const [logPartSuccess, setLogPartSuccess] = useState<string | null>(null);
   const [isScannerOpen, setIsScannerOpen] = useState<boolean>(false);
+
+  // Email sending states
+  const [isSendingEmail, setIsSendingEmail] = useState<boolean>(false);
+  const [emailSuccess, setEmailSuccess] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
 
   const handleBarcodeScanned = (barcode: string) => {
     // Search inventoryItems for the barcode matching part_number
@@ -157,6 +162,25 @@ const TicketDetail: React.FC = () => {
       setError(err.message || 'Failed to save notes.');
     } finally {
       setIsSavingNotes(false);
+    }
+  };
+
+  const handleSendEmail = async () => {
+    if (!id || !ticket?.customer?.email) return;
+
+    setIsSendingEmail(true);
+    setEmailSuccess(null);
+    setEmailError(null);
+
+    try {
+      const response = await ticketsService.sendTrackingEmail(id);
+      setEmailSuccess(`Tracking link email simulated successfully to ${response.recipient}!`);
+      setTimeout(() => setEmailSuccess(null), 5000);
+    } catch (err: any) {
+      setEmailError(err.message || 'Failed to send tracking link email.');
+      setTimeout(() => setEmailError(null), 5000);
+    } finally {
+      setIsSendingEmail(false);
     }
   };
 
@@ -326,9 +350,30 @@ const TicketDetail: React.FC = () => {
                     <span className="text-[0.72rem] font-semibold text-text-muted uppercase tracking-wider block mb-1">Customer Phone</span>
                     <p className="text-text font-medium">{ticket.customer?.phone}</p>
                   </div>
-                  <div className="sm:col-span-2">
-                    <span className="text-[0.72rem] font-semibold text-text-muted uppercase tracking-wider block mb-1">Email Address</span>
-                    <p className="text-text font-medium">{ticket.customer?.email || 'N/A'}</p>
+                  <div className="sm:col-span-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-primary/5 p-4 rounded-xl border border-primary/10">
+                    <div>
+                      <span className="text-[0.72rem] font-semibold text-text-muted uppercase tracking-wider block mb-1">Email Address</span>
+                      <p className="text-text font-medium">{ticket.customer?.email || 'N/A'}</p>
+                      {emailSuccess && (
+                        <p className="text-xs text-success font-medium mt-1 animate-fade-in">{emailSuccess}</p>
+                      )}
+                      {emailError && (
+                        <p className="text-xs text-error font-medium mt-1 animate-fade-in">{emailError}</p>
+                      )}
+                    </div>
+                    {ticket.customer?.email && (
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        onClick={handleSendEmail}
+                        loading={isSendingEmail}
+                        className="text-xs shrink-0 flex items-center gap-1.5 border border-primary/20 hover:bg-primary/10"
+                      >
+                        <Mail size={14} className="text-primary" />
+                        Send Tracking Link
+                      </Button>
+                    )}
                   </div>
                 </>
               )}
