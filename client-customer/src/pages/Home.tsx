@@ -623,39 +623,30 @@ const Home: React.FC = () => {
             </div>
           </div>
 
-          {/* Interactive Simulated Map */}
-          <div className="bg-surface border border-border rounded-3xl p-6 shadow-sm flex flex-col gap-6 relative overflow-hidden h-[360px] md:h-[420px]">
-            <div className="absolute inset-0 bg-primary/5 grid grid-cols-12 grid-rows-12 opacity-30 pointer-events-none">
-              {[...Array(144)].map((_, i) => (
-                <div key={i} className="border-r border-b border-primary/20"></div>
-              ))}
-            </div>
-            
-            {/* Styled Simulated Durban/Pinetown Map Visual */}
-            <div className="relative z-10 w-full h-full rounded-2xl bg-[#e8ddd2]/45 border border-border overflow-hidden flex items-center justify-center">
-              {/* Map roads mock */}
-              <div className="absolute w-[200%] h-4 bg-white/80 rotate-12 -left-1/3 top-1/4 shadow-sm"></div>
-              <div className="absolute w-[200%] h-6 bg-white/80 -rotate-45 -left-1/4 top-1/2 shadow-sm"></div>
-              <div className="absolute w-[200%] h-3 bg-white/70 rotate-60 -left-1/2 top-1/3"></div>
-              <div className="absolute w-[200%] h-4 bg-white/70 -rotate-12 left-0 bottom-1/4"></div>
+          {/* Real Google Map Embed with Directions */}
+          <div className="bg-surface border border-border rounded-3xl p-4 shadow-sm flex flex-col gap-4 relative overflow-hidden h-[400px] md:h-[450px]">
+            <div className="relative z-10 w-full h-full rounded-2xl overflow-hidden border border-border bg-slate-100">
+              <iframe
+                title="ANM Workshop Location"
+                src="https://maps.google.com/maps?q=14%20Marianheights%20Road,%20Pinetown,%20South%20Africa&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                className="w-full h-full border-0"
+                allowFullScreen={true}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
               
-              {/* Pinetown M13 Highway indicator */}
-              <div className="absolute left-1/4 top-[24%] -rotate-45 bg-[#4a8c80]/20 px-3 py-0.5 rounded text-[8px] font-bold text-primary border border-primary/20 tracking-wider">
-                M13 DBN / PIN
+              {/* Floating Action Button for Directions */}
+              <div className="absolute bottom-4 left-4 right-4 z-20 flex justify-center">
+                <a
+                  href="https://www.google.com/maps/dir/?api=1&destination=14+Marianheights+Road,+Pinetown,+South+Africa"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white font-medium text-xs py-2.5 px-5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 tracking-wider uppercase"
+                >
+                  <MapPin size={14} />
+                  Get Directions on Google Maps
+                </a>
               </div>
-              
-              {/* Workshop Pin Indicator */}
-              <div className="relative z-20 flex flex-col items-center gap-1.5 animate-bounce">
-                <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center shadow-lg border border-white">
-                  <Wrench size={18} />
-                </div>
-                <div className="bg-surface px-3 py-1 rounded-lg shadow-md border border-border text-[10px] font-bold text-primary whitespace-nowrap">
-                  ANM Workshop
-                </div>
-              </div>
-
-              {/* Pin ripple */}
-              <div className="absolute w-16 h-16 rounded-full bg-primary/25 animate-ping opacity-60"></div>
             </div>
           </div>
 
