@@ -13,6 +13,9 @@ import {
   approveBooking
 } from '../services/ticket.service.js';
 import { AuthenticatedRequest } from '../types/index.js';
+import { Resend } from 'resend';
+
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 export async function getTickets(
   req: AuthenticatedRequest,
@@ -328,9 +331,35 @@ export async function sendTrackingEmail(
     const subject = `Track your vehicle repair status at ANM Workshop`;
     const body = `Hi ${ticket.customer.name},\n\nYour vehicle repair request for ${ticket.vehicle?.make} ${ticket.vehicle?.model} (${ticket.vehicle?.registration_number}) is registered under status "${ticket.status.toUpperCase()}".\n\nYou can track its live status, parts utilized, and invoice here:\n${trackingUrl}\n\nRegards,\nANM Workshop Team`;
 
+    let emailSentReal = false;
+    let apiErrorMessage = null;
+
+    if (resend) {
+      try {
+        const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+        const { data, error } = await resend.emails.send({
+          from: `ANM Workshop <${fromEmail}>`,
+          to: ticket.customer.email,
+          subject,
+          text: body,
+        });
+
+        if (error) {
+          console.error('Resend API error:', error);
+          apiErrorMessage = error.message;
+        } else {
+          console.log('Resend email sent successfully:', data);
+          emailSentReal = true;
+        }
+      } catch (err: any) {
+        console.error('Failed to send email via Resend:', err);
+        apiErrorMessage = err.message || 'Resend SDK execution error';
+      }
+    }
+
     console.log(`
 =========================================
-[SIMULATED EMAIL SENT]
+[SIMULATED EMAIL LOG]
 To: ${ticket.customer.email}
 Subject: ${subject}
 Body: 
@@ -338,16 +367,30 @@ ${body}
 =========================================
 `);
 
-    return res.status(200).json({
-      success: true,
-      message: 'Tracking link email simulated successfully.',
-      recipient: ticket.customer.email,
-      simulatedEmail: {
-        to: ticket.customer.email,
-        subject,
-        body
-      }
-    });
+    if (emailSentReal) {
+      return res.status(200).json({
+        success: true,
+        message: 'Tracking link email sent successfully to customer via Resend.',
+        recipient: ticket.customer.email,
+        realDelivery: true
+      });
+    } else {
+      const warningText = apiErrorMessage 
+        ? ` (Resend warning: ${apiErrorMessage}. Sandbox limits sending to registered accounts only unless domain is verified.)` 
+        : ' (Resend API key not configured. Logged to console.)';
+
+      return res.status(200).json({
+        success: true,
+        message: `Tracking link logged to console${warningText}`,
+        recipient: ticket.customer.email,
+        realDelivery: false,
+        simulatedEmail: {
+          to: ticket.customer.email,
+          subject,
+          body
+        }
+      });
+    }
   } catch (error) {
     next(error);
   }
