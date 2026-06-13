@@ -326,7 +326,7 @@ export async function sendTrackingEmail(
       });
     }
 
-    const clientUrl = process.env.CLIENT_CUSTOMER_URL || 'http://localhost:5173';
+    const clientUrl = process.env.CLIENT_CUSTOMER_URL || 'https://anm-customer-portal.onrender.com';
     const trackingUrl = `${clientUrl}/public/track/${ticket.tracking_token}`;
     const subject = `Track your vehicle repair status at ANM Workshop`;
     const body = `Hi ${ticket.customer.name},\n\nYour vehicle repair request for ${ticket.vehicle?.make} ${ticket.vehicle?.model} (${ticket.vehicle?.registration_number}) is registered under status "${ticket.status.toUpperCase()}".\n\nYou can track its live status, parts utilized, and invoice here:\n${trackingUrl}\n\nRegards,\nANM Workshop Team`;
