@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.js';
 import { Button } from '../ui/Button.js';
+import anmLogo from '../../assets/anm-logo.svg';
 import { LayoutDashboard, FileText, ClipboardList, Users, LogOut, Receipt, BarChart2, Clock } from 'lucide-react';
 
 interface SidebarProps {
@@ -38,9 +39,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
     <aside className="w-full h-full md:w-[240px] bg-primary text-white flex flex-col md:h-screen md:fixed md:top-0 md:left-0 border-r border-white/10 select-none">
       {/* Brand Logo & Header */}
       <div className="p-5 bg-primary-hover border-b border-white/10 flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full border border-white/40 flex items-center justify-center font-display text-lg text-white font-semibold flex-shrink-0">
-          A
-        </div>
+        <img src={anmLogo} alt="ANM Logo" className="w-10 h-10 object-contain rounded-lg bg-white p-0.5" />
         <div className="min-w-0">
           <h1 className="font-display font-medium text-lg text-white leading-none tracking-wide">
             ANM Workshop

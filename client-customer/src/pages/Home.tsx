@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { Button } from '../components/ui/Button.js';
 import { Input } from '../components/ui/Input.js';
+import anmLogo from '../assets/anm-logo.svg';
 
 const Home: React.FC = () => {
   const [tokenInput, setTokenInput] = useState<string>('');
@@ -148,9 +149,7 @@ const Home: React.FC = () => {
       <header className="sticky top-0 z-40 bg-surface/90 backdrop-blur-md border-b border-border shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full border border-primary flex items-center justify-center font-display text-lg text-primary font-bold bg-primary/5">
-              A
-            </div>
+            <img src={anmLogo} alt="ANM Logo" className="w-10 h-10 object-contain rounded-lg" />
             <div>
               <h1 className="font-display font-medium text-xl leading-none tracking-wide text-primary">
                 ANM Workshop

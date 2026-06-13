@@ -7,6 +7,7 @@ import { Textarea } from '../components/ui/Textarea.js';
 import { Select } from '../components/ui/Select.js';
 import { Spinner } from '../components/ui/Spinner.js';
 import { ticketsService } from '../services/ticketsService.js';
+import anmLogo from '../assets/anm-logo.svg';
 
 interface BookingFormState {
   customerName: string;
@@ -254,9 +255,7 @@ const PublicBooking: React.FC = () => {
         {/* Top Header Card */}
         <div className="p-6 bg-primary text-white flex justify-between items-center border-b border-white/10">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full border border-white/40 flex items-center justify-center font-display text-base font-semibold">
-              A
-            </div>
+            <img src={anmLogo} alt="ANM Logo" className="w-9 h-9 object-contain rounded-lg bg-white p-0.5" />
             <div>
               <h1 className="font-display font-medium text-base leading-none tracking-wide">
                 ANM Workshop

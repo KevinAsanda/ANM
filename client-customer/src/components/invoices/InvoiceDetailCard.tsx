@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Invoice } from '../../services/invoiceService.js';
 import { InvoiceStatusBadge } from './InvoiceStatusBadge.js';
+import anmLogo from '../../assets/anm-logo.svg';
 
 interface InvoiceDetailCardProps {
   invoice: Invoice;
@@ -28,9 +29,7 @@ export const InvoiceDetailCard: React.FC<InvoiceDetailCardProps> = ({
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 px-8 py-8 border-b border-border flex flex-col md:flex-row justify-between items-start md:items-center gap-6 print:bg-none print:px-0 print:py-4">
         <div>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-display text-xl font-bold print:border print:border-primary print:text-primary print:bg-white">
-              A
-            </div>
+            <img src={anmLogo} alt="ANM Logo" className="w-10 h-10 object-contain rounded-lg bg-white p-0.5 border border-border print:border-primary" />
             <div>
               <h2 className="font-display text-2xl font-bold tracking-wide text-text">ANM Workshop</h2>
               <p className="text-xs text-text-muted font-medium uppercase tracking-wider">Automotive Service Management</p>
