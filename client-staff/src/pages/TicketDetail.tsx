@@ -585,7 +585,7 @@ const TicketDetail: React.FC = () => {
                 </h2>
 
                 {ticket.ai_diagnostics && (ticket.ai_diagnostics.suggested_category || ticket.ai_diagnostics.estimated_duration_hours) && (
-                  <div className="p-3 bg-blue-50/60 dark:bg-slate-800/40 border border-blue-100 dark:border-blue-900/40 rounded-xl text-xs flex flex-col gap-1.5 animate-fade-in">
+                  <div className="p-3 bg-primary/5 border border-primary/20 rounded-xl text-xs flex flex-col gap-1.5 animate-fade-in">
                     <span className="font-semibold text-primary block text-[10px] uppercase tracking-wider">AI Booking Insights</span>
                     {ticket.ai_diagnostics.suggested_category && (
                       <p className="text-text">

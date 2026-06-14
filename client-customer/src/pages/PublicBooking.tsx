@@ -422,7 +422,7 @@ const PublicBooking: React.FC = () => {
               />
 
               {/* AI Categorizer Feedback Panel */}
-              <div className="mt-4 p-4 rounded-2xl border transition-all duration-300 bg-surface shadow-sm border-border flex flex-col gap-4">
+              <div className="mt-4 p-4 rounded-2xl border transition-all duration-300 bg-gradient-to-r from-surface to-primary-light/40 border-primary/30 shadow-sm flex flex-col gap-4">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                   <span className="text-xs font-semibold text-text uppercase tracking-wider">

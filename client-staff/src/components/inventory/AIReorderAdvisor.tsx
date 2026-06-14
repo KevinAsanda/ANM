@@ -71,7 +71,7 @@ export const AIReorderAdvisor: React.FC<AIReorderAdvisorProps> = ({ onRestockSuc
   };
 
   return (
-    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800 border border-blue-100 rounded-xl p-5 mb-6">
+    <div className="bg-gradient-to-r from-surface to-primary-light/40 border border-primary/30 rounded-xl p-5 mb-6 shadow-xs">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-2.5">
           <div className="bg-primary/10 p-2 rounded-lg text-primary">
@@ -106,21 +106,21 @@ export const AIReorderAdvisor: React.FC<AIReorderAdvisorProps> = ({ onRestockSuc
       </div>
 
       {isLoading && (
-        <div className="flex flex-col items-center justify-center p-8 text-center gap-2 animate-fade-in mt-4 border-t border-blue-100 pt-6">
+        <div className="flex flex-col items-center justify-center p-8 text-center gap-2 animate-fade-in mt-4 border-t border-primary/20 pt-6">
           <Spinner size="md" />
           <p className="text-xs text-text-muted mt-2">AI is analyzing historical tickets and parts volumes...</p>
         </div>
       )}
 
       {error && (
-        <div className="mt-4 border-t border-blue-100 pt-4 text-error text-xs flex items-center gap-2">
+        <div className="mt-4 border-t border-primary/20 pt-4 text-error text-xs flex items-center gap-2">
           <AlertCircle size={16} />
           <span>{error}</span>
         </div>
       )}
 
       {isFetched && !isLoading && (
-        <div className="mt-4 border-t border-blue-100 pt-5 animate-fade-in">
+        <div className="mt-4 border-t border-primary/20 pt-5 animate-fade-in">
           {forecast.length === 0 ? (
             <p className="text-xs text-text-muted text-center py-4 bg-white/50 rounded-lg">
               ✨ All stock levels look healthy for the projected 30-day demand. No reorders recommended.
@@ -148,7 +148,7 @@ export const AIReorderAdvisor: React.FC<AIReorderAdvisorProps> = ({ onRestockSuc
                           <span className="text-xs font-bold text-text">{rec.current_stock}</span>
                         </div>
                         <ArrowRight size={14} className="text-text-muted" />
-                        <div className="text-center bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100">
+                        <div className="text-center bg-primary/5 px-2.5 py-1 rounded-lg border border-primary/20">
                           <span className="block text-[10px] uppercase text-primary font-medium">Order Qty</span>
                           <span className="text-xs font-bold text-primary">+{rec.suggested_order_qty}</span>
                         </div>
@@ -198,7 +198,7 @@ export const AIReorderAdvisor: React.FC<AIReorderAdvisorProps> = ({ onRestockSuc
             </div>
             
             <div className="p-6 flex flex-col gap-4">
-              <div className="p-4 bg-blue-50/50 border border-blue-100 rounded-xl">
+              <div className="p-4 bg-primary/5 border border-primary/20 rounded-xl">
                 <span className="text-[10px] uppercase text-primary font-bold tracking-wider">Restock Item</span>
                 <h4 className="font-semibold text-text text-base mt-1">{selectedRec.part_name}</h4>
                 <p className="text-xs text-text-muted mt-1 leading-relaxed">{selectedRec.reasoning}</p>

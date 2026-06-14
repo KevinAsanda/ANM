@@ -197,7 +197,7 @@ export const PublicTracker: React.FC = () => {
 
         {/* Transparent Diagnostics Checklist Card */}
         {ticket.status !== 'cancelled' && ticket.ai_diagnostics?.checklist && ticket.ai_diagnostics.checklist.length > 0 && (
-          <div className="bg-surface border border-border rounded-xl p-6 shadow-sm flex flex-col gap-4">
+          <div className="bg-gradient-to-r from-surface to-primary-light/40 border border-primary/30 rounded-xl p-6 shadow-sm flex flex-col gap-4">
             <div className="flex items-center justify-between border-b border-border pb-3">
               <div>
                 <h3 className="font-display font-medium text-md text-primary">Live Diagnostics & Inspection</h3>

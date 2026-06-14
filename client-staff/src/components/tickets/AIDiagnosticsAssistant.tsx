@@ -63,8 +63,8 @@ export const AIDiagnosticsAssistant: React.FC<AIDiagnosticsAssistantProps> = ({
   const hasDiagnostics = diagnostics && (diagnostics.causes?.length > 0 || diagnostics.checklist?.length > 0);
 
   return (
-    <div className="bg-gradient-to-r from-blue-50/60 to-indigo-50/60 dark:from-slate-900/40 dark:to-slate-800/40 border border-blue-100 rounded-2xl p-5 mb-6">
-      <div className="flex items-center justify-between border-b border-blue-100 pb-3 mb-4">
+    <div className="bg-gradient-to-r from-surface to-primary-light/40 border border-primary/30 rounded-2xl p-5 mb-6 shadow-xs">
+      <div className="flex items-center justify-between border-b border-primary/20 pb-3 mb-4">
         <div className="flex items-center gap-2.5">
           <Sparkles className="text-primary animate-pulse" size={18} />
           <h3 className="font-display font-medium text-lg text-text">AI Diagnostics Assistant</h3>
