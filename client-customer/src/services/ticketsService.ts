@@ -35,6 +35,7 @@ export interface TicketRelation {
     logged_by_name: string;
     created_at: string;
   }>;
+  ai_diagnostics?: any;
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api/v1';
@@ -51,6 +52,11 @@ export const ticketsService = {
     description: string;
     preferredDate: string;
     preferredTime: 'morning' | 'afternoon';
+    aiDiagnostics?: {
+      suggested_category: string;
+      estimated_duration_hours: number;
+      reasoning: string;
+    } | null;
   }): Promise<{ message: string; ticketId: string; trackingToken: string; trackingUrl: string }> {
     const res = await fetch(`${API_BASE_URL}/tickets/public/booking`, {
       method: 'POST',
@@ -78,6 +84,23 @@ export const ticketsService = {
     if (!res.ok) {
       const errData = await res.json().catch(() => ({}));
       throw new Error(errData.message || 'Failed to fetch tracking details');
+    }
+
+    return res.json();
+  },
+
+  async classifyBookingSymptoms(symptoms: string): Promise<{ suggested_category: string; estimated_duration_hours: number; reasoning: string }> {
+    const res = await fetch(`${API_BASE_URL}/tickets/public/booking/ai-classify`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ symptoms })
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.message || 'Failed to classify symptoms');
     }
 
     return res.json();

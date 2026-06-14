@@ -67,15 +67,36 @@ All users land on the **Login Screen** first. There is no public-facing page in 
 [Inventory List]
   ├── Table: part name, part number, qty in stock, reorder level, unit cost
   ├── Low stock rows → highlighted with amber "Low Stock" badge
+  ├── "AI Smart Reorder Advisor" panel → shows suggested restock quantities
+  │     └── Click "Restock" → [Restock Confirmation Modal] → (edit/confirm) → updates inventory stock
   ├── "Add Part" button → [Add Part Modal]
   ├── Edit icon → [Edit Part Modal]
   └── (no parts yet) → [Empty state]
-  
+
+[Restock Confirmation Modal]
+  ├── Review AI-suggested quantities for each low-stock or forecasted item
+  ├── Edit quantities manually to retain human decision control
+  └── Submit → updates inventory database immediately
+
 [Add Part Modal / Edit Part Modal]
   ├── (valid submit) → [Modal closes, table updates]
   ├── (missing required fields) → [field-level errors inside modal]
   ├── (duplicate part number) → [error: "A part with this number already exists"]
   └── Cancel / Escape key → [Modal closes, no change]
+
+[Ticket Detail]
+  ├── Shows: customer, vehicle, mechanic, status badge, description, notes, parts used
+  ├── Status dropdown → change status → (saved) → [badge updates]
+  │     └── If status set to 'completed' → [System generates Invoice] → [WhatsApp trigger]
+  ├── "AI Diagnostics Assistant" card
+  │     └── Click "Analyze Symptoms" → calls Gemini API → displays top causes, diagnostic checklist, and recommended parts
+  │     ├── Checkbox toggles on checklist items → updates/saves status to database immediately
+  │     └── Click "Add to Job" on suggested parts → opens [Log Part Used] form pre-filled, allowing mechanic manual override
+  ├── Notes field → save → [notes updated]
+  ├── "Log Part Used" → Part select + qty input → (submit) → [parts list updates, inventory deducts]
+  │     └── (insufficient stock) → [inline error: "Only [n] units available"]
+  ├── "View/Create Invoice" button (if not generated yet) → [Generate Invoice dialog] → [Invoice Detail]
+  └── Back → [Tickets List]
 
 [Staff List]
   ├── Table: name, email, role, date added
@@ -109,6 +130,7 @@ All users land on the **Login Screen** first. There is no public-facing page in 
   ├── Shows: vehicle info, job description, status badge, parts used
   ├── Status dropdown → Pending → In Progress → Completed (cannot set Cancelled)
   │     └── (update) → [status badge updates] → [System generates Invoice] → [WhatsApp trigger]
+  ├── "AI Diagnostics Assistant" card (same as admin, can check off items and pre-fill logged parts)
   ├── "Log Part Used" → Part select + qty + submit → [parts list updates, inventory deducts]
   │     └── (insufficient stock) → [error: "Only [n] units available"]
   └── Back → [My Jobs]
@@ -121,6 +143,24 @@ All users land on the **Login Screen** first. There is no public-facing page in 
 ```
 [WhatsApp Notification Link]
   → [Public Invoice View] (no login required, read-only)
+
+[Customer Landing Page]
+  ├── View services list and contact info
+  ├── Search active ticket status by tracking token → [Public Ticket Tracker]
+  └── Click "Request Service Booking" → [Customer Booking Portal]
+
+[Customer Booking Portal]
+  ├── Fill: Name, Phone, Registration, Make, Model, Year, Symptoms Description
+  ├── Symptoms Input field → triggers AI classification on keystroke pause / submit:
+  │     └── AI auto-suggests category (can be manually changed) and estimates slot duration
+  ├── Select Preferred Date and AI-recommended Time Slot
+  ├── Submit request → [Booking Success Screen] showing tracking token
+  └── [Booking Success Screen] → click track link → [Public Ticket Tracker] (in 'draft' state)
+
+[Public Ticket Tracker]
+  ├── Displays visual progress stepper: Requested (Draft) → Scheduled (Pending) → Under Repair (In Progress) → Ready (Completed)
+  ├── Displays vehicle details, technician checklist items, and logged parts used
+  └── If status is Completed → displays final Invoice breakdown & banking details (EFT)
 ```
 
 ---
@@ -141,6 +181,9 @@ All users land on the **Login Screen** first. There is no public-facing page in 
 | Inventory List | `/inventory` | Admin only |
 | Staff List | `/staff` | Admin only |
 | My Jobs | `/my-jobs` | Mechanic only |
+| Customer Landing Page | `/` | Public (unauthenticated) |
+| Customer Booking Portal | `/public/booking` | Public (unauthenticated) |
+| Public Ticket Tracker | `/public/track/:token` | Public (unauthenticated) |
 
 ---
 

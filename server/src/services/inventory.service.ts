@@ -1,4 +1,6 @@
 import { supabase } from '../config/supabase.js';
+import { mockTicketParts } from './ticket.service.js';
+import { getAIInventoryForecast } from './ai.service.js';
 
 export interface InventoryItem {
   id: string;
@@ -285,4 +287,43 @@ export async function updatePart(
 
   if (error) throw error;
   return data as InventoryItem;
+}
+
+export async function getInventoryForecast(): Promise<any[]> {
+  const currentInventory = await listInventory();
+  let usageHistory: any[] = [];
+
+  if (isMockMode) {
+    usageHistory = mockTicketParts.map(tp => {
+      const part = mockInventory.find(i => i.id === tp.inventory_id);
+      return {
+        inventory_id: tp.inventory_id,
+        part_name: part ? part.part_name : 'Unknown Part',
+        qty_used: tp.qty_used,
+        created_at: tp.created_at
+      };
+    });
+  } else {
+    const { data, error } = await supabase
+      .from('ticket_parts')
+      .select(`
+        inventory_id,
+        qty_used,
+        created_at,
+        inventory (
+          part_name
+        )
+      `);
+
+    if (error) throw error;
+    
+    usageHistory = (data || []).map((tp: any) => ({
+      inventory_id: tp.inventory_id,
+      part_name: (tp.inventory as any)?.part_name || 'Unknown Part',
+      qty_used: tp.qty_used,
+      created_at: tp.created_at
+    }));
+  }
+
+  return getAIInventoryForecast(currentInventory, usageHistory);
 }

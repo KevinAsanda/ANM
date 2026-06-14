@@ -195,6 +195,58 @@ export const PublicTracker: React.FC = () => {
           </div>
         )}
 
+        {/* Transparent Diagnostics Checklist Card */}
+        {ticket.status !== 'cancelled' && ticket.ai_diagnostics?.checklist && ticket.ai_diagnostics.checklist.length > 0 && (
+          <div className="bg-surface border border-border rounded-xl p-6 shadow-sm flex flex-col gap-4">
+            <div className="flex items-center justify-between border-b border-border pb-3">
+              <div>
+                <h3 className="font-display font-medium text-md text-primary">Live Diagnostics & Inspection</h3>
+                <p className="text-[10px] text-text-muted mt-0.5">Real-time checklist showing what tasks the mechanic has inspected and completed.</p>
+              </div>
+              {/* Calculate progress percentage */}
+              {(() => {
+                const total = ticket.ai_diagnostics.checklist.length;
+                const completed = ticket.ai_diagnostics.checklist.filter((item: any) => item.checked).length;
+                const percentage = Math.round((completed / total) * 100);
+                return (
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20">
+                      {percentage}% Done ({completed}/{total})
+                    </span>
+                  </div>
+                );
+              })()}
+            </div>
+
+            <div className="flex flex-col gap-3">
+              {ticket.ai_diagnostics.checklist.map((item: any) => (
+                <div
+                  key={item.id}
+                  className={`flex items-start gap-3 p-3 rounded-xl border transition-colors ${
+                    item.checked 
+                      ? 'bg-success/5 border-success/20 text-text' 
+                      : 'bg-background border-border text-text-muted'
+                  }`}
+                >
+                  <div className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center border shrink-0 ${
+                    item.checked 
+                      ? 'bg-success border-success text-white' 
+                      : 'border-border bg-surface text-transparent'
+                  }`}>
+                    <CheckCircle size={14} className="stroke-[3]" />
+                  </div>
+                  <div className="text-xs">
+                    <p className={`font-semibold ${item.checked ? 'text-success' : 'text-text'}`}>
+                      {item.checked ? 'Completed' : 'Pending Inspection'}
+                    </p>
+                    <p className="text-[10px] text-text-muted mt-0.5 leading-relaxed">{item.text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Vehicle & Customer Specs */}
         <div className="grid md:grid-cols-2 gap-6 print:hidden">
           {/* Vehicle card */}

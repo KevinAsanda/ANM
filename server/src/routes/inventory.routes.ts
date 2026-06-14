@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { getInventory, postPart, patchPart } from '../controllers/inventory.controller.js';
+import { getInventory, postPart, patchPart, getAIForecast } from '../controllers/inventory.controller.js';
 import { authenticate, requireRole } from '../middleware/auth.js';
 import { validateRequest } from '../middleware/validate.js';
 
@@ -29,6 +29,9 @@ router.use(authenticate);
 
 // List inventory is open to both admins and mechanics
 router.get('/', getInventory);
+
+// AI-based forecast route (admin only)
+router.get('/ai-forecast', requireRole('admin'), getAIForecast);
 
 // Admin-only management routes
 router.post('/', requireRole('admin'), validateRequest(createPartSchema), postPart);

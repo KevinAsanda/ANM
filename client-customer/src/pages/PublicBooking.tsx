@@ -20,6 +20,8 @@ interface BookingFormState {
   description: string;
   preferredDate: string;
   preferredTime: 'morning' | 'afternoon';
+  serviceCategory: string;
+  estimatedDuration: string;
 }
 
 const PublicBooking: React.FC = () => {
@@ -34,10 +36,14 @@ const PublicBooking: React.FC = () => {
     year: '',
     description: '',
     preferredDate: '',
-    preferredTime: 'morning'
+    preferredTime: 'morning',
+    serviceCategory: 'General Inspection & Repair',
+    estimatedDuration: '1.0'
   });
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isClassifying, setIsClassifying] = useState<boolean>(false);
+  const [aiReasoning, setAiReasoning] = useState<string>('');
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
   const [successData, setSuccessData] = useState<{
     ticketId: string;
@@ -64,6 +70,28 @@ const PublicBooking: React.FC = () => {
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleDescriptionBlur = async () => {
+    const symptoms = form.description.trim();
+    if (symptoms.length < 10) return;
+
+    setIsClassifying(true);
+    try {
+      const result = await ticketsService.classifyBookingSymptoms(symptoms);
+      if (result) {
+        setForm((prev) => ({
+          ...prev,
+          serviceCategory: result.suggested_category,
+          estimatedDuration: String(result.estimated_duration_hours)
+        }));
+        setAiReasoning(result.reasoning);
+      }
+    } catch (err) {
+      console.error('Failed to auto-classify symptoms:', err);
+    } finally {
+      setIsClassifying(false);
+    }
   };
 
   const validateStep = (currentStep: number): boolean => {
@@ -137,7 +165,12 @@ const PublicBooking: React.FC = () => {
         year: form.year ? parseInt(form.year) : null,
         description: form.description,
         preferredDate: form.preferredDate,
-        preferredTime: form.preferredTime
+        preferredTime: form.preferredTime,
+        aiDiagnostics: {
+          suggested_category: form.serviceCategory,
+          estimated_duration_hours: Number(form.estimatedDuration),
+          reasoning: aiReasoning || 'Customer selection'
+        }
       });
 
       // Construct full absolute tracking link using current origin
@@ -382,10 +415,64 @@ const PublicBooking: React.FC = () => {
                 placeholder="e.g. Major service requested. Squealing noise from front wheels when braking. Engine runs hot."
                 value={form.description}
                 onChange={handleInputChange}
+                onBlur={handleDescriptionBlur}
                 error={formErrors.description}
                 rows={4}
                 required
               />
+
+              {/* AI Categorizer Feedback Panel */}
+              <div className="mt-4 p-4 rounded-2xl border transition-all duration-300 bg-surface shadow-sm border-border flex flex-col gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                  <span className="text-xs font-semibold text-text uppercase tracking-wider">
+                    AI Service Booking Assistant
+                  </span>
+                  {isClassifying && <span className="text-[10px] text-text-muted animate-pulse font-medium">(Analyzing symptoms...)</span>}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Select
+                    label="Service Category"
+                    name="serviceCategory"
+                    value={form.serviceCategory}
+                    onChange={handleSelectChange}
+                    options={[
+                      { value: 'Oil & Filter Service', label: 'Oil & Filter Service' },
+                      { value: 'Brakes & Braking System', label: 'Brakes & Braking System' },
+                      { value: 'Suspension & Steering', label: 'Suspension & Steering' },
+                      { value: 'Engine & Transmission Diagnostic', label: 'Engine & Transmission Diagnostic' },
+                      { value: 'Electrical & Battery Diagnostic', label: 'Electrical & Battery Diagnostic' },
+                      { value: 'General Inspection & Repair', label: 'General Inspection & Repair' }
+                    ]}
+                    required
+                  />
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="block text-[0.72rem] font-semibold text-text-muted uppercase tracking-wider">
+                      Estimated Duration (Hours)
+                    </label>
+                    <input
+                      type="number"
+                      name="estimatedDuration"
+                      min="0.5"
+                      max="24"
+                      step="0.5"
+                      value={form.estimatedDuration}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-border rounded-lg text-text focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-surface transition-all"
+                      required
+                    />
+                  </div>
+                </div>
+
+                {aiReasoning && (
+                  <div className="p-3 bg-background border border-border rounded-xl text-[10px] text-text-muted leading-relaxed">
+                    <span className="font-semibold text-text block mb-1">AI Recommendation Reasoning:</span>
+                    {aiReasoning}
+                  </div>
+                )}
+              </div>
             </div>
           )}
 

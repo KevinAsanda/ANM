@@ -1,5 +1,5 @@
 import { Response, NextFunction } from 'express';
-import { listInventory, addPart, updatePart } from '../services/inventory.service.js';
+import { listInventory, addPart, updatePart, getInventoryForecast } from '../services/inventory.service.js';
 import { AuthenticatedRequest } from '../types/index.js';
 
 export async function getInventory(
@@ -60,6 +60,19 @@ export async function patchPart(
 
     const item = await updatePart(id, updates);
     return res.status(200).json(item);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getAIForecast(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const forecast = await getInventoryForecast();
+    return res.status(200).json(forecast);
   } catch (error) {
     next(error);
   }

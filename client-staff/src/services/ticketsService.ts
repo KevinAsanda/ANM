@@ -248,5 +248,34 @@ export const ticketsService = {
     }
 
     return res.json();
+  },
+
+  async getAIDiagnostics(ticketId: string): Promise<any> {
+    const res = await fetch(`${API_BASE_URL}/tickets/${ticketId}/ai-diagnostics`, {
+      method: 'POST',
+      headers: getHeaders()
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.message || 'Failed to generate AI diagnostics');
+    }
+
+    return res.json();
+  },
+
+  async updateAIChecklist(ticketId: string, checklist: any[]): Promise<any> {
+    const res = await fetch(`${API_BASE_URL}/tickets/${ticketId}/ai-diagnostics/checklist`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify({ checklist })
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.message || 'Failed to update diagnostic checklist');
+    }
+
+    return res.json();
   }
 };

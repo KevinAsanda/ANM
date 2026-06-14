@@ -82,6 +82,19 @@ export const inventoryService = {
     }
 
     return res.json();
+  },
+
+  async getAIForecast(): Promise<any[]> {
+    const res = await fetch(`${API_BASE_URL}/inventory/ai-forecast`, {
+      headers: getHeaders()
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.message || 'Failed to fetch AI inventory forecast');
+    }
+
+    return res.json();
   }
 };
 export default inventoryService;

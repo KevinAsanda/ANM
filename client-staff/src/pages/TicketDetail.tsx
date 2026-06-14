@@ -13,6 +13,7 @@ import { Textarea } from '../components/ui/Textarea.js';
 import { Spinner } from '../components/ui/Spinner.js';
 import { ArrowLeft, AlertCircle, Save, CheckCircle, Smartphone, Mail } from 'lucide-react';
 import { MobileScannerModal } from '../components/inventory/MobileScannerModal.js';
+import { AIDiagnosticsAssistant } from '../components/tickets/AIDiagnosticsAssistant.js';
 
 const TicketDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -80,6 +81,11 @@ const TicketDetail: React.FC = () => {
       setTicket(data);
       setSelectedStatus(data.status);
       setNotesText(data.notes || '');
+      
+      if (data.status === 'draft' && data.ai_diagnostics?.estimated_duration_hours) {
+        const calculatedCost = data.ai_diagnostics.estimated_duration_hours * 350;
+        setLabourCostInput(calculatedCost.toFixed(2));
+      }
     } catch (err: any) {
       console.error('Error fetching ticket details:', err);
       if (err.status === 403) {
@@ -402,6 +408,20 @@ const TicketDetail: React.FC = () => {
             </p>
           </div>
 
+          {/* AI Diagnostics Assistant */}
+          {ticket && (
+            <AIDiagnosticsAssistant
+              ticketId={ticket.id}
+              ticketDescription={ticket.description}
+              initialDiagnostics={(ticket as any).ai_diagnostics}
+              onSelectPart={(partId, qty) => {
+                setSelectedPartId(partId);
+                setQtyToLog(qty);
+              }}
+              canModify={canLogParts}
+            />
+          )}
+
           {/* Notes Section - Editable for Admin, Read-only snippet for Mechanic */}
           {isAdmin ? (
             <div className="bg-surface p-6 rounded-xl shadow-sm border border-border flex flex-col gap-4">
@@ -563,6 +583,27 @@ const TicketDetail: React.FC = () => {
                 <h2 className="font-display font-medium text-xl text-text border-b border-border pb-2">
                   Review & Approve Request
                 </h2>
+
+                {ticket.ai_diagnostics && (ticket.ai_diagnostics.suggested_category || ticket.ai_diagnostics.estimated_duration_hours) && (
+                  <div className="p-3 bg-blue-50/60 dark:bg-slate-800/40 border border-blue-100 dark:border-blue-900/40 rounded-xl text-xs flex flex-col gap-1.5 animate-fade-in">
+                    <span className="font-semibold text-primary block text-[10px] uppercase tracking-wider">AI Booking Insights</span>
+                    {ticket.ai_diagnostics.suggested_category && (
+                      <p className="text-text">
+                        <span className="font-semibold text-text-muted">Suggested Category:</span> {ticket.ai_diagnostics.suggested_category}
+                      </p>
+                    )}
+                    {ticket.ai_diagnostics.estimated_duration_hours && (
+                      <p className="text-text">
+                        <span className="font-semibold text-text-muted">Estimated Duration:</span> {ticket.ai_diagnostics.estimated_duration_hours} Hours
+                      </p>
+                    )}
+                    {ticket.ai_diagnostics.reasoning && (
+                      <p className="text-[10px] text-text-muted italic bg-white/40 dark:bg-slate-900/20 p-2 rounded border border-blue-50/30 mt-1">
+                        "{ticket.ai_diagnostics.reasoning}"
+                      </p>
+                    )}
+                  </div>
+                )}
                 
                 <Select
                   label="Assign Mechanic*"

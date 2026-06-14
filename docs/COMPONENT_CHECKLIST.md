@@ -131,6 +131,16 @@ genuinely excellent — well-typed props, ARIA attributes, all states covered.
 
 ---
 
+## AI Features Components — `client/src/components/ai/` (or inline in pages)
+
+| Component | Status | Notes |
+|-----------|--------|-------|
+| `AIReorderAdvisor.tsx` | `[NEW]` | Dynamic panel in Inventory page displaying AI-forecasted restock recommendations, estimated costs, and a manual edit/confirm flow. |
+| `AIDiagnosticsAssistant.tsx` | `[NEW]` | Dedicated card in Ticket Detail showing top causes, interactive diagnostic checklist, and parts suggested for the job with an "Add to Job" pre-fill trigger. |
+| `AISymptomInput.tsx` | `[NEW]` | Customer Booking input text area that performs real-time/pause classification of vehicle symptoms and auto-suggests booking category and duration. |
+
+---
+
 ## Component Build Priority
 
 Build in this order — each depends on the one before:

@@ -242,6 +242,47 @@
 
 ---
 
+## SPRINT 14 — Predictive Inventory Demand & Smart Reordering (AI)
+
+| # | Task | Label | Status |
+|---|------|-------|--------|
+| A-1401 | Implement `GET /api/v1/inventory/ai-forecast` endpoint: queries `ticket_parts` and `service_tickets`, calls Gemini API to estimate 30-day demand, and returns suggested order quantities and costs | `[BACKEND]` | ✅ |
+| A-1402 | Write backend unit tests verifying data aggregation, Gemini prompts, and JSON response structure for forecasting | `[TEST]` | ✅ |
+| A-1403 | Design and build client-side `inventoryService.getAIForecast()` API call | `[FRONTEND]` | ✅ |
+| A-1404 | Build the "AI Smart Reorder Advisor" panel on the Admin Inventory list page showing suggestions | `[FRONTEND]` | ✅ |
+| A-1405 | Implement the Restock confirmation modal allowing the admin to review, edit quantities, and update stock | `[FRONTEND]` | ✅ |
+
+---
+
+## SPRINT 15 — AI-Powered Repair Diagnostics (AI)
+
+| # | Task | Label | Status |
+|---|------|-------|--------|
+| A-1501 | Run SQL migrations to add `ai_diagnostics` JSONB column to `service_tickets` table | `[BACKEND]` | ✅ |
+| A-1502 | Implement `POST /api/v1/tickets/:id/ai-diagnostics` endpoint: reads ticket description, invokes Gemini API to generate top causes, checklist, and suggested parts, and stores findings in the DB | `[BACKEND]` | ✅ |
+| A-1503 | Implement `PATCH /api/v1/tickets/:id/ai-diagnostics/checklist` endpoint to update the checked state of checklist items | `[BACKEND]` | ✅ |
+| A-1504 | Write backend unit tests for diagnostic generation, JSON serialization, and checklist state preservation | `[TEST]` | ✅ |
+| A-1505 | Design and build the "AI Diagnostics Assistant" card on the Ticket Detail page | `[FRONTEND]` | ✅ |
+| A-1506 | Integrate the diagnostics card with the existing Log Part form (clicking a suggested part pre-fills the form) | `[FRONTEND]` | ✅ |
+| A-1507 | Hook checklist checkboxes to call the status update API immediately upon toggle | `[FRONTEND]` | ✅ |
+
+---
+
+## SPRINT 16 — Smart Booking Assistant & Service Categorizer (AI)
+
+| # | Task | Label | Status |
+|---|------|-------|--------|
+| A-1601 | Implement `POST /api/v1/public/booking/ai-classify` endpoint: processes symptom description, calls Gemini API to classify the service category, and estimates hours | `[BACKEND]` | ✅ |
+| A-1602 | Write backend unit tests verifying symptom classification, category matching, and duration estimates | `[TEST]` | ✅ |
+| A-1603 | Design and build the interactive symptom input text area in the Customer Booking wizard | `[FRONTEND]` | ✅ |
+| A-1604 | Connect the symptom input to the classification API; implement visual category highlighting and overrides | `[FRONTEND]` | ✅ |
+| A-1605 | Verify the admin approval dashboard allows editing and final acceptance of these draft tickets | `[FRONTEND]` | ✅ |tom classification, category matching, and duration estimates | `[TEST]` | ⬜ |
+| A-1603 | Design and build the interactive symptom input text area in the Customer Booking wizard | `[FRONTEND]` | ⬜ |
+| A-1604 | Connect the symptom input to the classification API; implement visual category highlighting and overrides | `[FRONTEND]` | ⬜ |
+| A-1605 | Verify the admin approval dashboard allows editing and final acceptance of these draft tickets | `[FRONTEND]` | ⬜ |
+
+---
+
 ## V2 Features (Future)
 
 - SMS reminders for vehicle service due dates

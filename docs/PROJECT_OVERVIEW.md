@@ -52,6 +52,12 @@ decisions from.
 - [✅] Remote phone-to-system barcode scanner IoT integration (Sprint 13)
 - [ ] SMS reminders for vehicle service due dates
 
+## V3 AI Features (Sprints 14–16 - Active)
+
+- [ ] AI-Powered Predictive Inventory Demand & Smart Reordering (Sprint 14)
+- [ ] AI-Powered Repair Diagnostics & Parts Suggester (Sprint 15)
+- [ ] AI-Driven Smart Booking Assistant & Service Categorizer (Sprint 16)
+
 ## What I Learned
 
 *(Update this section as the project progresses)*

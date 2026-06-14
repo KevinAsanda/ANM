@@ -2,7 +2,8 @@ import { supabase } from '../config/supabase.js';
 import { mockCustomers, createOrGetCustomer } from './customer.service.js';
 import { mockVehicles, createVehicle, getVehicleByRegistration } from './vehicle.service.js';
 import { mockStaff } from './staff.service.js';
-import { mockInventory } from './inventory.service.js';
+import { mockInventory, listInventory } from './inventory.service.js';
+import { getAIRepairDiagnostics } from './ai.service.js';
 
 export interface Ticket {
   id: string;
@@ -16,6 +17,7 @@ export interface Ticket {
   preferred_date?: string | null;
   preferred_time?: 'morning' | 'afternoon' | null;
   tracking_token?: string;
+  ai_diagnostics?: any;
   created_at: string;
   updated_at: string;
   vehicle?: {
@@ -368,7 +370,8 @@ export async function getTicketDetails(id: string): Promise<Ticket> {
       name: t.mechanic.name,
       email: t.mechanic.email
     } : undefined,
-    parts_used
+    parts_used,
+    ai_diagnostics: t.ai_diagnostics
   };
 }
 
@@ -691,7 +694,8 @@ export async function createBookingRequest(
   year: number | null,
   description: string,
   preferredDate: string,
-  preferredTime: 'morning' | 'afternoon'
+  preferredTime: 'morning' | 'afternoon',
+  aiDiagnostics?: any
 ): Promise<Ticket> {
   const { customer } = await createOrGetCustomer(customerName, customerPhone, customerEmail);
   
@@ -715,6 +719,7 @@ export async function createBookingRequest(
       tracking_token: crypto.randomUUID(),
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
+      ai_diagnostics: aiDiagnostics || null,
       vehicle: {
         id: vehicle.id,
         registration_number: vehicle.registration_number,
@@ -743,7 +748,8 @@ export async function createBookingRequest(
       description,
       preferred_date: preferredDate,
       preferred_time: preferredTime,
-      labour_cost: 0.00
+      labour_cost: 0.00,
+      ai_diagnostics: aiDiagnostics || null
     })
     .select()
     .single();
@@ -891,7 +897,8 @@ export async function getTicketByTrackingToken(
       name: t.mechanic.name,
       email: t.mechanic.email
     } : undefined,
-    parts_used
+    parts_used,
+    ai_diagnostics: t.ai_diagnostics
   };
 
   let invoice = null;
@@ -951,4 +958,78 @@ export async function approveBooking(
 
   if (error) throw error;
   return data as Ticket;
+}
+
+export async function generateTicketDiagnostics(ticketId: string): Promise<any> {
+  const ticket = await getTicketDetails(ticketId);
+  const inventoryItems = await listInventory();
+
+  if (ticket.ai_diagnostics) {
+    return ticket.ai_diagnostics;
+  }
+
+  const results = await getAIRepairDiagnostics(ticket.description, inventoryItems);
+
+  const checklist = (results.checklist || []).map((text: string, index: number) => ({
+    id: `chk-${index + 1}-${Date.now()}`,
+    text,
+    checked: false
+  }));
+
+  const aiDiagnostics = {
+    causes: results.causes || [],
+    checklist,
+    suggested_parts: results.suggested_parts || []
+  };
+
+  if (isMockMode) {
+    const mockTicket = mockTickets.find(t => t.id === ticketId);
+    if (mockTicket) {
+      mockTicket.ai_diagnostics = aiDiagnostics;
+      mockTicket.updated_at = new Date().toISOString();
+    }
+  } else {
+    const { error } = await supabase
+      .from('service_tickets')
+      .update({
+        ai_diagnostics: aiDiagnostics
+      })
+      .eq('id', ticketId);
+    
+    if (error) throw error;
+  }
+
+  return aiDiagnostics;
+}
+
+export async function updateTicketDiagnosticsChecklist(
+  ticketId: string,
+  checklist: any[]
+): Promise<any> {
+  const ticket = await getTicketDetails(ticketId);
+  const currentDiagnostics = ticket.ai_diagnostics || { causes: [], checklist: [], suggested_parts: [] };
+
+  const updatedDiagnostics = {
+    ...currentDiagnostics,
+    checklist
+  };
+
+  if (isMockMode) {
+    const mockTicket = mockTickets.find(t => t.id === ticketId);
+    if (mockTicket) {
+      mockTicket.ai_diagnostics = updatedDiagnostics;
+      mockTicket.updated_at = new Date().toISOString();
+    }
+  } else {
+    const { error } = await supabase
+      .from('service_tickets')
+      .update({
+        ai_diagnostics: updatedDiagnostics
+      })
+      .eq('id', ticketId);
+
+    if (error) throw error;
+  }
+
+  return updatedDiagnostics;
 }

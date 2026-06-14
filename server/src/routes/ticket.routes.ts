@@ -12,7 +12,10 @@ import {
   postBookingRequest,
   getTrackingDetails,
   patchApproveBooking,
-  sendTrackingEmail
+  sendTrackingEmail,
+  generateAIDiagnostics,
+  updateAIChecklist,
+  postBookingAIClassify
 } from '../controllers/ticket.controller.js';
 import { authenticate, requireRole } from '../middleware/auth.js';
 import { validateRequest } from '../middleware/validate.js';
@@ -59,6 +62,11 @@ const publicBookingSchema = z.object({
     description: z.string().min(5, 'Issue description must be at least 5 characters'),
     preferredDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Preferred date must be YYYY-MM-DD'),
     preferredTime: z.enum(['morning', 'afternoon']),
+    aiDiagnostics: z.object({
+      suggested_category: z.string(),
+      estimated_duration_hours: z.number(),
+      reasoning: z.string()
+    }).optional().nullable()
   }),
 });
 
@@ -71,6 +79,7 @@ const approveBookingSchema = z.object({
 
 // Unauthenticated public customer routes
 router.post('/public/booking', validateRequest(publicBookingSchema), postBookingRequest);
+router.post('/public/booking/ai-classify', postBookingAIClassify);
 router.get('/public/track/:trackingToken', getTrackingDetails);
 
 router.use(authenticate);
@@ -91,8 +100,24 @@ router.post('/:id/send-tracking-email', sendTrackingEmail);
 router.patch('/:id/notes', requireRole('admin'), validateRequest(updateNotesSchema), patchTicketNotes);
 router.patch('/:id/approve', requireRole('admin'), validateRequest(approveBookingSchema), patchApproveBooking);
 
+const updateChecklistSchema = z.object({
+  body: z.object({
+    checklist: z.array(
+      z.object({
+        id: z.string(),
+        text: z.string(),
+        checked: z.boolean()
+      })
+    )
+  })
+});
+
 // Parts logging routes (auth checked inside controller: admin or assigned mechanic only)
 router.post('/:id/parts', validateRequest(logPartSchema), postTicketPart);
 router.get('/:id/parts', getTicketPartsList);
+
+// AI Diagnostics routes (auth checked inside controller)
+router.post('/:id/ai-diagnostics', generateAIDiagnostics);
+router.patch('/:id/ai-diagnostics/checklist', validateRequest(updateChecklistSchema), updateAIChecklist);
 
 export default router;

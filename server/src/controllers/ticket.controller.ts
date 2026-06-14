@@ -10,7 +10,9 @@ import {
   getTicketParts,
   createBookingRequest,
   getTicketByTrackingToken,
-  approveBooking
+  approveBooking,
+  generateTicketDiagnostics,
+  updateTicketDiagnosticsChecklist
 } from '../services/ticket.service.js';
 import { AuthenticatedRequest } from '../types/index.js';
 import { Resend } from 'resend';
@@ -223,7 +225,8 @@ export async function postBookingRequest(
       year,
       description,
       preferredDate,
-      preferredTime
+      preferredTime,
+      aiDiagnostics
     } = req.body;
 
     const ticket = await createBookingRequest(
@@ -236,7 +239,8 @@ export async function postBookingRequest(
       year ? Number(year) : null,
       description,
       preferredDate,
-      preferredTime
+      preferredTime,
+      aiDiagnostics
     );
 
     return res.status(201).json({
@@ -379,6 +383,72 @@ ${body}
       recipient: ticket.customer.email,
       realDelivery: emailSentReal
     });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function generateAIDiagnostics(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { id: ticketId } = req.params;
+    if (!ticketId) {
+      return res.status(400).json({
+        error: 'VALIDATION_ERROR',
+        message: 'Ticket ID is required.'
+      });
+    }
+
+    const diagnostics = await generateTicketDiagnostics(ticketId);
+    return res.status(200).json(diagnostics);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateAIChecklist(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { id: ticketId } = req.params;
+    const { checklist } = req.body;
+
+    if (!ticketId || !checklist) {
+      return res.status(400).json({
+        error: 'VALIDATION_ERROR',
+        message: 'Ticket ID and checklist are required.'
+      });
+    }
+
+    const updatedDiagnostics = await updateTicketDiagnosticsChecklist(ticketId, checklist);
+    return res.status(200).json(updatedDiagnostics);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function postBookingAIClassify(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { symptoms } = req.body;
+    if (!symptoms) {
+      return res.status(400).json({
+        error: 'VALIDATION_ERROR',
+        message: 'Symptoms description is required.'
+      });
+    }
+
+    const { getAIBookingClassification } = await import('../services/ai.service.js');
+    const classification = await getAIBookingClassification(symptoms);
+    return res.status(200).json(classification);
   } catch (error) {
     next(error);
   }

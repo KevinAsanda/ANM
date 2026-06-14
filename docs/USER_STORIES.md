@@ -347,6 +347,50 @@
 
 ---
 
+## Sprint 14 — Predictive Inventory Demand & Smart Reordering (AI)
+
+### AI-INV-01 — AI-Driven Smart Reorder Advisor
+> As an **admin**, I want to view AI-generated inventory forecasting and smart reordering suggestions so that I can optimize stock levels without manually calculating monthly part usage trends.
+
+**Acceptance Criteria:**
+- [ ] Admin can see a dedicated "AI Smart Reorder Advisor" panel on the Admin Inventory page.
+- [ ] The system calls the Gemini API (or calculates locally using historical data from `ticket_parts` and `service_tickets` over the past 30/90 days) to estimate future 30-day demand.
+- [ ] Displays reorder recommendations showing: Part Name, Current Stock, Projected Demand, Suggested Order Qty, and Estimated Cost.
+- [ ] **Human Touch:** Suggested Order Qty is not finalized automatically. The admin can click "Restock" which opens a confirmation modal pre-filled with the suggested quantity, allowing the admin to edit the quantity or cancel before confirming.
+- [ ] Confirming the restock updates `qty_in_stock` in the `inventory` table immediately and logs the restock transaction.
+- [ ] Graceful fallback: If historical data is insufficient, shows a helpful status: "Insufficient history for prediction; default reorder levels applied" instead of failing.
+
+---
+
+## Sprint 15 — AI-Powered Repair Diagnostics (AI)
+
+### AI-DIAG-01 — AI Repair Diagnostics & Parts Suggester
+> As an **admin** or **mechanic**, I want to see AI-generated repair causes, diagnostic checklists, and suggested parts based on vehicle symptoms so that I can speed up troubleshooting and allocate inventory accurately.
+
+**Acceptance Criteria:**
+- [ ] On the Ticket Detail page, a dedicated "AI Diagnostics Assistant" panel is visible to authenticated staff.
+- [ ] Clicking "Analyze Symptoms" calls the backend, which invokes the Gemini API using the ticket description.
+- [ ] Displays structured recommendations: Top 3 likely causes, a step-by-step diagnostic checklist, and recommended inventory parts (fuzzy-matched against existing inventory).
+- [ ] **Human Touch:** Mechanics can check/uncheck diagnostic checklist items to log their verification progress. The list is saved to the database.
+- [ ] **Human Touch:** Recommended parts display an "Add to Job" button. Clicking this does not automatically log the part; instead, it opens the standard "Log Part" form pre-filled with the part and suggested quantity, allowing the mechanic to adjust before saving.
+- [ ] AI findings (causes, checklists, suggested parts) are saved in the database associated with the ticket so they persist on refresh.
+
+---
+
+## Sprint 16 — Smart Booking Assistant & Service Categorizer (AI)
+
+### AI-BOOK-01 — AI Booking Assistant
+> As a **customer**, I want the booking wizard to automatically suggest my service category and estimate service duration based on a plain-language description of my car's symptoms so that I don't have to guess the correct category.
+
+**Acceptance Criteria:**
+- [ ] In the unauthenticated Customer Booking Portal (`/public/booking`), an AI symptom input field is provided.
+- [ ] When the customer types their symptom (e.g., "screeching when braking"), the system calls the backend to classify the text using the Gemini API.
+- [ ] AI suggests a category (e.g., "Brakes & Braking System") and highlights it in the category selector, while allowing the customer to override it.
+- [ ] AI estimates the service duration (e.g., 2 hours) and updates the preferred date/time slot selections based on real mechanic availability.
+- [ ] **Human Touch:** When the booking request is created, it goes to the admin as a `draft` ticket. The admin must review, edit, and click "Accept" to transition it to `pending`.
+
+---
+
 ## V2 Stories (Future)
 
 - As a customer, I want to receive SMS reminders for vehicle service due dates

@@ -11,6 +11,7 @@ import { Modal } from '../components/ui/Modal.js';
 import { PartForm } from '../components/inventory/PartForm.js';
 import { ClipboardList, PlusCircle, AlertCircle, Edit2, Search, Smartphone, X } from 'lucide-react';
 import { MobileScannerModal } from '../components/inventory/MobileScannerModal.js';
+import { AIReorderAdvisor } from '../components/inventory/AIReorderAdvisor.js';
 
 const Inventory: React.FC = () => {
   const [items, setItems] = useState<InventoryItem[]>([]);
@@ -139,6 +140,9 @@ const Inventory: React.FC = () => {
           Add Part
         </Button>
       </div>
+
+      {/* AI Smart Reorder Advisor */}
+      <AIReorderAdvisor onRestockSuccess={fetchInventory} inventoryItems={items} />
 
       {/* Toolbar: Search and Barcode Scanner Integration */}
       <div className="flex flex-col sm:flex-row gap-3 items-center bg-surface p-4 rounded-xl border border-border/60">
