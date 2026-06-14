@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { authService } from '../services/authService.js';
 import { scannerService } from '../services/scannerService.js';
+import { inventoryService } from '../services/inventoryService.js';
 import { Button } from '../components/ui/Button.js';
 import { Input } from '../components/ui/Input.js';
 import { Clock, CheckCircle, AlertCircle, Scan, ShieldAlert, Smartphone, Camera, Eye } from 'lucide-react';
@@ -29,6 +30,8 @@ export const ScannerSession: React.FC = () => {
   const [lastScanned, setLastScanned] = useState<string | null>(null);
   const [isTransmitting, setIsTransmitting] = useState<boolean>(false);
   const [flashMessage, setFlashMessage] = useState<string | null>(null);
+  const [dbParts, setDbParts] = useState<any[]>([]);
+  const [isLoadingParts, setIsLoadingParts] = useState<boolean>(false);
 
   // Synthesize a hardware beep sound via the Web Audio API
   const playScannerBeep = () => {
@@ -58,6 +61,29 @@ export const ScannerSession: React.FC = () => {
       setIsAuthenticated(true);
     }
   }, [emailParam]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const loadParts = async () => {
+        setIsLoadingParts(true);
+        try {
+          const items = await inventoryService.getInventory();
+          const mapped = items
+            .filter(item => item.part_number)
+            .map(item => ({
+              name: item.part_name,
+              barcode: item.part_number as string
+            }));
+          setDbParts(mapped);
+        } catch (err) {
+          console.error('Failed to load parts from database:', err);
+        } finally {
+          setIsLoadingParts(false);
+        }
+      };
+      loadParts();
+    }
+  }, [isAuthenticated]);
 
   // Real Camera scan control
   useEffect(() => {
@@ -371,9 +397,11 @@ export const ScannerSession: React.FC = () => {
 
         {/* Foolproof Simulation Panel - shown in both modes as a fallback */}
         <div className="flex flex-col gap-2">
-          <label className="text-[10px] uppercase font-semibold tracking-wider text-white/60">Simulated Workshop Items (Tap to Scan)</label>
+          <label className="text-[10px] uppercase font-semibold tracking-wider text-white/60">
+            {isLoadingParts ? 'Loading inventory parts...' : dbParts.length > 0 ? 'Inventory Parts from DB (Tap to Scan)' : 'Simulated Workshop Items (Tap to Scan)'}
+          </label>
           <div className="flex flex-col gap-2">
-            {mockParts.map((part) => (
+            {((dbParts.length > 0) ? dbParts : mockParts).map((part) => (
               <button
                 key={part.barcode}
                 onClick={() => handleTransmit(part.barcode)}

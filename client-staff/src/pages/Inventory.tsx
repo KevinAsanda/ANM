@@ -25,6 +25,7 @@ const Inventory: React.FC = () => {
   // Modal Control
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPart, setSelectedPart] = useState<InventoryItem | null>(null);
+  const [scannedBarcodeToAdd, setScannedBarcodeToAdd] = useState<string>('');
 
   const fetchInventory = async () => {
     setIsLoading(true);
@@ -51,12 +52,20 @@ const Inventory: React.FC = () => {
 
   const handleOpenAddModal = () => {
     setSelectedPart(null);
+    setScannedBarcodeToAdd('');
+    setIsModalOpen(true);
+  };
+
+  const handleOpenAddModalWithBarcode = (barcode: string) => {
+    setSelectedPart(null);
+    setScannedBarcodeToAdd(barcode);
     setIsModalOpen(true);
   };
 
   const handleOpenEditModal = (part: InventoryItem, e: React.MouseEvent) => {
     e.stopPropagation(); // prevent row click triggers
     setSelectedPart(part);
+    setScannedBarcodeToAdd('');
     setIsModalOpen(true);
   };
 
@@ -203,7 +212,15 @@ const Inventory: React.FC = () => {
         <div className="flex flex-col items-center justify-center p-12 text-center bg-surface border border-border rounded-xl gap-4">
           <h3 className="font-display font-medium text-xl text-text">No parts match search query</h3>
           <p className="text-text-muted text-sm max-w-sm">Try searching for a different keyword or scan another part barcode.</p>
-          <Button variant="secondary" onClick={() => setSearchQuery('')}>Clear Search Filter</Button>
+          <div className="flex gap-3">
+            {searchQuery && (
+              <Button variant="primary" onClick={() => handleOpenAddModalWithBarcode(searchQuery)} className="gap-2">
+                <PlusCircle size={16} />
+                Add Part with Barcode "{searchQuery}"
+              </Button>
+            )}
+            <Button variant="secondary" onClick={() => setSearchQuery('')}>Clear Search Filter</Button>
+          </div>
         </div>
       ) : (
         <Table
@@ -220,6 +237,7 @@ const Inventory: React.FC = () => {
       >
         <PartForm
           part={selectedPart}
+          defaultPartNumber={scannedBarcodeToAdd}
           onSuccess={handleModalSuccess}
           onCancel={() => setIsModalOpen(false)}
         />

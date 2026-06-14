@@ -7,11 +7,12 @@ import { AlertCircle } from 'lucide-react';
 
 interface PartFormProps {
   part?: InventoryItem | null;
+  defaultPartNumber?: string;
   onSuccess: () => void;
   onCancel: () => void;
 }
 
-export const PartForm: React.FC<PartFormProps> = ({ part, onSuccess, onCancel }) => {
+export const PartForm: React.FC<PartFormProps> = ({ part, defaultPartNumber, onSuccess, onCancel }) => {
   const isEditMode = !!part;
 
   // Form Fields
@@ -36,14 +37,14 @@ export const PartForm: React.FC<PartFormProps> = ({ part, onSuccess, onCancel })
       setUnitCost(part.unit_cost !== null ? part.unit_cost.toString() : '');
     } else {
       setPartName('');
-      setPartNumber('');
+      setPartNumber(defaultPartNumber || '');
       setQtyInStock('0');
       setReorderLevel('5');
       setUnitCost('');
     }
     setErrors({});
     setSubmitError(null);
-  }, [part]);
+  }, [part, defaultPartNumber]);
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
