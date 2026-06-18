@@ -83,7 +83,7 @@ Getting the project up and running locally takes under 5 minutes.
 3.  **Database Seeding**: Run `npm run seed` inside the `server/` directory to automatically register testing staff accounts and populate diagnostic records.
 4.  **Launch Application**: Start dev servers in all three folders.
 
-For detailed, step-by-step setup guides, refer to [SETUP.md](file:///C:/Users/User/Desktop/My%20Learning/ANM/SETUP.md).
+For detailed, step-by-step setup guides, refer to [SETUP.md](file:///C:/Users/User/Desktop/My%20Learning/ANM/SETUP.md). For an in-depth breakdown of the system architecture, security mechanisms, database schema, IoT barcode scanner, and Google Gemini AI integrations, refer to the [SYSTEM_DOCUMENTATION.md](file:///C:/Users/User/Desktop/My%20Learning/ANM/docs/SYSTEM_DOCUMENTATION.md) file.
 
 ---
 
