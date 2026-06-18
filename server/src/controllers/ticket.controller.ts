@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from "express";
 import {
   listTickets,
   listMechanicTickets,
@@ -12,17 +12,19 @@ import {
   getTicketByTrackingToken,
   approveBooking,
   generateTicketDiagnostics,
-  updateTicketDiagnosticsChecklist
-} from '../services/ticket.service.js';
-import { AuthenticatedRequest } from '../types/index.js';
-import { Resend } from 'resend';
+  updateTicketDiagnosticsChecklist,
+} from "../services/ticket.service.js";
+import { AuthenticatedRequest } from "../types/index.js";
+import { Resend } from "resend";
 
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+const resend = process.env.RESEND_API_KEY
+  ? new Resend(process.env.RESEND_API_KEY)
+  : null;
 
 export async function getTickets(
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const { status } = req.query;
@@ -36,13 +38,13 @@ export async function getTickets(
 export async function getMyJobs(
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
-    if (!req.user || req.user.role !== 'mechanic') {
+    if (!req.user || req.user.role !== "mechanic") {
       return res.status(403).json({
-        error: 'FORBIDDEN',
-        message: 'Mechanic access only.'
+        error: "FORBIDDEN",
+        message: "Mechanic access only.",
       });
     }
 
@@ -56,7 +58,7 @@ export async function getMyJobs(
 export async function postTicket(
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const { vehicle_id, staff_id, description, labour_cost } = req.body;
@@ -67,7 +69,7 @@ export async function postTicket(
       staff_id,
       createdBy,
       description,
-      labour_cost ? Number(labour_cost) : 0.00
+      labour_cost ? Number(labour_cost) : 0.0,
     );
     return res.status(201).json(ticket);
   } catch (error) {
@@ -78,24 +80,24 @@ export async function postTicket(
 export async function getTicket(
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const { id } = req.params;
     if (!id) {
       return res.status(400).json({
-        error: 'VALIDATION_ERROR',
-        message: 'Ticket ID is required.'
+        error: "VALIDATION_ERROR",
+        message: "Ticket ID is required.",
       });
     }
 
     const ticket = await getTicketDetails(id);
 
     // Enforce authorization check: mechanic can only view if assigned
-    if (req.user!.role === 'mechanic' && ticket.staff_id !== req.user!.id) {
+    if (req.user!.role === "mechanic" && ticket.staff_id !== req.user!.id) {
       return res.status(403).json({
-        error: 'FORBIDDEN',
-        message: 'You do not have permission to view this ticket.'
+        error: "FORBIDDEN",
+        message: "You do not have permission to view this ticket.",
       });
     }
 
@@ -108,7 +110,7 @@ export async function getTicket(
 export async function patchTicketStatus(
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const { id } = req.params;
@@ -116,8 +118,8 @@ export async function patchTicketStatus(
 
     if (!id || !status) {
       return res.status(400).json({
-        error: 'VALIDATION_ERROR',
-        message: 'Ticket ID and status are required.'
+        error: "VALIDATION_ERROR",
+        message: "Ticket ID and status are required.",
       });
     }
 
@@ -125,13 +127,13 @@ export async function patchTicketStatus(
       id,
       status,
       req.user!.role,
-      req.user!.id
+      req.user!.id,
     );
 
     return res.status(200).json({
       id: ticket.id,
       status: ticket.status,
-      updated_at: ticket.updated_at
+      updated_at: ticket.updated_at,
     });
   } catch (error: any) {
     // Pass custom error status or forward
@@ -142,7 +144,7 @@ export async function patchTicketStatus(
 export async function patchTicketNotes(
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const { id } = req.params;
@@ -150,8 +152,8 @@ export async function patchTicketNotes(
 
     if (!id || notes === undefined) {
       return res.status(400).json({
-        error: 'VALIDATION_ERROR',
-        message: 'Ticket ID and notes are required.'
+        error: "VALIDATION_ERROR",
+        message: "Ticket ID and notes are required.",
       });
     }
 
@@ -159,7 +161,7 @@ export async function patchTicketNotes(
     return res.status(200).json({
       id: ticket.id,
       notes: ticket.notes,
-      updated_at: ticket.updated_at
+      updated_at: ticket.updated_at,
     });
   } catch (error) {
     next(error);
@@ -169,7 +171,7 @@ export async function patchTicketNotes(
 export async function postTicketPart(
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const { id: ticketId } = req.params;
@@ -183,7 +185,7 @@ export async function postTicketPart(
       inventory_id,
       Number(qty_used),
       loggedBy,
-      userRole
+      userRole,
     );
 
     return res.status(201).json(partLog);
@@ -195,7 +197,7 @@ export async function postTicketPart(
 export async function getTicketPartsList(
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const { id: ticketId } = req.params;
@@ -212,7 +214,7 @@ export async function getTicketPartsList(
 export async function postBookingRequest(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const {
@@ -226,7 +228,7 @@ export async function postBookingRequest(
       description,
       preferredDate,
       preferredTime,
-      aiDiagnostics
+      aiDiagnostics,
     } = req.body;
 
     const ticket = await createBookingRequest(
@@ -240,14 +242,14 @@ export async function postBookingRequest(
       description,
       preferredDate,
       preferredTime,
-      aiDiagnostics
+      aiDiagnostics,
     );
 
     return res.status(201).json({
-      message: 'Booking request submitted successfully.',
+      message: "Booking request submitted successfully.",
       ticketId: ticket.id,
       trackingToken: ticket.tracking_token,
-      trackingUrl: `/public/track/${ticket.tracking_token}`
+      trackingUrl: `/public/track/${ticket.tracking_token}`,
     });
   } catch (error) {
     next(error);
@@ -257,14 +259,14 @@ export async function postBookingRequest(
 export async function getTrackingDetails(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const { trackingToken } = req.params;
     if (!trackingToken) {
       return res.status(400).json({
-        error: 'VALIDATION_ERROR',
-        message: 'Tracking token is required.'
+        error: "VALIDATION_ERROR",
+        message: "Tracking token is required.",
       });
     }
 
@@ -278,7 +280,7 @@ export async function getTrackingDetails(
 export async function patchApproveBooking(
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const { id } = req.params;
@@ -286,15 +288,16 @@ export async function patchApproveBooking(
 
     if (!id || !staffId) {
       return res.status(400).json({
-        error: 'VALIDATION_ERROR',
-        message: 'Ticket ID and Mechanic ID (staffId) are required.'
+        error: "VALIDATION_ERROR",
+        message: "Ticket ID and Mechanic ID (staffId) are required.",
       });
     }
 
     const ticket = await approveBooking(id, staffId, Number(labourCost));
     return res.status(200).json({
-      message: 'Booking request approved and ticket transitioned to pending status.',
-      ticket
+      message:
+        "Booking request approved and ticket transitioned to pending status.",
+      ticket,
     });
   } catch (error) {
     next(error);
@@ -304,33 +307,35 @@ export async function patchApproveBooking(
 export async function sendTrackingEmail(
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const { id } = req.params;
     if (!id) {
       return res.status(400).json({
-        error: 'VALIDATION_ERROR',
-        message: 'Ticket ID is required.'
+        error: "VALIDATION_ERROR",
+        message: "Ticket ID is required.",
       });
     }
 
     const ticket = await getTicketDetails(id);
     if (!ticket.customer || !ticket.customer.email) {
       return res.status(400).json({
-        error: 'VALIDATION_ERROR',
-        message: 'Customer email is not registered for this ticket.'
+        error: "VALIDATION_ERROR",
+        message: "Customer email is not registered for this ticket.",
       });
     }
 
     if (!ticket.tracking_token) {
       return res.status(400).json({
-        error: 'VALIDATION_ERROR',
-        message: 'Tracking token has not been generated for this ticket.'
+        error: "VALIDATION_ERROR",
+        message: "Tracking token has not been generated for this ticket.",
       });
     }
 
-    const clientUrl = process.env.CLIENT_CUSTOMER_URL || 'https://anm-customer-portal.onrender.com';
+    const clientUrl =
+      process.env.CLIENT_CUSTOMER_URL ||
+      "https://anm-customer-portal.onrender.com";
     const trackingUrl = `${clientUrl}/public/track/${ticket.tracking_token}`;
     const subject = `Track your vehicle repair status at ANM Workshop`;
     const body = `Hi ${ticket.customer.name},\n\nYour vehicle repair request for ${ticket.vehicle?.make} ${ticket.vehicle?.model} (${ticket.vehicle?.registration_number}) is registered under status "${ticket.status.toUpperCase()}".\n\nYou can track its live status, parts utilized, and invoice here:\n${trackingUrl}\n\nRegards,\nANM Workshop Team`;
@@ -340,11 +345,14 @@ export async function sendTrackingEmail(
 
     if (resend) {
       try {
-        const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+        const fromEmail =
+          process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
         // Override recipient to verified Resend account email for sandbox testing
-        const recipientEmail = 'kevinasanda99@gmail.com';
-        
-        console.log(`[Resend Sandbox Override] Redirecting email from ${ticket.customer.email} to verified account ${recipientEmail}`);
+        const recipientEmail = "jessymac60@gmail.com";
+
+        console.log(
+          `[Resend Sandbox Override] Redirecting email from ${ticket.customer.email} to verified account ${recipientEmail}`,
+        );
 
         const { data, error } = await resend.emails.send({
           from: `ANM Workshop <${fromEmail}>`,
@@ -354,15 +362,15 @@ export async function sendTrackingEmail(
         });
 
         if (error) {
-          console.error('Resend API error:', error);
+          console.error("Resend API error:", error);
           apiErrorMessage = error.message;
         } else {
-          console.log('Resend email sent successfully:', data);
+          console.log("Resend email sent successfully:", data);
           emailSentReal = true;
         }
       } catch (err: any) {
-        console.error('Failed to send email via Resend:', err);
-        apiErrorMessage = err.message || 'Resend SDK execution error';
+        console.error("Failed to send email via Resend:", err);
+        apiErrorMessage = err.message || "Resend SDK execution error";
       }
     }
 
@@ -379,9 +387,9 @@ ${body}
     // We always return a clean success response for presentation purposes, regardless of sandbox errors
     return res.status(200).json({
       success: true,
-      message: 'Tracking link email sent successfully to customer.',
+      message: "Tracking link email sent successfully to customer.",
       recipient: ticket.customer.email,
-      realDelivery: emailSentReal
+      realDelivery: emailSentReal,
     });
   } catch (error) {
     next(error);
@@ -391,14 +399,14 @@ ${body}
 export async function generateAIDiagnostics(
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const { id: ticketId } = req.params;
     if (!ticketId) {
       return res.status(400).json({
-        error: 'VALIDATION_ERROR',
-        message: 'Ticket ID is required.'
+        error: "VALIDATION_ERROR",
+        message: "Ticket ID is required.",
       });
     }
 
@@ -412,7 +420,7 @@ export async function generateAIDiagnostics(
 export async function updateAIChecklist(
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const { id: ticketId } = req.params;
@@ -420,12 +428,15 @@ export async function updateAIChecklist(
 
     if (!ticketId || !checklist) {
       return res.status(400).json({
-        error: 'VALIDATION_ERROR',
-        message: 'Ticket ID and checklist are required.'
+        error: "VALIDATION_ERROR",
+        message: "Ticket ID and checklist are required.",
       });
     }
 
-    const updatedDiagnostics = await updateTicketDiagnosticsChecklist(ticketId, checklist);
+    const updatedDiagnostics = await updateTicketDiagnosticsChecklist(
+      ticketId,
+      checklist,
+    );
     return res.status(200).json(updatedDiagnostics);
   } catch (error) {
     next(error);
@@ -435,18 +446,19 @@ export async function updateAIChecklist(
 export async function postBookingAIClassify(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const { symptoms } = req.body;
     if (!symptoms) {
       return res.status(400).json({
-        error: 'VALIDATION_ERROR',
-        message: 'Symptoms description is required.'
+        error: "VALIDATION_ERROR",
+        message: "Symptoms description is required.",
       });
     }
 
-    const { getAIBookingClassification } = await import('../services/ai.service.js');
+    const { getAIBookingClassification } =
+      await import("../services/ai.service.js");
     const classification = await getAIBookingClassification(symptoms);
     return res.status(200).json(classification);
   } catch (error) {
