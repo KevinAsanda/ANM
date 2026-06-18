@@ -56,3 +56,8 @@ cypress/screenshots/
 # Development tools & Agent scratch files
 .gemini/
 scratch/
+
+docs/
+.agent/
+ARCHITECTURE.md
+GEMINI.md
