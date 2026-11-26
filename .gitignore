@@ -57,7 +57,8 @@ cypress/screenshots/
 .gemini/
 scratch/
 
-docs/
+docs/*
+!docs/screenshots/
 .agent/
 ARCHITECTURE.md
 GEMINI.md
